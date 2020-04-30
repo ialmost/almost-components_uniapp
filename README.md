@@ -1,6 +1,8 @@
 # raffle-wheel
 uni-app 使用的 Canvas 抽奖转盘
 
+[uni-app 插件地址](https://ext.dcloud.net.cn/plugin?id=1030)
+
 
 ## 使用说明
 
