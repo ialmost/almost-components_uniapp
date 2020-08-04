@@ -286,18 +286,23 @@
 
         // 保存绘图并导出图片
         ctx.draw(true, () => {
-          uni.canvasToTempFilePath({
-            destWidth: this.canvasWidth * this.pixelRatio,
-            destHeight: this.canvasHeight * this.pixelRatio,
-            canvasId: this.canvasId,
-            success: (res) => {
-              // 在 H5 平台下，tempFilePath 为 base64
-              // console.log(res.tempFilePath)
-              this.canvasImg = res.tempFilePath
-              // 通知父级组件，抽奖转品生成图片完成
-              this.$emit('done')
-            }
-          }, this)
+          let drawTimer = setTimeout(() => {
+            clearTimeout(drawTimer)
+            drawTimer = null
+            
+            uni.canvasToTempFilePath({
+              destWidth: this.canvasWidth * this.pixelRatio,
+              destHeight: this.canvasHeight * this.pixelRatio,
+              canvasId: this.canvasId,
+              success: (res) => {
+                // 在 H5 平台下，tempFilePath 为 base64
+                // console.log(res.tempFilePath)
+                this.canvasImg = res.tempFilePath
+                // 通知父级组件，抽奖转品生成图片完成
+                this.$emit('done')
+              }
+            }, this)
+          }, 20)
         })
       },
       // 兼容 app 端不支持 ctx.measureText
