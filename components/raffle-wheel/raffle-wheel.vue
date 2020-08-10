@@ -1,10 +1,18 @@
 <template>
   <view class="raffle-wheel" :style="{ width: canvasWidth + 44 + 'px', height: canvasHeight + 44 + 'px'}">
     <view class="raffle-wheel-wrap" :style="{width: canvasWidth + 'px', height: canvasHeight + 'px'}">
+      <!-- #ifdef MP-ALIPAY -->
+      <canvas :class="className" :id="canvasId" :width="canvasWidth" :height="canvasHeight" :style="{
+         width: canvasWidth + 'px',
+         height: canvasHeight + 'px'
+       }" />
+      <!-- #endif -->
+      <!-- #ifndef MP-ALIPAY -->
       <canvas :class="className" :canvas-id="canvasId" :width="canvasWidth" :height="canvasHeight" :style="{
          width: canvasWidth + 'px',
          height: canvasHeight + 'px'
        }" />
+      <!-- #endif -->
       <image class="canvas-img" :src="canvasImg" :style="{
          width: canvasWidth + 'px',
          height: canvasHeight + 'px',
@@ -191,7 +199,7 @@
         ctx.strokeStyle = '#FFBE04'
 
         // 设置字号字体，Canvas 文本字号字体的默认值是 10px sans-serif，这里必须对 字号 字体 同时覆盖
-        let family = "-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', STHeiti, 'Microsoft Yahei', Tahoma, Simsun, sans-serif"
+        let family = '-apple-system, BlinkMacSystemFont, \'PingFang SC\', \'Helvetica Neue\', STHeiti, \'Microsoft Yahei\', Tahoma, Simsun, sans-serif'
         ctx.font = `${this.fontSize} ${family}`
 
         // 注意，开始画的位置是从0°角的位置开始画的。也就是水平向右的方向。
@@ -265,7 +273,7 @@
               }
             }
           } else {
-              if (ctx.measureText && ctx.measureText(rewardName).width) {
+            if (ctx.measureText && ctx.measureText(rewardName).width) {
               // 文本的宽度信息
               let tempStrSize = ctx.measureText(rewardName)
               ctx.fillText(rewardName, -tempStrSize.width / 2, 0)
@@ -290,6 +298,19 @@
             clearTimeout(drawTimer)
             drawTimer = null
             
+            // #ifdef MP-ALIPAY
+            ctx.toTempFilePath({
+              destWidth: this.canvasWidth * this.pixelRatio,
+              destHeight: this.canvasHeight * this.pixelRatio,
+              success: (res) => {
+                // console.log(res.filePath)
+                this.canvasImg = res.filePath
+                // 通知父级组件，抽奖转品生成图片完成
+                this.$emit('done')
+              }
+            })
+            // #endif
+            // #ifndef MP-ALIPAY
             uni.canvasToTempFilePath({
               destWidth: this.canvasWidth * this.pixelRatio,
               destHeight: this.canvasHeight * this.pixelRatio,
@@ -302,6 +323,7 @@
                 this.$emit('done')
               }
             }, this)
+            // #endif
           }, 20)
         })
       },
