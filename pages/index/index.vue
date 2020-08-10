@@ -60,10 +60,17 @@
       },
       // 获取奖品列表
       getPrizeList () {
+        // #ifdef MP-ALIPAY
+        uni.showLoading({
+          title: '奖品准备中...'
+        })
+        // #endif
+        // #ifndef MP-ALIPAY
         uni.showLoading({
           title: '奖品准备中...',
           mask: true
         })
+        // #endif
         // 模拟请求奖品列表
         let stoTimer = setTimeout(() => {
           clearTimeout(stoTimer)
@@ -130,10 +137,18 @@
       // 抽奖转盘绘制完成
       handleDrawDone () {
         console.log('抽奖转盘绘制完成')
+        uni.hideLoading()
+        // #ifdef MP-ALIPAY
+        uni.showToast({
+          title: '奖品准备就绪'
+        })
+        // #endif
+        // #ifndef MP-ALIPAY
         uni.showToast({
           title: '奖品准备就绪',
           duration: 1000
         })
+        // #endif
       }
     },
     onLoad () {
