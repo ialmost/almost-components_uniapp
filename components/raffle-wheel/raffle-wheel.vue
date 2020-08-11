@@ -54,7 +54,7 @@
       colors: {
         type: Array,
         default: () => [
-          '#FFF',
+          '#FFFFFF',
           '#FFE9AA'
         ],
         // 必须是偶数且仅为 2 个颜色相互交替
@@ -190,17 +190,16 @@
         // canvas 的宽高
         let canvasW = this.canvasWidth
         let canvasH = this.canvasHeight
-
+        
         // 根据奖品个数计算 角度
         let prizeCount = this.prizeList.length
         let baseAngle = Math.PI * 2 / prizeCount
 
         // 设置描边颜色
-        ctx.strokeStyle = '#FFBE04'
-
-        // 设置字号字体，Canvas 文本字号字体的默认值是 10px sans-serif，这里必须对 字号 字体 同时覆盖
-        let family = '-apple-system, BlinkMacSystemFont, \'PingFang SC\', \'Helvetica Neue\', STHeiti, \'Microsoft Yahei\', Tahoma, Simsun, sans-serif'
-        ctx.font = `${this.fontSize} ${family}`
+        ctx.setStrokeStyle('#FFBE04')
+        
+        // 设置字体字号
+        ctx.setFontSize(this.fontSize)
 
         // 注意，开始画的位置是从0°角的位置开始画的。也就是水平向右的方向。
         // 画具体内容
@@ -229,12 +228,12 @@
           // 开始链接线条
           ctx.stroke()
           // 每个奖品区块背景填充颜色
-          ctx.fillStyle = this.colors[i % 2]
+          ctx.setFillStyle(this.colors[i % 2])
           // 填充颜色
           ctx.fill()
 
           // 开始绘制奖品内容
-          ctx.fillStyle = this.fontColor
+          ctx.setFillStyle(this.fontColor)
           let rewardName = this.strLimit(this.prizeList[i][this.strKey])
 
           // translate方法重新映射画布上的 (0,0) 位置
