@@ -269,7 +269,7 @@
                 let textWidth = await this.getTextWidth()
 
                 ctx.fillText(rewardNames[j], -textWidth / 2, j * this.lineHeight)
-                console.log(rewardNames[j], textWidth, i)
+                // console.log(rewardNames[j], textWidth, i)
               }
             }
           } else {

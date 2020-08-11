@@ -49,7 +49,9 @@
         // 是否由前端控制概率
         isFrontend: true,
         // 权重随机数的最大值
-        weightTotal: 10000
+        weightTotal: 0,
+        // 权重数组
+        weightArr: []
       }
     },
     methods: {
@@ -78,21 +80,28 @@
           
           // stock 奖品库存
           // weight 中奖概率，数值越大中奖概率越高
-          // 如果存在谢谢参与的选项，请把权重值设置为权重随机数的最大值
           this.prizeList = [
             { prizeId: 1, name: '0.1元现金', stock: 10, weight: 10 },
-            { prizeId: 2, name: '10元现金', stock: 0, weight: 0 },
-            { prizeId: 3, name: '5元话费', stock: 1, weight: 5 },
+            { prizeId: 2, name: '10元现金', stock: 0, weight: 1 },
+            { prizeId: 3, name: '5元话费', stock: 1, weight: 2 },
             { prizeId: 4, name: '50元现金', stock: 0, weight: 0 },
-            { prizeId: 5, name: '1卷抽纸', stock: 3, weight: 200 },
-            { prizeId: 6, name: '0.02元现金', stock: 8, weight: 900 },
+            { prizeId: 5, name: '1卷抽纸', stock: 3, weight: 20 },
+            { prizeId: 6, name: '0.02元现金', stock: 8, weight: 80 },
             { prizeId: 7, name: '谢谢参与', stock: 100, weight: 10000 },
-            { prizeId: 8, name: '100金币', stock: 0, weight: 500 }
+            { prizeId: 8, name: '100金币', stock: 100, weight: 9000 }
           ]
+          
+          // 计算出权重的总和并生成权重数组
+          if (this.isFrontend) {
+            this.prizeList.forEach((item) => this.weightTotal += item.weight)
+            this.weightArr = this.prizeList.map((item) => item.weight)
+          }
         }, 500)
       },
       // 本次抽奖开始
       handleActionStart () {
+        this.targetName = ''
+        
         let list = [...this.prizeList]
         
         // 模拟请求
@@ -101,17 +110,36 @@
           stoTimer = null
           
           // 判断是否由前端控制概率
-          // 前端控制概率的情况下，用最新的随机权重比对每一个奖项的权重，只有小于或等于才算中奖
-          // 后端控制概率的情况下，通常会直接返回奖品Id
-          if (this.isFrontend) {
-            let weight = Math.floor(Math.random() * this.weightTotal)
-            list.forEach((item, index) => {
-              if (weight <= item.weight) {
-                // 中奖下标
-                this.targetIndex = index
+          // 前端控制概率的情况下，需要拿到最接近随机权重且大于随机权重的值
+          // 后端控制概率的情况下，通常会直接返回 prizeId
+          if (this.isFrontend && this.weightTotal) {
+            console.warn('###当前处于前端控制中奖概率，安全起见，强烈建议由后端控制###')
+            console.log('当前权重总和为 =>', this.weightTotal)
+            
+            // 注意这里使用了 Math.ceil，如果某个权重的值为 0，则始终无法中奖
+            let weight = Math.ceil(Math.random() * this.weightTotal)
+            console.log('本次权重随机数 =>', weight)
+            
+            // 生成大于随机权重的数组
+            let tempMaxArrs = []
+            list.forEach((item) => {
+              if (item.weight > weight) {
+                tempMaxArrs.push(item.weight)
               }
             })
+            
+            // 如果大于随机权重的数组有值，先对这个数组排序然后取值
+            // 反之新建一个临时的包含所有权重的已排序数组，然后取值
+            if (tempMaxArrs.length) {
+              tempMaxArrs.sort((a, b) => a - b)
+              this.targetIndex = this.weightArr.indexOf(tempMaxArrs[0])
+            } else {
+              let tempWeightArr = [...this.weightArr]
+              tempWeightArr.sort((a, b) => a - b)
+              this.targetIndex = this.weightArr.indexOf(tempWeightArr[tempWeightArr.length - 1])
+            }
           } else {
+            // 这里随机产生的 prizeId 是模拟后端返回的 prizeId
             let prizeId = Math.floor(Math.random() * list.length)
             list.forEach((item, index) => {
               if (item.prizeId === prizeId) {
@@ -121,8 +149,9 @@
             })
           }
           
-          console.log('抽中奖品 =>', this.prizeList[this.targetIndex].name)
-          console.log('奖品库存 =>', this.prizeList[this.targetIndex].stock)
+          console.log('本次抽中奖品 =>', this.prizeList[this.targetIndex].name)
+          console.log('本次奖品库存 =>', this.prizeList[this.targetIndex].stock)
+          
           // 开始执行旋转定位
           this.$refs.raffleWheel.handleStartRotate(this.targetIndex)
         }, 200)
