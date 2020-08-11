@@ -2,8 +2,8 @@
     "name" : "raffle-wheel",
     "appid" : "__UNI__0C0A08A",
     "description" : "uni-app 使用的 Canvas 抽奖转盘",
-    "versionName" : "1.1.9",
-    "versionCode" : 119,
+    "versionName" : "1.1.10",
+    "versionCode" : 1110,
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {
