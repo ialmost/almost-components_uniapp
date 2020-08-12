@@ -198,8 +198,14 @@
         // 设置描边颜色
         ctx.setStrokeStyle('#FFBE04')
         
-        // 设置字体字号
+        // 设置字体和字号
+        // #ifndef MP
+        let fontFamily = '-apple-system, BlinkMacSystemFont, \'PingFang SC\', \'Helvetica Neue\', STHeiti, \'Microsoft Yahei\', Tahoma, Simsun, sans-serif'
+        ctx.font = `${this.fontSize} ${fontFamily}`
+        // #endif
+        // #ifdef MP
         ctx.setFontSize(this.fontSize)
+        // #endif
 
         // 注意，开始画的位置是从0°角的位置开始画的。也就是水平向右的方向。
         // 画具体内容

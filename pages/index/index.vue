@@ -8,6 +8,8 @@
         ref="raffleWheel"
         :prizeList="prizeList"
         strKey="name"
+        :ringCount="2"
+        :duration="1"
         :canvas-width="canvasData.width"
         :canvas-height="canvasData.height"
         @actionStart="handleActionStart"
@@ -62,17 +64,9 @@
       },
       // 获取奖品列表
       getPrizeList () {
-        // #ifdef MP-ALIPAY
         uni.showLoading({
           title: '奖品准备中...'
         })
-        // #endif
-        // #ifndef MP-ALIPAY
-        uni.showLoading({
-          title: '奖品准备中...',
-          mask: true
-        })
-        // #endif
         // 模拟请求奖品列表
         let stoTimer = setTimeout(() => {
           clearTimeout(stoTimer)
@@ -81,14 +75,14 @@
           // stock 奖品库存
           // weight 中奖概率，数值越大中奖概率越高
           this.prizeList = [
-            { prizeId: 1, name: '0.1元现金', stock: 10, weight: 10 },
-            { prizeId: 2, name: '10元现金', stock: 0, weight: 1 },
-            { prizeId: 3, name: '5元话费', stock: 1, weight: 2 },
+            { prizeId: 1, name: '0.1元现金', stock: 10, weight: 1 },
+            { prizeId: 2, name: '10元现金', stock: 0, weight: 0 },
+            { prizeId: 3, name: '5元话费', stock: 1, weight: 0 },
             { prizeId: 4, name: '50元现金', stock: 0, weight: 0 },
-            { prizeId: 5, name: '1卷抽纸', stock: 3, weight: 20 },
-            { prizeId: 6, name: '0.02元现金', stock: 8, weight: 80 },
+            { prizeId: 5, name: '1卷抽纸', stock: 3, weight: 3 },
+            { prizeId: 6, name: '0.02元现金', stock: 8, weight: 2 },
             { prizeId: 7, name: '谢谢参与', stock: 100, weight: 10000 },
-            { prizeId: 8, name: '100金币', stock: 100, weight: 9000 }
+            { prizeId: 8, name: '100金币', stock: 100, weight: 1000 }
           ]
           
           // 计算出权重的总和并生成权重数组
@@ -120,10 +114,10 @@
             let weight = Math.ceil(Math.random() * this.weightTotal)
             console.log('本次权重随机数 =>', weight)
             
-            // 生成大于随机权重的数组
+            // 生成大于等于随机权重的数组
             let tempMaxArrs = []
             list.forEach((item) => {
-              if (item.weight > weight) {
+              if (item.weight >= weight) {
                 tempMaxArrs.push(item.weight)
               }
             })
@@ -167,17 +161,9 @@
       handleDrawDone () {
         console.log('抽奖转盘绘制完成')
         uni.hideLoading()
-        // #ifdef MP-ALIPAY
         uni.showToast({
           title: '奖品准备就绪'
         })
-        // #endif
-        // #ifndef MP-ALIPAY
-        uni.showToast({
-          title: '奖品准备就绪',
-          duration: 1000
-        })
-        // #endif
       }
     },
     onLoad () {
