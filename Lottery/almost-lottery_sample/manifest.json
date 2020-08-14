@@ -1,7 +1,7 @@
 {
-    "name" : "raffle-wheel",
-    "appid" : "__UNI__0C0A08A",
-    "description" : "uni-app 使用的 Canvas 抽奖转盘",
+    "name" : "almost-lottery",
+    "appid" : "",
+    "description" : "",
     "versionName" : "1.1.13",
     "versionCode" : 1113,
     "transformPx" : false,
@@ -48,9 +48,7 @@
                 "abiFilters" : [ "armeabi-v7a", "arm64-v8a", "x86" ]
             },
             /* ios打包配置 */
-            "ios" : {
-                "idfa" : false
-            },
+            "ios" : {},
             /* SDK配置 */
             "sdkConfigs" : {}
         }

@@ -1,6 +1,6 @@
 <template>
-  <view class="raffle-wheel" :style="{ width: canvasWidth + 44 + 'px', height: canvasHeight + 44 + 'px'}">
-    <view class="raffle-wheel-wrap" :style="{width: canvasWidth + 'px', height: canvasHeight + 'px'}">
+  <view class="almost-lottery" :style="{ width: canvasWidth + 44 + 'px', height: canvasHeight + 44 + 'px'}">
+    <view class="almost-lottery-wrap" :style="{width: canvasWidth + 'px', height: canvasHeight + 'px'}">
       <!-- #ifdef MP-ALIPAY -->
       <canvas :class="className" :id="canvasId" :width="canvasWidth" :height="canvasHeight" :style="{
          width: canvasWidth + 'px',
@@ -20,9 +20,9 @@
          transitionDuration: `${transitionDuration}s`
        }"
         v-if="canvasImg"></image>
-      <view class="raffle-wheel__action" @click="handleAction"></view>
+      <view class="almost-lottery__action" @click="handleAction"></view>
       <!-- 为了兼容 app 端 ctx.measureText 所需的标签 -->
-      <text class="raffle-wheel__measureText">{{ measureText }}</text>
+      <text class="almost-lottery__measureText">{{ measureText }}</text>
     </view>
   </view>
 </template>
@@ -106,9 +106,9 @@
     data() {
       return {
         // 画板className
-        className: 'raffle-wheel__canvas',
+        className: 'almost-lottery__canvas',
         // 画板标识
-        canvasId: 'raffleWheelCanvas',
+        canvasId: 'almostLotteryCanvas',
         // 画板导出的图片
         canvasImg: '',
         // 旋转到奖品目标需要的角度
@@ -336,7 +336,7 @@
       // 已知问题：初始绘制时，低端安卓机 平均耗时 2s
       getTextWidth() {
         return new Promise((resolve, reject) => {
-          uni.createSelectorQuery().in(this).select('.raffle-wheel__measureText').fields({
+          uni.createSelectorQuery().in(this).select('.almost-lottery__measureText').fields({
             size: true,
           }, (res) => {
             resolve(res.width)
@@ -365,10 +365,10 @@
 </script>
 
 <style lang="scss" scoped>
-  $actionBgUrl: '~static/raffle-wheel/raffle-wheel__action';
-  $raffleBgUrl: '~static/raffle-wheel/raffle-wheel__bg';
+  $actionBgUrl: '~static/almost-lottery/almost-lottery__action';
+  $raffleBgUrl: '~static/almost-lottery/almost-lottery__bg';
 
-  .raffle-wheel {
+  .almost-lottery {
     position: relative;
     left: 0;
     top: 0;
@@ -377,7 +377,7 @@
     align-items: center;
   }
 
-  .raffle-wheel {
+  .almost-lottery {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -397,7 +397,7 @@
     }
   }
 
-  .raffle-wheel__canvas {
+  .almost-lottery__canvas {
     position: absolute;
     left: -9999px;
     opacity: 0;
@@ -406,7 +406,7 @@
     align-items: center;
   }
 
-  .raffle-wheel__action {
+  .almost-lottery__action {
     position: absolute;
     top: calc(50% - 58px);
     left: calc(50% - 58px);
@@ -427,7 +427,7 @@
     }
   }
 
-  .raffle-wheel__measureText {
+  .almost-lottery__measureText {
     position: absolute;
     left: 0;
     top: 0;

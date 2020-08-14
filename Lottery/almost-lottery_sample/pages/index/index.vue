@@ -1,10 +1,10 @@
 <template>
   <view class="home">
     <view class="home-title">
-      <text class="home-title__text">raffle-wheel</text>
+      <text class="home-title__text">almost-lottery</text>
     </view>
     <view class="home-wheel">
-      <raffle-wheel
+      <almost-lottery
         ref="raffleWheel"
         :prizeList="prizeList"
         strKey="name"
@@ -17,7 +17,7 @@
         @done="handleDrawDone"
         v-if="prizeList.length"
       />
-      <text class="raffle-wheel__tip" v-else>奖品准备中...</text>
+      <text class="almost-lottery__tip" v-else>奖品准备中...</text>
     </view>
     <view class="home-result">
       <text class="home-result__text">{{ targetName }}</text>
@@ -29,11 +29,11 @@
 </template>
 
 <script>
-  import RaffleWheel from '@/components/raffle-wheel/raffle-wheel.vue'
+  import AlmostLottery from '@/components/almost-lottery/almost-lottery.vue'
   export default {
     name: 'Home',
     components: {
-      RaffleWheel
+      AlmostLottery
     },
     data () {
       return {
@@ -177,7 +177,7 @@
 </script>
 
 <style lang="scss" scoped>
-  $wheelBgUrl: '~static/raffle-wheel/raffle-wheel__bg';
+  $wheelBgUrl: '~static/almost-lottery/almost-lottery__bg';
   .home {
     padding: 50px 0;
   }
@@ -202,7 +202,7 @@
   .home-wheel {
     text-align: center;
   }
-  .raffle-wheel__tip {
+  .almost-lottery__tip {
     font-size: 24rpx;
   }
   .home-action {
