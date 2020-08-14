@@ -168,7 +168,7 @@
         // 转 8 圈，圈数越多，转的越快
         this.targetAngle += angles + 360 * this.ringCount
 
-        // 计算转盘结束对时间，预加一些延迟确保转盘停止后触发结束事件
+        // 计算转盘结束的时间，预加一些延迟确保转盘停止后触发结束事件
         let endTime = this.transitionDuration * 1000 + 100
         setTimeout(() => {
           this.isRotate = false
