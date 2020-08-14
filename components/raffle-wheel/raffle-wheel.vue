@@ -79,8 +79,8 @@
       },
       // 文字的大小
       fontSize: {
-        type: String,
-        default: '12px'
+        type: Number,
+        default: 12
       },
       // 奖品文字多行情况下的行高
       lineHeight: {
@@ -201,7 +201,7 @@
         // 设置字体和字号
         // #ifndef MP
         let fontFamily = '-apple-system, BlinkMacSystemFont, \'PingFang SC\', \'Helvetica Neue\', STHeiti, \'Microsoft Yahei\', Tahoma, Simsun, sans-serif'
-        ctx.font = `${this.fontSize} ${fontFamily}`
+        ctx.font = `${this.fontSize}px ${fontFamily}`
         // #endif
         // #ifdef MP
         ctx.setFontSize(this.fontSize)
