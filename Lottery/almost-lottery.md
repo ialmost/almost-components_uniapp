@@ -1,7 +1,7 @@
 # almost-lottery
-uni-app 使用的 Canvas 可配置抽奖转盘
+uni-app 使用的 Canvas 可配置抽奖转盘，支持APP、小程序、H5
 
-[uni-app 插件地址](https://ext.dcloud.net.cn/plugin?id=1030)
+[uni-app 插件市场](https://ext.dcloud.net.cn/plugin?id=1030)
 
 
 ## 使用说明
