@@ -5,16 +5,15 @@
     </view>
     <view class="home-wheel">
       <almost-lottery
-        ref="raffleWheel"
-        :prizeList="prizeList"
-        strKey="name"
-        :ringCount="2"
+        :ref="refName"
+        :prize-list="prizeList"
+        :ring-count="2"
         :duration="1"
         :canvas-width="canvasData.width"
         :canvas-height="canvasData.height"
-        @actionStart="handleActionStart"
-        @actionEnd="handleActionEnd"
-        @done="handleDrawDone"
+        @draw-start="handleDrawStart"
+        @draw-end="handleDrawEnd"
+        @finish="handleDrawFinish"
         v-if="prizeList.length"
       />
       <text class="almost-lottery__tip" v-else>奖品准备中...</text>
@@ -37,6 +36,8 @@
     },
     data () {
       return {
+        // 组件实例名称
+        refName: 'almostLottery',
         // canvas 宽高
         canvasData: {
           width: 240,
@@ -93,7 +94,7 @@
         }, 500)
       },
       // 本次抽奖开始
-      handleActionStart () {
+      handleDrawStart () {
         this.targetName = ''
         
         let list = [...this.prizeList]
@@ -147,18 +148,18 @@
           console.log('本次奖品库存 =>', this.prizeList[this.targetIndex].stock)
           
           // 开始执行旋转定位
-          this.$refs.raffleWheel.handleStartRotate(this.targetIndex)
+          this.$refs[this.refName].onRotateStart(this.targetIndex)
         }, 200)
       },
       // 本次抽奖结束
-      handleActionEnd () {
+      handleDrawEnd () {
         console.log('旋转结束，执行拿到结果后到逻辑')
         let prizeName = this.prizeList[this.targetIndex].name
         let prizeStock = this.prizeList[this.targetIndex].stock
         this.targetName = prizeName === '谢谢参与' ? prizeName : prizeStock ? `恭喜您，获得 ${prizeName}` : '很抱歉，您来晚了，当前奖品已无库存'
       },
       // 抽奖转盘绘制完成
-      handleDrawDone () {
+      handleDrawFinish () {
         console.log('抽奖转盘绘制完成')
         uni.hideLoading()
         uni.showToast({

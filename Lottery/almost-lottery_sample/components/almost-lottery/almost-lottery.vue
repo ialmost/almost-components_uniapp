@@ -20,7 +20,7 @@
          transitionDuration: `${transitionDuration}s`
        }"
         v-if="canvasImg"></image>
-      <view class="almost-lottery__action" @click="handleAction"></view>
+      <view class="almost-lottery__action" @click="handleActionStart"></view>
       <!-- 为了兼容 app 端 ctx.measureText 所需的标签 -->
       <text class="almost-lottery__measureText">{{ measureText }}</text>
     </view>
@@ -90,7 +90,7 @@
       // 奖品名称所对应的 key 值
       strKey: {
         type: String,
-        required: true
+        default: 'name'
       },
       // 奖品文字总长度限制
       strMaxLength: {
@@ -125,13 +125,13 @@
     },
     computed: {
       // 设备像素密度
-      pixelRatio() {
+      pixelRatio () {
         return uni.getSystemInfoSync().pixelRatio
       },
       // 根据奖品列表计算 canvas 旋转角度
       // 让 启动按钮指针 在奖品分区中间 position = 45
       // 让 启动按钮指针 在奖品分区边界 position = 90
-      canvasAngle() {
+      canvasAngle () {
         let prizeCount = this.prizeList.length
         let position = 90
         if (prizeCount % 4 !== 0) {
@@ -142,13 +142,13 @@
         }
       },
       // 根据画板的宽度计算奖品文字与中心点的距离
-      textRadius() {
+      textRadius () {
         return Math.round(this.canvasWidth / 2.4)
       }
     },
     methods: {
       // 开始旋转
-      handleStartRotate(targetIndex) {
+      onRotateStart (targetIndex) {
         // 奖品总数
         let prizeCount = this.prizeList.length
         let baseAngle = 360 / prizeCount
@@ -168,21 +168,21 @@
         // 转 8 圈，圈数越多，转的越快
         this.targetAngle += angles + 360 * this.ringCount
 
-        // 计算转盘结束对时间，预加一些延迟确保转盘停止后触发结束事件
+        // 计算转盘结束的时间，预加一些延迟确保转盘停止后触发结束事件
         let endTime = this.transitionDuration * 1000 + 100
         setTimeout(() => {
           this.isRotate = false
-          this.$emit('actionEnd')
+          this.$emit('draw-end')
         }, endTime)
       },
       // 点击 开始抽奖 按钮
-      handleAction() {
+      handleActionStart () {
         if (this.isRotate) return
         this.isRotate = true
-        this.$emit('actionStart')
+        this.$emit('draw-start')
       },
       // 渲染转盘
-      async drawWheelCanvas() {
+      async onCreateCanvas () {
         // 获取 canvas 画布
         const canvasId = this.canvasId
         const ctx = uni.createCanvasContext(canvasId, this)
@@ -311,7 +311,7 @@
                 // console.log(res.filePath)
                 this.canvasImg = res.filePath
                 // 通知父级组件，抽奖转品生成图片完成
-                this.$emit('done')
+                this.$emit('finish')
               }
             })
             // #endif
@@ -325,7 +325,7 @@
                 // console.log(res.tempFilePath)
                 this.canvasImg = res.tempFilePath
                 // 通知父级组件，抽奖转品生成图片完成
-                this.$emit('done')
+                this.$emit('finish')
               }
             }, this)
             // #endif
@@ -334,7 +334,7 @@
       },
       // 兼容 app 端不支持 ctx.measureText
       // 已知问题：初始绘制时，低端安卓机 平均耗时 2s
-      getTextWidth() {
+      getTextWidth () {
         return new Promise((resolve, reject) => {
           uni.createSelectorQuery().in(this).select('.almost-lottery__measureText').fields({
             size: true,
@@ -344,19 +344,19 @@
         })
       },
       // 处理文字溢出
-      strLimit(value) {
+      strLimit (value) {
         let maxLength = this.strMaxLength
         if (!value || !maxLength) return value
         return value.length > maxLength ? value.slice(0, maxLength - 1) + '...' : value
       }
     },
-    mounted() {
+    mounted () {
       this.$nextTick(() => {
         let stoTimer = setTimeout(() => {
           clearTimeout(stoTimer)
           stoTimer = null
           
-          this.drawWheelCanvas()
+          this.onCreateCanvas()
           this.transitionDuration = this.duration
         }, 50)
       })
