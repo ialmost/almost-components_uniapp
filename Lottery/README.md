@@ -13,38 +13,36 @@ Canvas 抽奖转盘，支持APP、小程序、H5
 
 ### 引入
 ```
-<template>
-  <almost-lottery :ref="refName" :prize-list="prizeList" />
-</template>
+// template
+<almost-lottery :ref="refName" :prize-list="prizeList" />
 
-<script>
-  import AlmostLottery from '@/components/almost-lottery/almost-lottery.vue'
-  export default {
-    components: {
-      AlmostLottery
-    },
-    data () {
-      return {
-        // 组件实例名称
-        refName: 'almostLottery',
-        // 奖品数据
-        prizeList: [
-          { prizeId: 1, name: '0.1元现金' },
-          { prizeId: 2, name: '10元现金' },
-          { prizeId: 3, name: '5元话费' },
-          { prizeId: 4, name: '50元现金' },
-          { prizeId: 5, name: '1卷抽纸' },
-          { prizeId: 6, name: '0.02元现金' },
-          { prizeId: 7, name: '谢谢参与' },
-          { prizeId: 8, name: '100金币' }
-        ]
-      }
-    },
-    methods: {
-      // 请直接下载示例项目查看
+// script
+import AlmostLottery from '@/components/almost-lottery/almost-lottery.vue'
+export default {
+  components: {
+    AlmostLottery
+  },
+  data () {
+    return {
+      // 组件实例名称
+      refName: 'almostLottery',
+      // 奖品数据
+      prizeList: [
+        { prizeId: 1, name: '0.1元现金' },
+        { prizeId: 2, name: '10元现金' },
+        { prizeId: 3, name: '5元话费' },
+        { prizeId: 4, name: '50元现金' },
+        { prizeId: 5, name: '1卷抽纸' },
+        { prizeId: 6, name: '0.02元现金' },
+        { prizeId: 7, name: '谢谢参与' },
+        { prizeId: 8, name: '100金币' }
+      ]
     }
+  },
+  methods: {
+    // 请直接下载示例项目查看
   }
-</script>
+}
 ```
 
 ### API
