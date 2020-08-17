@@ -388,7 +388,6 @@
           
           this.onCreateCanvas()
           this.transitionDuration = this.duration
-          console.log(this.canvasAngle)
         }, 50)
       })
     }
