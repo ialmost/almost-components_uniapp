@@ -14,7 +14,12 @@ Canvas 抽奖转盘，支持APP、小程序、H5
 ### 引入
 ```
 // template
-<almost-lottery :prize-list="prizeList" :prize-index="prizeIndex" @draw-start="handleDrawStart" v-if="prizeList.length" />
+<almost-lottery
+  :prize-list="prizeList"
+  :prize-index="prizeIndex"
+  @draw-start="handleDrawStart"
+  v-if="prizeList.length"
+/>
 
 // script
 import AlmostLottery from '@/components/almost-lottery/almost-lottery.vue'
