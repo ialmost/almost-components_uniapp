@@ -11,6 +11,7 @@
         :duration="1"
         :canvas-width="canvasData.width"
         :canvas-height="canvasData.height"
+        :prize-index="prizeIndex"
         @draw-start="handleDrawStart"
         @draw-end="handleDrawEnd"
         @finish="handleDrawFinish"
@@ -46,7 +47,7 @@
         // 奖品数据
         prizeList: [],
         // 中奖下标
-        targetIndex: 0,
+        prizeIndex: -1,
         // 中奖类目名称
         targetName: '',
         // 是否由前端控制概率
@@ -127,11 +128,11 @@
             // 反之新建一个临时的包含所有权重的已排序数组，然后取值
             if (tempMaxArrs.length) {
               tempMaxArrs.sort((a, b) => a - b)
-              this.targetIndex = this.weightArr.indexOf(tempMaxArrs[0])
+              this.prizeIndex = this.weightArr.indexOf(tempMaxArrs[0])
             } else {
               let tempWeightArr = [...this.weightArr]
               tempWeightArr.sort((a, b) => a - b)
-              this.targetIndex = this.weightArr.indexOf(tempWeightArr[tempWeightArr.length - 1])
+              this.prizeIndex = this.weightArr.indexOf(tempWeightArr[tempWeightArr.length - 1])
             }
           } else {
             // 这里随机产生的 prizeId 是模拟后端返回的 prizeId
@@ -139,23 +140,20 @@
             list.forEach((item, index) => {
               if (item.prizeId === prizeId) {
                 // 中奖下标
-                this.targetIndex = index
+                this.prizeIndex = index
               }
             })
           }
           
-          console.log('本次抽中奖品 =>', this.prizeList[this.targetIndex].name)
-          console.log('本次奖品库存 =>', this.prizeList[this.targetIndex].stock)
-          
-          // 开始执行旋转定位
-          this.$refs[this.refName].onRotateStart(this.targetIndex)
+          console.log('本次抽中奖品 =>', this.prizeList[this.prizeIndex].name)
+          console.log('本次奖品库存 =>', this.prizeList[this.prizeIndex].stock)
         }, 200)
       },
       // 本次抽奖结束
       handleDrawEnd () {
-        console.log('旋转结束，执行拿到结果后到逻辑')
-        let prizeName = this.prizeList[this.targetIndex].name
-        let prizeStock = this.prizeList[this.targetIndex].stock
+        // 旋转结束后，可以执行拿到结果后的逻辑
+        let prizeName = this.prizeList[this.prizeIndex].name
+        let prizeStock = this.prizeList[this.prizeIndex].stock
         this.targetName = prizeName === '谢谢参与' ? prizeName : prizeStock ? `恭喜您，获得 ${prizeName}` : '很抱歉，您来晚了，当前奖品已无库存'
       },
       // 抽奖转盘绘制完成

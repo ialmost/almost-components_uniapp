@@ -50,6 +50,11 @@
         },
         required: true
       },
+      // 中奖奖品在列表中的下标
+      prizeIndex: {
+        type: Number,
+        required: true
+      },
       // 奖品区块对应背景颜色
       colors: {
         type: Array,
@@ -93,12 +98,12 @@
         default: 'name'
       },
       // 奖品文字总长度限制
-      strMaxLength: {
+      strMaxLen: {
         type: Number,
         default: 12
       },
       // 奖品文字多行情况下第一行文字长度
-      strLineLength: {
+      strLineLen: {
         type: Number,
         default: 6
       }
@@ -119,6 +124,8 @@
         isRotate: false,
         // 当前停留在那个奖品的序号
         stayIndex: 0,
+        // 当前中奖奖品的序号
+        targetIndex: 0,
         // 解决 app 不支持 measureText 的问题
         measureText: ''
       }
@@ -146,34 +153,56 @@
         return Math.round(this.canvasWidth / 2.4)
       }
     },
+    watch: {
+      // 监听获奖序号的变动
+      prizeIndex (newVal, oldVal) {
+        if (newVal > -1) {
+          this.targetIndex = newVal
+          this.onRotateStart()
+        } else {
+          console.info('旋转结束，prizeIndex 已重置')
+        }
+      }
+    },
     methods: {
       // 开始旋转
-      onRotateStart (targetIndex) {
+      onRotateStart () {
         // 奖品总数
         let prizeCount = this.prizeList.length
         let baseAngle = 360 / prizeCount
         let angles = 0
         if (this.targetAngle === 0) {
-          console.log('第一次旋转')
+          // 第一次旋转
           // 因为第一个奖品是从0°开始的，即水平向右方向
           // 第一次旋转角度 = 270度 - (停留的序号-目标序号) * 每个奖品区间角度 - 每个奖品区间角度的一半 - canvas自身旋转的度数
-          angles = (270 - (targetIndex - this.stayIndex) * baseAngle - baseAngle / 2) - this.canvasAngle
+          angles = (270 - (this.targetIndex - this.stayIndex) * baseAngle - baseAngle / 2) - this.canvasAngle
         } else {
-          console.log('后续旋转')
+          // 后续旋转
           // 后续继续旋转 就只需要计算停留的位置与目标位置的角度
-          angles = -(targetIndex - this.stayIndex) * baseAngle
+          angles = -(this.targetIndex - this.stayIndex) * baseAngle
         }
         // 更新目前序号
-        this.stayIndex = targetIndex
+        this.stayIndex = this.targetIndex
         // 转 8 圈，圈数越多，转的越快
         this.targetAngle += angles + 360 * this.ringCount
 
         // 计算转盘结束的时间，预加一些延迟确保转盘停止后触发结束事件
         let endTime = this.transitionDuration * 1000 + 100
-        setTimeout(() => {
+        let endTimer = setTimeout(() => {
+          clearTimeout(endTimer)
+          endTimer = null
+          
           this.isRotate = false
           this.$emit('draw-end')
         }, endTime)
+        
+        let resetPrizeTimer = setTimeout(() => {
+          clearTimeout(resetPrizeTimer)
+          resetPrizeTimer = null
+          
+          // 每次抽奖结束后都要重置父级附件的 prizeIndex
+          this.$parent.prizeIndex = -1
+        }, endTime + 50)
       },
       // 点击 开始抽奖 按钮
       handleActionStart () {
@@ -253,10 +282,10 @@
           // 设置文本位置并处理换行
 
           // 是否需要换行
-          let isLineBreak = rewardName.length > this.strLineLength
+          let isLineBreak = rewardName.length > this.strLineLen
           if (isLineBreak) {
             // 获得多行文本数组
-            rewardName = rewardName.substring(0, this.strLineLength) + ',' + rewardName.substring(this.strLineLength)
+            rewardName = rewardName.substring(0, this.strLineLen) + ',' + rewardName.substring(this.strLineLen)
             let rewardNames = rewardName.split(',')
 
             // 循环文本数组，计算每一行的文本宽度
@@ -329,7 +358,7 @@
               }
             }, this)
             // #endif
-          }, 20)
+          }, 50)
         })
       },
       // 兼容 app 端不支持 ctx.measureText
@@ -345,7 +374,7 @@
       },
       // 处理文字溢出
       strLimit (value) {
-        let maxLength = this.strMaxLength
+        let maxLength = this.strMaxLen
         if (!value || !maxLength) return value
         return value.length > maxLength ? value.slice(0, maxLength - 1) + '...' : value
       }

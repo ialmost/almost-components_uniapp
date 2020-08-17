@@ -14,7 +14,7 @@ Canvas 抽奖转盘，支持APP、小程序、H5
 ### 引入
 ```
 // template
-<almost-lottery :ref="refName" :prize-list="prizeList" />
+<almost-lottery :prize-list="prizeList" :prize-index="prizeIndex" @draw-start="handleDrawStart" v-if="prizeList.length" />
 
 // script
 import AlmostLottery from '@/components/almost-lottery/almost-lottery.vue'
@@ -24,8 +24,8 @@ export default {
   },
   data () {
     return {
-      // 组件实例名称
-      refName: 'almostLottery',
+      // 获奖奖品序号，每次抽奖结束后会自动重置为 -1
+      prizeIndex: -1,
       // 奖品数据
       prizeList: [
         { prizeId: 1, name: '0.1元现金' },
@@ -40,7 +40,11 @@ export default {
     }
   },
   methods: {
-    // 请直接下载示例项目查看
+    // 本次抽奖开始
+    handleDrawStart () {
+      // 这里需要处理你的中奖逻辑，并得出 prizeIndex
+      // 可查看示例项目中的代码
+    }
   }
 }
 ```
@@ -49,19 +53,19 @@ export default {
 #### Props
 参数 | 说明 | 类型 | 默认值
 :---|:---|:---|:---
-ref | 抽奖组件实例的名称，对应 `data` 中的 `refName` | *`String`* | -
 canvas-width | Canvas 的宽度 | *`Number`* | `240`
 canvas-height | Canvas 的高度 | *`Number`* | `240`
-prize-list | 奖品数据，**数组长度必须是偶数** | *`Array`* | -
+prize-list | 奖品列表，**数组长度必须是偶数** | *`Array`* | -
+prize-index | 获奖奖品在奖品列表中的序号，每次抽奖结束后会自动重置为 `-1` | *`Number`* | `-1`
 colors | 奖品区块对应的背景颜色，**仅支持 2 个颜色相互交替** | *`Array`* | `['#FFFFFF', '#FFE9AA']`
 duration | 转盘旋转的动画时长，单位：秒 | *`Number`* | `8`
 ring-count | 旋转的圈数 | *`Number`* | `8`
-font-color | 奖品文字的颜色 | *`String`* | `#C30B29`
-font-size | 奖品文字的字号 | *`Number`* | `12`
-line-height | 奖品文字多行情况下的行高 | *`Number`* | `20`
+font-color | 奖品名称的颜色 | *`String`* | `#C30B29`
+font-size | 奖品名称的字号 | *`Number`* | `12`
+line-height | 奖品名称多行情况下的行高 | *`Number`* | `20`
 str-key | 奖品名称所对应的 `key` ，比如 `{ name: "almost-lottery" }`，`strKey` 就是 `name` | *`String`* | `name`
-strMaxLength | 奖品文字总长度限制 | *`Number`* | `12`
-strLineLength | 奖品文字在多行情况下第一行文字的长度 | *`Number`* | `6`
+str-max-len | 奖品名称长度限制 | *`Number`* | `12`
+str-line-len | 奖品名称在多行情况下第一行文字的长度 | *`Number`* | `6`
 
 #### Events
 事件名 | 说明 | 回调参数
