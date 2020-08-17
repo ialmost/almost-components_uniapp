@@ -5,7 +5,6 @@
     </view>
     <view class="home-wheel">
       <almost-lottery
-        :ref="refName"
         :prize-list="prizeList"
         :ring-count="2"
         :duration="1"
@@ -37,8 +36,6 @@
     },
     data () {
       return {
-        // 组件实例名称
-        refName: 'almostLottery',
         // canvas 宽高
         canvasData: {
           width: 240,

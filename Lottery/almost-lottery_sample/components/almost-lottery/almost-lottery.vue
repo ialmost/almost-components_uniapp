@@ -44,10 +44,6 @@
       // 奖品列表
       prizeList: {
         type: Array,
-        // 必须是偶数
-        validator: function(value) {
-          return value.length % 2 === 0
-        },
         required: true
       },
       // 中奖奖品在列表中的下标
@@ -61,11 +57,7 @@
         default: () => [
           '#FFFFFF',
           '#FFE9AA'
-        ],
-        // 必须是偶数且仅为 2 个颜色相互交替
-        validator: function(value) {
-          return value.length === 2
-        }
+        ]
       },
       // 旋转动画时间 单位s
       duration: {
@@ -142,7 +134,11 @@
         let prizeCount = this.prizeList.length
         let position = 90
         if (prizeCount % 4 !== 0) {
-          return 0
+          if ( prizeCount % 2 === 0) {
+            return 0
+          } else {
+            return 360 / prizeCount - 90
+          }
         } else {
           let num = prizeCount / 4
           return num % 2 === 0 ? position / num : position
@@ -263,7 +259,11 @@
           // 开始链接线条
           ctx.stroke()
           // 每个奖品区块背景填充颜色
-          ctx.setFillStyle(this.colors[i % 2])
+          if (this.colors.length === 2) {
+            ctx.setFillStyle(this.colors[i % 2])
+          } else {
+            ctx.setFillStyle(this.colors[i])
+          }
           // 填充颜色
           ctx.fill()
 
@@ -338,9 +338,7 @@
               destHeight: this.canvasHeight * this.pixelRatio,
               success: (res) => {
                 // console.log(res.filePath)
-                this.canvasImg = res.filePath
-                // 通知父级组件，抽奖转品生成图片完成
-                this.$emit('finish')
+                this.handlePrizeImg(res.filePath)
               }
             })
             // #endif
@@ -352,14 +350,17 @@
               success: (res) => {
                 // 在 H5 平台下，tempFilePath 为 base64
                 // console.log(res.tempFilePath)
-                this.canvasImg = res.tempFilePath
-                // 通知父级组件，抽奖转品生成图片完成
-                this.$emit('finish')
+                this.handlePrizeImg(res.tempFilePath)
               }
             }, this)
             // #endif
           }, 50)
         })
+      },
+      // 处理导出的图片
+      handlePrizeImg (imgPath) {
+        this.canvasImg = imgPath
+        this.$emit('finish')
       },
       // 兼容 app 端不支持 ctx.measureText
       // 已知问题：初始绘制时，低端安卓机 平均耗时 2s
@@ -387,6 +388,7 @@
           
           this.onCreateCanvas()
           this.transitionDuration = this.duration
+          console.log(this.canvasAngle)
         }, 50)
       })
     }

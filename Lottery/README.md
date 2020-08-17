@@ -60,9 +60,9 @@ export default {
 :---|:---|:---|:---
 canvas-width | Canvas 的宽度 | *`Number`* | `240`
 canvas-height | Canvas 的高度 | *`Number`* | `240`
-prize-list | 奖品列表，**数组长度必须是偶数** | *`Array`* | -
-prize-index | 获奖奖品在奖品列表中的序号，每次抽奖结束后会自动重置为 `-1` | *`Number`* | `-1`
-colors | 奖品区块对应的背景颜色，**仅支持 2 个颜色相互交替** | *`Array`* | `['#FFFFFF', '#FFE9AA']`
+prize-index | 获奖奖品在奖品列表中的序号，**每次抽奖结束后会自动重置为 `-1`** | *`Number`* | `-1`
+prize-list | 奖品列表，支持奇数（尽量能被 `360` 除尽），**为奇数时需要重设 `colors` 参数** | *`Array`* | -
+colors | 奖品区块对应的背景颜色，默认 2 个颜色相互交替，**也可以对每个区块设置不同颜色** | *`Array`* | `['#FFFFFF', '#FFE9AA']`
 duration | 转盘旋转的动画时长，单位：秒 | *`Number`* | `8`
 ring-count | 旋转的圈数 | *`Number`* | `8`
 font-color | 奖品名称的颜色 | *`String`* | `#C30B29`
