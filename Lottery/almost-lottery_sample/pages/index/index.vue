@@ -11,6 +11,7 @@
         :canvas-width="canvasData.width"
         :canvas-height="canvasData.height"
         :prize-index="prizeIndex"
+        @reset-index="prizeIndex = -1"
         @draw-start="handleDrawStart"
         @draw-end="handleDrawEnd"
         @finish="handleDrawFinish"

@@ -11,12 +11,15 @@ Canvas 抽奖转盘，支持APP、小程序、H5
 
 - 关于中奖概率的业务逻辑在示例项目的pages/index/index.vue文件中，仅供参考
 
+- `@reset-index="prizeIndex = -1"`必须默认写入到 `template` 中，不可删除
+
 ### 引入
 ```
 // template
 <almost-lottery
   :prize-list="prizeList"
   :prize-index="prizeIndex"
+  @reset-index="prizeIndex = -1"
   @draw-start="handleDrawStart"
   v-if="prizeList.length"
 />
@@ -29,7 +32,7 @@ export default {
   },
   data () {
     return {
-      // 获奖奖品序号，每次抽奖结束后会自动重置为 -1
+      // 获奖奖品序号，每次抽奖结束后需要重置为 -1
       prizeIndex: -1,
       // 奖品数据
       prizeList: [
@@ -75,6 +78,7 @@ str-line-len | 奖品名称在多行情况下第一行文字的长度 | *`Number
 #### Events
 事件名 | 说明 | 回调参数
 :---|:---|:---
+reset-index | 每次抽奖结束后重置获奖的序号为 `-1`，**该事件必须默认写入到 `template` 中，不可删除** | -
 draw-start | 转盘旋转开始时触发 | -
 draw-end | 转盘旋转结束时触发 | -
 finish | Canvas转盘绘制完成时触发 | -

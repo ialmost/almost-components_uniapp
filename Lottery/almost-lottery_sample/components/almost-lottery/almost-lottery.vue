@@ -29,7 +29,7 @@
 
 <script>
   export default {
-    name: 'RaffleWheel',
+    name: 'AlmostLottery',
     props: {
       // canvas 宽度
       canvasWidth: {
@@ -197,7 +197,7 @@
           resetPrizeTimer = null
           
           // 每次抽奖结束后都要重置父级附件的 prizeIndex
-          this.$parent.prizeIndex = -1
+          this.$emit('reset-index')
         }, endTime + 50)
       },
       // 点击 开始抽奖 按钮
@@ -396,7 +396,7 @@
 
 <style lang="scss" scoped>
   $actionBgUrl: '~static/almost-lottery/almost-lottery__action';
-  $raffleBgUrl: '~static/almost-lottery/almost-lottery__bg';
+  $lotteryBgUrl: '~static/almost-lottery/almost-lottery__bg';
 
   .almost-lottery {
     position: relative;
@@ -415,15 +415,15 @@
     background-repeat: no-repeat;
     background-position: center center;
     background-size: contain;
-    background-image: url($raffleBgUrl + ".png");
+    background-image: url($lotteryBgUrl + ".png");
 
     @media (-webkit-min-device-pixel-ratio: 2), (min-device-pixel-ratio: 2) {
-      background-image: url($raffleBgUrl + "@2x.png");
+      background-image: url($lotteryBgUrl + "@2x.png");
     }
 
     @media (-webkit-min-device-pixel-ratio: 3),
     (min-device-pixel-ratio: 3) {
-      background-image: url($raffleBgUrl + "@3x.png");
+      background-image: url($lotteryBgUrl + "@3x.png");
     }
   }
 
