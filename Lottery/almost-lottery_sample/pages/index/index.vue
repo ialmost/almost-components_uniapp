@@ -75,12 +75,12 @@
           // stock 奖品库存
           // weight 中奖概率，数值越大中奖概率越高
           this.prizeList = [
-            { prizeId: 1, name: '0.1元现金', stock: 10, weight: 1 },
+            { prizeId: 1, name: '0.1元现金', stock: 10, weight: 1, imgSrc: '/static/lottery-prize/git.png' },
             { prizeId: 2, name: '10元现金', stock: 0, weight: 0 },
             { prizeId: 3, name: '5元话费', stock: 1, weight: 0 },
             { prizeId: 4, name: '50元现金', stock: 0, weight: 0 },
             { prizeId: 5, name: '1卷抽纸', stock: 3, weight: 3 },
-            { prizeId: 6, name: '0.02元现金', stock: 8, weight: 2 },
+            { prizeId: 6, name: '0.2元现金', stock: 8, weight: 2 },
             { prizeId: 7, name: '谢谢参与', stock: 100, weight: 10000 },
             { prizeId: 8, name: '100金币', stock: 100, weight: 1000 }
           ]

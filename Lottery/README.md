@@ -3,15 +3,27 @@ Canvas 抽奖转盘，支持APP、小程序、H5
 [uni-app 插件市场](https://ext.dcloud.net.cn/plugin?id=1030)
 
 
+### 功能支持情况
+- [x] 可配置奖品文字
+- [x] 可配置每个奖品区块的背景颜色
+- [x] 可配置本地奖品图片，*不支持远程图片*
+- [x] 奖品列表支持奇数，*奇数时需尽量能被 `360` 除尽*
+- [x] 组件内 `SCSS` 样式中可替换转盘的外环背景图及点击抽奖按钮图，分别是 `$lotteryBgUrl` 和 `$actionBgUrl`，*如需替换，需要适配高清设备*
+- [x] 可配置中奖概率，**请下载示例项目并查看 `index.vue` 文件**
+
+
 ## 注意事项
 
 - 编译到小程序端时，请务必勾选ES6转ES5
+
+- `@reset-index="prizeIndex = -1"` 必须默认写入到 `template` 中，不可删除
+
+- 奖品图片仅支持配置本地图片，远程图片会存在跨域、需提前下载等问题，且小程序端还需要配置白名单，为了各端统一，所以暂时不支持远程图片
 
 - 抽奖组件本身不会涉及任何业务逻辑
 
 - 关于中奖概率的业务逻辑在示例项目的pages/index/index.vue文件中，仅供参考
 
-- `@reset-index="prizeIndex = -1"`必须默认写入到 `template` 中，不可删除
 
 ### 引入
 ```
@@ -36,14 +48,14 @@ export default {
       prizeIndex: -1,
       // 奖品数据
       prizeList: [
-        { prizeId: 1, name: '0.1元现金' },
-        { prizeId: 2, name: '10元现金' },
-        { prizeId: 3, name: '5元话费' },
-        { prizeId: 4, name: '50元现金' },
-        { prizeId: 5, name: '1卷抽纸' },
-        { prizeId: 6, name: '0.02元现金' },
-        { prizeId: 7, name: '谢谢参与' },
-        { prizeId: 8, name: '100金币' }
+        { prizeId: 1, name: '0.1元现金', stock: 10, weight: 1, imgSrc: '/static/lottery-prize/git.png' },
+        { prizeId: 2, name: '10元现金', stock: 0, weight: 0 },
+        { prizeId: 3, name: '5元话费', stock: 1, weight: 0 },
+        { prizeId: 4, name: '50元现金', stock: 0, weight: 0 },
+        { prizeId: 5, name: '1卷抽纸', stock: 3, weight: 3 },
+        { prizeId: 6, name: '0.20元现金', stock: 8, weight: 2 },
+        { prizeId: 7, name: '谢谢参与', stock: 100, weight: 10000 },
+        { prizeId: 8, name: '100金币', stock: 100, weight: 1000 }
       ]
     }
   },
@@ -70,7 +82,7 @@ duration | 转盘旋转的动画时长，单位：秒 | *`Number`* | `8`
 ring-count | 旋转的圈数 | *`Number`* | `8`
 font-color | 奖品名称的颜色 | *`String`* | `#C30B29`
 font-size | 奖品名称的字号 | *`Number`* | `12`
-line-height | 奖品名称多行情况下的行高 | *`Number`* | `20`
+line-height | 奖品名称多行情况下的行高 | *`Number`* | `16`
 str-key | 奖品名称所对应的 `key` ，比如 `{ name: "almost-lottery" }`，`strKey` 就是 `name` | *`String`* | `name`
 str-max-len | 奖品名称长度限制 | *`Number`* | `12`
 str-line-len | 奖品名称在多行情况下第一行文字的长度 | *`Number`* | `6`

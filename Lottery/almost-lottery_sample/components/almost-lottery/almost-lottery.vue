@@ -82,7 +82,7 @@
       // 奖品文字多行情况下的行高
       lineHeight: {
         type: Number,
-        default: 20
+        default: 16
       },
       // 奖品名称所对应的 key 值
       strKey: {
@@ -268,19 +268,19 @@
           ctx.fill()
 
           // 开始绘制奖品内容
-          ctx.setFillStyle(this.fontColor)
-          let rewardName = this.strLimit(this.prizeList[i][this.strKey])
-
-          // translate方法重新映射画布上的 (0,0) 位置
+          // 重新映射画布上的 (0,0) 位置
           let translateX = canvasW * 0.5 + Math.cos(angle + baseAngle / 2) * this.textRadius
           let translateY = canvasH * 0.5 + Math.sin(angle + baseAngle / 2) * this.textRadius
           ctx.translate(translateX, translateY)
+          
+          // 绘制奖品名称
+          ctx.setFillStyle(this.fontColor)
+          let rewardName = this.strLimit(this.prizeList[i][this.strKey])
 
           // rotate方法旋转当前的绘图，因为文字是和当前扇形中心线垂直的
           ctx.rotate(angle + (baseAngle / 2) + (Math.PI / 2))
 
           // 设置文本位置并处理换行
-
           // 是否需要换行
           let isLineBreak = rewardName.length > this.strLineLen
           if (isLineBreak) {
@@ -322,6 +322,11 @@
               ctx.fillText(rewardName, -textWidth / 2, 0)
             }
           }
+          
+          // 绘制奖品图片
+          if (this.prizeList[i].imgSrc) {
+            ctx.drawImage(this.prizeList[i].imgSrc, -12, canvasW / 10, 25, 25)
+          }
 
           ctx.restore()
         }
@@ -333,13 +338,23 @@
             drawTimer = null
             
             // #ifdef MP-ALIPAY
-            ctx.toTempFilePath({
+            // 支付宝小程序的 ctx.toTempFilePath 在模拟器正常，但是真机预览有问题，改用 ctx.toDataURL
+            // ctx.toTempFilePath({
+            //   destWidth: this.canvasWidth * this.pixelRatio,
+            //   destHeight: this.canvasHeight * this.pixelRatio,
+            //   success: (res) => {
+            //     // console.log(res.filePath)
+            //     this.handlePrizeImg(res.filePath)
+            //   }
+            // })
+            ctx.toDataURL({
+              width: this.canvasWidth,
+              height: this.canvasWidth,
               destWidth: this.canvasWidth * this.pixelRatio,
               destHeight: this.canvasHeight * this.pixelRatio,
-              success: (res) => {
-                // console.log(res.filePath)
-                this.handlePrizeImg(res.filePath)
-              }
+            }).then((dataURL) => {
+              // console.log(dataURL)
+              this.handlePrizeImg(dataURL)
             })
             // #endif
             // #ifndef MP-ALIPAY
@@ -354,7 +369,7 @@
               }
             }, this)
             // #endif
-          }, 50)
+          }, 500)
         })
       },
       // 处理导出的图片
@@ -395,8 +410,8 @@
 </script>
 
 <style lang="scss" scoped>
-  $actionBgUrl: '~static/almost-lottery/almost-lottery__action';
   $lotteryBgUrl: '~static/almost-lottery/almost-lottery__bg';
+  $actionBgUrl: '~static/almost-lottery/almost-lottery__action';
 
   .almost-lottery {
     position: relative;
@@ -418,12 +433,12 @@
     background-image: url($lotteryBgUrl + ".png");
 
     @media (-webkit-min-device-pixel-ratio: 2), (min-device-pixel-ratio: 2) {
-      background-image: url($lotteryBgUrl + "@2x.png");
+      background-image: url($lotteryBgUrl + "2x.png");
     }
 
     @media (-webkit-min-device-pixel-ratio: 3),
     (min-device-pixel-ratio: 3) {
-      background-image: url($lotteryBgUrl + "@3x.png");
+      background-image: url($lotteryBgUrl + "3x.png");
     }
   }
 
@@ -438,7 +453,7 @@
 
   .almost-lottery__action {
     position: absolute;
-    top: calc(50% - 58px);
+    top: calc(50% - 62px);
     left: calc(50% - 58px);
     width: 114px;
     height: 114px;
@@ -448,12 +463,12 @@
     background-image: url($actionBgUrl + ".png");
 
     @media (-webkit-min-device-pixel-ratio: 2), (min-device-pixel-ratio: 2) {
-      background-image: url($actionBgUrl + "@2x.png");
+      background-image: url($actionBgUrl + "2x.png");
     }
 
     @media (-webkit-min-device-pixel-ratio: 3),
     (min-device-pixel-ratio: 3) {
-      background-image: url($actionBgUrl + "@3x.png");
+      background-image: url($actionBgUrl + "3x.png");
     }
   }
 
