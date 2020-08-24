@@ -1,6 +1,12 @@
 # almost-lottery
 Canvas 抽奖转盘，支持APP、小程序、H5
-[uni-app 插件市场](https://ext.dcloud.net.cn/plugin?id=1030)
+
+> **前方高能预警**
+> 
+> 如果用着还行，要不就勉为其难的支持一下？感谢咯！
+> - 前往 [GitHub](https://github.com/ialmost/almost-components_uniapp) 给个 Star
+> - 前往 [UniApp](https://ext.dcloud.net.cn/plugin?id=1030) 给个五星好评
+> - 如果大佬愿意赞赏个茶水钱也是极好的
 
 
 ### 功能支持情况
