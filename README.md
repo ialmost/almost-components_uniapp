@@ -8,5 +8,6 @@
 > 如果用着还行，要不就勉为其难给个 Star 支持一下？感谢咯！
 
 ## 组件列表
-- [Canvas 抽奖转盘](https://github.com/ialmost/almost-components_uniapp/tree/dev/Lottery) - 支持APP、小程序、H5
-
+组件名 | 说明 | 平台兼容 | 页面兼容
+:---|:---|:---|:---
+[almost-lottery](/Lottery) | 使用 Canvas 绘制的抽奖转盘 | APP、小程序、H5 | vue
