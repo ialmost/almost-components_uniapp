@@ -6,10 +6,7 @@
 
 > <br />
 > 
-> 如果用着还行，请支持一下
-> - 前往 [GitHub](https://github.com/ialmost/almost-components_uniapp) 给个 Star
-> - 前往 [UniApp](https://ext.dcloud.net.cn/plugin?id=1030) 给个五星
-> 
+> 如果用着还行，给个 Star 支持一下
 > <br />
 
 
