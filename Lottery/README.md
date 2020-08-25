@@ -1,15 +1,21 @@
 # almost-lottery
-Canvas 抽奖转盘，支持APP、小程序、H5
+*使用 Canvas 绘制的抽奖转盘*
 
-> **前方高能预警**
+> <br />
 > 
-> 如果用着还行，要不就勉为其难的支持一下？感谢咯！
+> 如果用着还行，请支持一下
 > - 前往 [GitHub](https://github.com/ialmost/almost-components_uniapp) 给个 Star
-> - 前往 [UniApp](https://ext.dcloud.net.cn/plugin?id=1030) 给个五星好评
-> - 如果大佬愿意赞赏个茶水钱也是极好的
+> - 前往 [UniApp](https://ext.dcloud.net.cn/plugin?id=1030) 给个五星
+> <br />
+> 
+
+## 兼容情况
+平台兼容 | 页面兼容
+:---|:---
+APP、小程序、H5 | vue
 
 
-### 功能支持情况
+## 功能概要
 - [x] 可配置奖品文字
 - [x] 可配置每个奖品区块的背景颜色
 - [x] 可配置本地奖品图片，*不支持远程图片*
@@ -31,7 +37,7 @@ Canvas 抽奖转盘，支持APP、小程序、H5
 - 关于中奖概率的业务逻辑在示例项目的 `pages/index/index.vue` 文件中，仅供参考
 
 
-### 引入
+## 引入
 ```
 // template
 <almost-lottery
@@ -75,7 +81,7 @@ export default {
 }
 ```
 
-### API
+## API
 #### Props
 参数 | 说明 | 类型 | 默认值
 :---|:---|:---|:---
