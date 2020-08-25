@@ -9,8 +9,9 @@
 > 如果用着还行，请支持一下
 > - 前往 [GitHub](https://github.com/ialmost/almost-components_uniapp) 给个 Star
 > - 前往 [UniApp](https://ext.dcloud.net.cn/plugin?id=1030) 给个五星
-> <br />
 > 
+> <br />
+
 
 ## 组件列表
 组件名 | 说明 | 平台兼容 | 页面兼容

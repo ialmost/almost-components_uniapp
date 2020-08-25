@@ -1,13 +1,15 @@
 # almost-lottery
 *使用 Canvas 绘制的抽奖转盘*
 
+
 > <br />
 > 
 > 如果用着还行，请支持一下
 > - 前往 [GitHub](https://github.com/ialmost/almost-components_uniapp) 给个 Star
 > - 前往 [UniApp](https://ext.dcloud.net.cn/plugin?id=1030) 给个五星
-> <br />
 > 
+> <br />
+
 
 ## 兼容情况
 平台兼容 | 页面兼容
