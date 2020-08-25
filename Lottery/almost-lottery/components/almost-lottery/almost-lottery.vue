@@ -69,6 +69,14 @@
         type: Number,
         default: 8
       },
+      // 指针位置
+      pointerPosition: {
+        type: String,
+        default: 'edge',
+        validator: (value) => {
+          return value === 'edge' || value === 'middle'
+        }
+      },
       // 字体颜色
       fontColor: {
         type: String,
@@ -132,10 +140,10 @@
       // 让 启动按钮指针 在奖品分区边界 position = 90
       canvasAngle () {
         let prizeCount = this.prizeList.length
-        let position = 90
+        let position = this.pointerPosition === 'edge' ? 90 : 45
         if (prizeCount % 4 !== 0) {
-          if ( prizeCount % 2 === 0) {
-            return 0
+          if (prizeCount % 2 === 0) {
+            return position === 90 ? 360 / prizeCount - 90 : 0
           } else {
             return 360 / prizeCount - 90
           }
@@ -403,6 +411,8 @@
           
           this.onCreateCanvas()
           this.transitionDuration = this.duration
+          
+          console.log(this.canvasAngle)
         }, 50)
       })
     }
