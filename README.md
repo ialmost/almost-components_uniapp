@@ -15,4 +15,4 @@
 ## 组件列表
 组件名 | 说明 | 平台兼容 | 页面兼容
 :---|:---|:---|:---
-[almost-lottery `v1.3.1`](/Lottery) | 使用 Canvas 绘制的抽奖转盘 | APP、小程序、H5 | vue
+[almost-lottery](/Lottery) `v1.3.1` | 使用 Canvas 绘制的抽奖转盘 | APP、小程序、H5 | vue
