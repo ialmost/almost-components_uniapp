@@ -101,6 +101,8 @@ line-height | 奖品名称多行情况下的行高 | *`Number`* | `16`
 str-key | 奖品名称所对应的 `key` ，比如 `{ name: "almost-lottery" }`，`strKey` 就是 `name` | *`String`* | `name`
 str-max-len | 奖品名称长度限制 | *`Number`* | `12`
 str-line-len | 奖品名称在多行情况下第一行文字的长度 | *`Number`* | `6`
+imageW | 奖品图片的宽度 | *`Number`* | `30`
+imageH | 奖品图片的高度 | *`Number`* | `30`
 
 #### Events
 事件名 | 说明 | 回调参数

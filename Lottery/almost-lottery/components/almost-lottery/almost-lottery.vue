@@ -106,6 +106,16 @@
       strLineLen: {
         type: Number,
         default: 6
+      },
+      // 奖品图片的宽
+      imageW: {
+        type: Number,
+        default: 30
+      },
+      // 奖品图片的高
+      imageH: {
+        type: Number,
+        default: 30
       }
     },
     data() {
@@ -131,10 +141,6 @@
       }
     },
     computed: {
-      // 设备像素密度
-      pixelRatio () {
-        return uni.getSystemInfoSync().pixelRatio
-      },
       // 根据奖品列表计算 canvas 旋转角度
       // 让 启动按钮指针 在奖品分区中间 position = 45
       // 让 启动按钮指针 在奖品分区边界 position = 90
@@ -152,9 +158,26 @@
           return num % 2 === 0 ? position / num : position
         }
       },
-      // 根据画板的宽度计算奖品文字与中心点的距离
+      // 外圆的半径
+      outsideRadius () {
+        return this.canvasWidth / 2
+      },
+      // 内圆的半径
+      insideRadius () {
+        return 20
+      },
+      // 字体的半径
       textRadius () {
-        return Math.round(this.canvasWidth / 2.4)
+        return this.fontSize / 2
+      },
+      // 根据画板的宽度计算奖品文字与中心点的距离
+      textDistance () {
+        const textZeroY = Math.round(this.outsideRadius - (this.insideRadius / 2))
+        return textZeroY - this.textRadius
+      },
+      // 设备像素密度
+      pixelRatio () {
+        return uni.getSystemInfoSync().pixelRatio
       }
     },
     watch: {
@@ -259,10 +282,8 @@
           // startAngle => 圆弧开始的角度，单位是弧度
           // endAngle => 圆弧结束的角度，单位是弧度
           // anticlockwise(可选) => 绘制方向，true 为逆时针，false 为顺时针
-          let outsideRadius = canvasW / 2
-          let insideRadius = 20
-          ctx.arc(canvasW * 0.5, canvasH * 0.5, outsideRadius, angle, angle + baseAngle, false)
-          ctx.arc(canvasW * 0.5, canvasH * 0.5, insideRadius, angle + baseAngle, angle, true)
+          ctx.arc(canvasW * 0.5, canvasH * 0.5, this.outsideRadius, angle, angle + baseAngle, false)
+          ctx.arc(canvasW * 0.5, canvasH * 0.5, this.insideRadius, angle + baseAngle, angle, true)
 
           // 开始链接线条
           ctx.stroke()
@@ -277,8 +298,8 @@
 
           // 开始绘制奖品内容
           // 重新映射画布上的 (0,0) 位置
-          let translateX = canvasW * 0.5 + Math.cos(angle + baseAngle / 2) * this.textRadius
-          let translateY = canvasH * 0.5 + Math.sin(angle + baseAngle / 2) * this.textRadius
+          let translateX = canvasW * 0.5 + Math.cos(angle + baseAngle / 2) * this.textDistance
+          let translateY = canvasH * 0.5 + Math.sin(angle + baseAngle / 2) * this.textDistance
           ctx.translate(translateX, translateY)
           
           // 绘制奖品名称
@@ -291,6 +312,7 @@
           // 设置文本位置并处理换行
           // 是否需要换行
           let isLineBreak = rewardName.length > this.strLineLen
+          let textOffsetX = this.fontSize === 12 ? 0 : this.textRadius
           if (isLineBreak) {
             // 获得多行文本数组
             rewardName = rewardName.substring(0, this.strLineLen) + ',' + rewardName.substring(this.strLineLen)
@@ -301,7 +323,7 @@
               if (ctx.measureText && ctx.measureText(rewardNames[j]).width) {
                 // 文本的宽度信息
                 let tempStrSize = ctx.measureText(rewardNames[j])
-                ctx.fillText(rewardNames[j], -tempStrSize.width / 2, j * this.lineHeight)
+                ctx.fillText(rewardNames[j], -(tempStrSize.width / 2 + textOffsetX), j * this.lineHeight)
               } else {
                 this.measureText = rewardNames[j]
 
@@ -310,7 +332,7 @@
 
                 let textWidth = await this.getTextWidth()
 
-                ctx.fillText(rewardNames[j], -textWidth / 2, j * this.lineHeight)
+                ctx.fillText(rewardNames[j], -(textWidth / 2 + textOffsetX), j * this.lineHeight)
                 // console.log(rewardNames[j], textWidth, i)
               }
             }
@@ -318,7 +340,7 @@
             if (ctx.measureText && ctx.measureText(rewardName).width) {
               // 文本的宽度信息
               let tempStrSize = ctx.measureText(rewardName)
-              ctx.fillText(rewardName, -tempStrSize.width / 2, 0)
+              ctx.fillText(rewardName, -(tempStrSize.width / 2 + textOffsetX), 0)
             } else {
               this.measureText = rewardName
 
@@ -326,14 +348,13 @@
               await this.$nextTick()
 
               let textWidth = await this.getTextWidth()
-
-              ctx.fillText(rewardName, -textWidth / 2, 0)
+              ctx.fillText(rewardName, -(textWidth / 2 + textOffsetX), 0)
             }
           }
           
           // 绘制奖品图片
           if (this.prizeList[i].imgSrc) {
-            ctx.drawImage(this.prizeList[i].imgSrc, -12, canvasW / 10, 25, 25)
+            ctx.drawImage(this.prizeList[i].imgSrc, -(this.imageW / 2), canvasW / 10, this.imageW, this.imageH)
           }
 
           ctx.restore()
@@ -411,8 +432,6 @@
           
           this.onCreateCanvas()
           this.transitionDuration = this.duration
-          
-          console.log(this.canvasAngle)
         }, 50)
       })
     }
