@@ -108,12 +108,12 @@
         default: 6
       },
       // 奖品图片的宽
-      imageW: {
+      imageWidth: {
         type: Number,
         default: 30
       },
       // 奖品图片的高
-      imageH: {
+      imageHeight: {
         type: Number,
         default: 30
       }
@@ -354,7 +354,7 @@
           
           // 绘制奖品图片
           if (this.prizeList[i].imgSrc) {
-            ctx.drawImage(this.prizeList[i].imgSrc, -(this.imageW / 2), canvasW / 10, this.imageW, this.imageH)
+            ctx.drawImage(this.prizeList[i].imgSrc, -(this.imageWidth / 2), canvasW / 10, this.imageWidth, this.imageHeight)
           }
 
           ctx.restore()

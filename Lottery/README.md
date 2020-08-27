@@ -42,6 +42,7 @@ APP、小程序、H5 | vue
 ## 引入
 ```
 // template
+// @reset-index="prizeIndex = -1" 必须默认写入到 template 中，不可删除
 <almost-lottery
   :prize-list="prizeList"
   :prize-index="prizeIndex"
@@ -95,14 +96,14 @@ colors | 奖品区块对应的背景颜色，默认 2 个颜色相互交替，**
 duration | 转盘旋转的动画时长，单位：秒 | *`Number`* | `8`
 ring-count | 旋转的圈数 | *`Number`* | `8`
 pointer-position | 点击抽奖按钮指针的位置，可选值 `'edge'` => 指向边界 `'middle'` => 指向中间 | *`String`* | `'edge'`
-font-color | 奖品名称的颜色 | *`String`* | `#C30B29`
+font-color | 奖品名称的颜色 | *`String`* | `'#C30B29'`
 font-size | 奖品名称的字号 | *`Number`* | `12`
 line-height | 奖品名称多行情况下的行高 | *`Number`* | `16`
-str-key | 奖品名称所对应的 `key` ，比如 `{ name: "almost-lottery" }`，`strKey` 就是 `name` | *`String`* | `name`
+str-key | 奖品名称所对应的 `key` ，比如 `{ name: '88元现金' }`，`str-key` 就是 `'name'` | *`String`* | `'name'`
 str-max-len | 奖品名称长度限制 | *`Number`* | `12`
 str-line-len | 奖品名称在多行情况下第一行文字的长度 | *`Number`* | `6`
-imageW | 奖品图片的宽度 | *`Number`* | `30`
-imageH | 奖品图片的高度 | *`Number`* | `30`
+image-width | 奖品图片的宽度 | *`Number`* | `30`
+image-height | 奖品图片的高度 | *`Number`* | `30`
 
 #### Events
 事件名 | 说明 | 回调参数
