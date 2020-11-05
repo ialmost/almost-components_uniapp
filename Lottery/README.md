@@ -17,7 +17,7 @@
 APP、小程序、H5 | vue
 
 ## 高能预警
-- `HBuilderX 2.9.x` 有问题，等待官方修复
+- 当 `HBuilderX Version > 2.8.13 && HBuilderX Version < 2.9.3` 时，组件渲染会存在问题，请注意自己的 `HBuilderX` 版本号
 
 ## 功能概要
 - [x] 可配置奖品文字

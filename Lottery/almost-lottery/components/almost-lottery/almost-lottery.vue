@@ -44,7 +44,10 @@
       // 奖品列表
       prizeList: {
         type: Array,
-        required: true
+        required: true,
+        validator: (value) => {
+          return value.length > 1
+        }
       },
       // 中奖奖品在列表中的下标
       prizeIndex: {
@@ -142,47 +145,44 @@
     },
     computed: {
       // 根据奖品列表计算 canvas 旋转角度
-      // 让 启动按钮指针 在奖品分区中间 position = 45
-      // 让 启动按钮指针 在奖品分区边界 position = 90
-      canvasAngle () {
+      canvasAngle() {
         let prizeCount = this.prizeList.length
-        let position = this.pointerPosition === 'edge' ? 90 : 45
-        if (prizeCount % 4 !== 0) {
-          if (prizeCount % 2 === 0) {
-            return position === 90 ? 360 / prizeCount - 90 : 0
-          } else {
-            return 360 / prizeCount - 90
-          }
+        let prizeClip = 360 / prizeCount
+        let result = 0
+
+        let diffNum = 90 / prizeClip
+        if (this.pointerPosition === 'edge') {
+          result = -(prizeClip * diffNum)
         } else {
-          let num = prizeCount / 4
-          return num % 2 === 0 ? position / num : position
+          result = -(prizeClip * diffNum + prizeClip / 2)
         }
+        return result
       },
       // 外圆的半径
-      outsideRadius () {
+      outsideRadius() {
         return this.canvasWidth / 2
       },
       // 内圆的半径
-      insideRadius () {
+      insideRadius() {
         return 20
       },
       // 字体的半径
-      textRadius () {
+      textRadius() {
         return this.fontSize / 2
       },
       // 根据画板的宽度计算奖品文字与中心点的距离
-      textDistance () {
+      textDistance() {
         const textZeroY = Math.round(this.outsideRadius - (this.insideRadius / 2))
         return textZeroY - this.textRadius
       },
       // 设备像素密度
-      pixelRatio () {
+      pixelRatio() {
         return uni.getSystemInfoSync().pixelRatio
       }
     },
     watch: {
       // 监听获奖序号的变动
-      prizeIndex (newVal, oldVal) {
+      prizeIndex(newVal, oldVal) {
         if (newVal > -1) {
           this.targetIndex = newVal
           this.onRotateStart()
@@ -193,7 +193,7 @@
     },
     methods: {
       // 开始旋转
-      onRotateStart () {
+      onRotateStart() {
         // 奖品总数
         let prizeCount = this.prizeList.length
         let baseAngle = 360 / prizeCount
@@ -218,27 +218,27 @@
         let endTimer = setTimeout(() => {
           clearTimeout(endTimer)
           endTimer = null
-          
+
           this.isRotate = false
           this.$emit('draw-end')
         }, endTime)
-        
+
         let resetPrizeTimer = setTimeout(() => {
           clearTimeout(resetPrizeTimer)
           resetPrizeTimer = null
-          
+
           // 每次抽奖结束后都要重置父级附件的 prizeIndex
           this.$emit('reset-index')
         }, endTime + 50)
       },
       // 点击 开始抽奖 按钮
-      handleActionStart () {
+      handleActionStart() {
         if (this.isRotate) return
         this.isRotate = true
         this.$emit('draw-start')
       },
       // 渲染转盘
-      async onCreateCanvas () {
+      async onCreateCanvas() {
         // 获取 canvas 画布
         const canvasId = this.canvasId
         const ctx = uni.createCanvasContext(canvasId, this)
@@ -246,17 +246,18 @@
         // canvas 的宽高
         let canvasW = this.canvasWidth
         let canvasH = this.canvasHeight
-        
+
         // 根据奖品个数计算 角度
         let prizeCount = this.prizeList.length
         let baseAngle = Math.PI * 2 / prizeCount
 
         // 设置描边颜色
         ctx.setStrokeStyle('#FFBE04')
-        
+
         // 设置字体和字号
         // #ifndef MP
-        let fontFamily = '-apple-system, BlinkMacSystemFont, \'PingFang SC\', \'Helvetica Neue\', STHeiti, \'Microsoft Yahei\', Tahoma, Simsun, sans-serif'
+        let fontFamily =
+          '-apple-system, BlinkMacSystemFont, \'PingFang SC\', \'Helvetica Neue\', STHeiti, \'Microsoft Yahei\', Tahoma, Simsun, sans-serif'
         ctx.font = `${this.fontSize}px ${fontFamily}`
         // #endif
         // #ifdef MP
@@ -301,7 +302,7 @@
           let translateX = canvasW * 0.5 + Math.cos(angle + baseAngle / 2) * this.textDistance
           let translateY = canvasH * 0.5 + Math.sin(angle + baseAngle / 2) * this.textDistance
           ctx.translate(translateX, translateY)
-          
+
           // 绘制奖品名称
           ctx.setFillStyle(this.fontColor)
           let rewardName = this.strLimit(this.prizeList[i][this.strKey])
@@ -351,7 +352,7 @@
               ctx.fillText(rewardName, -(textWidth / 2 + textOffsetX), 0)
             }
           }
-          
+
           // 绘制奖品图片
           if (this.prizeList[i].imgSrc) {
             ctx.drawImage(this.prizeList[i].imgSrc, -(this.imageWidth / 2), canvasW / 10, this.imageWidth, this.imageHeight)
@@ -365,7 +366,7 @@
           let drawTimer = setTimeout(() => {
             clearTimeout(drawTimer)
             drawTimer = null
-            
+
             // #ifdef MP-ALIPAY
             // 支付宝小程序的 ctx.toTempFilePath 在模拟器正常，但是真机预览有问题，改用 ctx.toDataURL
             // ctx.toTempFilePath({
@@ -402,13 +403,13 @@
         })
       },
       // 处理导出的图片
-      handlePrizeImg (imgPath) {
+      handlePrizeImg(imgPath) {
         this.canvasImg = imgPath
         this.$emit('finish')
       },
       // 兼容 app 端不支持 ctx.measureText
       // 已知问题：初始绘制时，低端安卓机 平均耗时 2s
-      getTextWidth () {
+      getTextWidth() {
         return new Promise((resolve, reject) => {
           uni.createSelectorQuery().in(this).select('.almost-lottery__measureText').fields({
             size: true,
@@ -418,18 +419,18 @@
         })
       },
       // 处理文字溢出
-      strLimit (value) {
+      strLimit(value) {
         let maxLength = this.strMaxLen
         if (!value || !maxLength) return value
         return value.length > maxLength ? value.slice(0, maxLength - 1) + '...' : value
       }
     },
-    mounted () {
+    mounted() {
       this.$nextTick(() => {
         let stoTimer = setTimeout(() => {
           clearTimeout(stoTimer)
           stoTimer = null
-          
+
           this.onCreateCanvas()
           this.transitionDuration = this.duration
         }, 50)
