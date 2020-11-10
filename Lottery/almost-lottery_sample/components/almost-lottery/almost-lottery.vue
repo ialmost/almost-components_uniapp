@@ -368,23 +368,13 @@
             drawTimer = null
 
             // #ifdef MP-ALIPAY
-            // 支付宝小程序的 ctx.toTempFilePath 在模拟器正常，但是真机预览有问题，改用 ctx.toDataURL
-            // ctx.toTempFilePath({
-            //   destWidth: this.canvasWidth * this.pixelRatio,
-            //   destHeight: this.canvasHeight * this.pixelRatio,
-            //   success: (res) => {
-            //     // console.log(res.filePath)
-            //     this.handlePrizeImg(res.filePath)
-            //   }
-            // })
-            ctx.toDataURL({
-              width: this.canvasWidth,
-              height: this.canvasWidth,
+            ctx.toTempFilePath({
               destWidth: this.canvasWidth * this.pixelRatio,
               destHeight: this.canvasHeight * this.pixelRatio,
-            }).then((dataURL) => {
-              // console.log(dataURL)
-              this.handlePrizeImg(dataURL)
+              success: (res) => {
+                // console.log(res.apFilePath)
+                this.handlePrizeImg(res.apFilePath)
+              }
             })
             // #endif
             // #ifndef MP-ALIPAY
