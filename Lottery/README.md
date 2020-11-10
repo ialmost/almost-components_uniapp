@@ -22,10 +22,10 @@ APP、小程序、H5 | vue
 ## 功能概要
 - [x] 可配置奖品文字
 - [x] 可配置每个奖品区块的背景颜色
-- [x] 可配置本地奖品图片，*不支持远程图片*
-- [x] 奖品列表支持奇数，*奇数时需尽量能被 `360` 除尽*
-- [x] 组件内 `SCSS` 样式中可替换转盘的外环背景图及点击抽奖按钮图，分别是 `$lotteryBgUrl` 和 `$actionBgUrl`，*如需替换，需要适配高清设备*
-- [x] 可配置中奖概率，**请下载示例项目并查看 `index.vue` 文件**
+- [x] 可配置奖品图片，**当图片是网络地址时，小程序端需要配置白名单，H5端需要允许跨域**
+- [x] 奖品列表支持奇数，**奇数时需尽量能被 `360` 除尽**
+- [x] 组件内 `SCSS` 样式中可替换转盘的外环背景图及点击抽奖按钮图，分别是 `$lotteryBgUrl` 和 `$actionBgUrl`，**如需替换，需要适配高清设备**
+- [x] 可配置中奖概率，**正常情况下中奖概率应该由后端控制**
 
 
 ## 注意事项
@@ -34,11 +34,11 @@ APP、小程序、H5 | vue
 
 - `@reset-index="prizeIndex = -1"` 必须默认写入到 `template` 中，不可删除
 
-- 奖品图片仅支持配置本地图片，远程图片会存在跨域、需提前下载等问题，且小程序端还需要配置白名单，为了各端统一，所以暂时不支持远程图片
+- 关于中奖概率的配置，请下载示例项目，参照 `pages/index/index.vue` 中的代码进行配置
 
-- 抽奖组件本身不会涉及任何业务逻辑
+- 关于奖品图片的配置，请下载示例项目，参照 `pages/index/index.vue` 中的代码进行配置
 
-- 关于中奖概率的业务逻辑在示例项目的 `pages/index/index.vue` 文件中，仅供参考
+- 组件本身不涉及任何业务逻辑，与业务相关的代码建议都放在 `pages/index/index.vue` 中
 
 
 ## 引入
@@ -65,7 +65,7 @@ export default {
       prizeIndex: -1,
       // 奖品数据
       prizeList: [
-        { prizeId: 1, name: '0.1元现金', stock: 10, weight: 1, imgSrc: '/static/lottery-prize/git.png' },
+        { prizeId: 1, name: '0.1元现金', stock: 10, weight: 1, prizeImage: '/static/lottery-prize/git.png' },
         { prizeId: 2, name: '10元现金', stock: 0, weight: 0 },
         { prizeId: 3, name: '5元话费', stock: 1, weight: 0 },
         { prizeId: 4, name: '50元现金', stock: 0, weight: 0 },

@@ -267,6 +267,7 @@
         // 注意，开始画的位置是从0°角的位置开始画的。也就是水平向右的方向。
         // 画具体内容
         for (let i = 0; i < prizeCount; i++) {
+					let prizeItem = this.prizeList[i]
           // 当前角度
           let angle = i * baseAngle
 
@@ -305,7 +306,7 @@
 
           // 绘制奖品名称
           ctx.setFillStyle(this.fontColor)
-          let rewardName = this.strLimit(this.prizeList[i][this.strKey])
+          let rewardName = this.strLimit(prizeItem[this.strKey])
 
           // rotate方法旋转当前的绘图，因为文字是和当前扇形中心线垂直的
           ctx.rotate(angle + (baseAngle / 2) + (Math.PI / 2))
@@ -354,8 +355,8 @@
           }
 
           // 绘制奖品图片
-          if (this.prizeList[i].imgSrc) {
-            ctx.drawImage(this.prizeList[i].imgSrc, -(this.imageWidth / 2), canvasW / 10, this.imageWidth, this.imageHeight)
+          if (prizeItem.imgSrc) {
+            ctx.drawImage(prizeItem.imgSrc, -(this.imageWidth / 2), canvasW / 10, this.imageWidth, this.imageHeight)
           }
 
           ctx.restore()
@@ -368,23 +369,13 @@
             drawTimer = null
 
             // #ifdef MP-ALIPAY
-            // 支付宝小程序的 ctx.toTempFilePath 在模拟器正常，但是真机预览有问题，改用 ctx.toDataURL
-            // ctx.toTempFilePath({
-            //   destWidth: this.canvasWidth * this.pixelRatio,
-            //   destHeight: this.canvasHeight * this.pixelRatio,
-            //   success: (res) => {
-            //     // console.log(res.filePath)
-            //     this.handlePrizeImg(res.filePath)
-            //   }
-            // })
-            ctx.toDataURL({
-              width: this.canvasWidth,
-              height: this.canvasWidth,
+            ctx.toTempFilePath({
               destWidth: this.canvasWidth * this.pixelRatio,
               destHeight: this.canvasHeight * this.pixelRatio,
-            }).then((dataURL) => {
-              // console.log(dataURL)
-              this.handlePrizeImg(dataURL)
+              success: (res) => {
+                // console.log(res.apFilePath)
+                this.handlePrizeImg(res.apFilePath)
+              }
             })
             // #endif
             // #ifndef MP-ALIPAY

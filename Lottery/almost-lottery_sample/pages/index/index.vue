@@ -30,6 +30,8 @@
 
 <script>
   import AlmostLottery from '@/components/almost-lottery/almost-lottery.vue'
+	import { pathToBase64 } from '@/utils/image-tools.js'
+	import { downImgFile } from '@/utils/utils.js'
   export default {
     name: 'Home',
     components: {
@@ -63,35 +65,78 @@
         this.getPrizeList()
       },
       // 获取奖品列表
-      getPrizeList () {
+      async getPrizeList () {
         uni.showLoading({
           title: '奖品准备中...'
         })
-        // 模拟请求奖品列表
-        let stoTimer = setTimeout(() => {
-          clearTimeout(stoTimer)
-          stoTimer = null
-          
-          // stock 奖品库存
-          // weight 中奖概率，数值越大中奖概率越高
-          this.prizeList = [
-            { prizeId: 1, name: '0.1元现金', stock: 10, weight: 1, imgSrc: '/static/lottery-prize/git.png' },
-            { prizeId: 2, name: '10元现金', stock: 0, weight: 0 },
-            { prizeId: 3, name: '5元话费', stock: 1, weight: 0 },
-            { prizeId: 4, name: '50元现金', stock: 0, weight: 0 },
-            { prizeId: 5, name: '1卷抽纸', stock: 3, weight: 3 },
-            { prizeId: 6, name: '0.2元现金', stock: 8, weight: 2 },
-            { prizeId: 7, name: '谢谢参与', stock: 100, weight: 10000 },
-            { prizeId: 8, name: '100金币', stock: 100, weight: 1000 }
-          ]
-          
-          // 计算出权重的总和并生成权重数组
-          if (this.isFrontend) {
-            this.prizeList.forEach((item) => this.weightTotal += item.weight)
-            this.weightArr = this.prizeList.map((item) => item.weight)
-          }
-        }, 500)
+				
+        let res = await this.requestPrizeList()
+				console.log('获取奖品列表', res)
+				
+				if (res.ok) {
+					let data = res.data
+					if (data.length) {
+						// App-Android平台 系统 webview 更新到 Chrome84+ 后 canvas 组件绘制本地图像 uni.canvasToTempFilePath 会报错
+						// 统一将图片处理成 base64
+						// https://ask.dcloud.net.cn/question/103303
+						for (let i = 0; i < data.length; i++) {
+							let item = data[i]
+							if (item.prizeImage) {
+								let reg = /^(https|http)/g
+								
+								// 处理远程图片
+								if (reg.test(item.prizeImage)) {
+									console.warn('###当前图片为网络图片###')
+									let res = await downImgFile(item.prizeImage)
+									if (res.ok) {
+										let tempFilePath = res.tempFilePath
+										item.imgSrc = await pathToBase64(tempFilePath)
+									}
+								} else {
+									item.imgSrc = await pathToBase64(item.prizeImage)
+								}
+							}
+						}
+						
+						// stock 奖品库存
+						// weight 中奖概率，数值越大中奖概率越高
+						this.prizeList = data
+						
+						// 计算出权重的总和并生成权重数组
+						if (this.isFrontend) {
+						  this.prizeList.forEach((item) => this.weightTotal += item.weight)
+						  this.weightArr = this.prizeList.map((item) => item.weight)
+						}
+					}
+				} else {
+					uni.showToast({
+						title: '获取奖品失败'
+					})
+				}
       },
+			// 模拟请求奖品列表接口
+			requestPrizeList () {
+				return new Promise((resolve, reject) => {
+					let requestTimer = setTimeout(() => {
+						clearTimeout(requestTimer)
+						requestTimer = null
+						
+						resolve({
+							ok: true,
+							data: [
+								{ prizeId: 1, name: '0.1元现金', stock: 10, weight: 1, prizeImage: '/static/lottery-prize/git.png' },
+								{ prizeId: 2, name: '10元现金', stock: 0, weight: 0, prizeImage: 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/56f085e0-bcfe-11ea-b244-a9f5e5565f30.png' },
+								{ prizeId: 3, name: '5元话费', stock: 1, weight: 0 },
+								{ prizeId: 4, name: '50元现金', stock: 0, weight: 0 },
+								{ prizeId: 5, name: '1卷抽纸', stock: 3, weight: 3 },
+								{ prizeId: 6, name: '0.2元现金', stock: 8, weight: 2 },
+								{ prizeId: 7, name: '谢谢参与', stock: 100, weight: 10000 },
+								{ prizeId: 8, name: '100金币', stock: 100, weight: 1000 }
+							]
+						})
+					}, 2000)
+				})
+			},
       // 本次抽奖开始
       handleDrawStart () {
         this.targetName = ''
