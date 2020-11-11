@@ -68,7 +68,7 @@ export default {
       // 奖品数据
       prizeList: [
         { prizeId: 1, name: '0.1元现金', stock: 10, weight: 1, prizeImage: '/static/lottery-prize/git.png' },
-        { prizeId: 2, name: '10元现金', stock: 0, weight: 0 },
+        { prizeId: 2, name: '10元现金', stock: 0, weight: 0, prizeImage: 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/56f085e0-bcfe-11ea-b244-a9f5e5565f30.png' },
         { prizeId: 3, name: '5元话费', stock: 1, weight: 0 },
         { prizeId: 4, name: '50元现金', stock: 0, weight: 0 },
         { prizeId: 5, name: '1卷抽纸', stock: 3, weight: 3 },
@@ -105,13 +105,7 @@ export default {
     handleDrawFinish (res) {
       // 抽奖转盘准备就绪后，这里处理你的逻辑
       // 请查看示例项目中的代码
-      console.log('抽奖转盘绘制完成', res)
-      uni.showToast({
-        title: res.msg,
-        duration: 2000,
-        mask: true,
-        icon: 'none'
-      })
+      // console.log('抽奖转盘绘制完成', res)
     }
   }
 }
@@ -156,4 +150,4 @@ prizeId | 奖品对应 `ID` | *`Number`*
 name | 奖品名称 | *`String`*
 stock | 奖品库存 | *`Number`*
 weight | 奖品权重 | *`Number`*
-prizeImage | 奖品图片 | *`String`*
+prizeImage | 奖品图片地址 | *`String`*
