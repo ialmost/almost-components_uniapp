@@ -13,13 +13,13 @@
          height: canvasHeight + 'px'
        }" />
       <!-- #endif -->
-      <image class="canvas-img" :src="canvasImg" :style="{
+      <image class="canvas-img" :src="lotteryImg" :style="{
          width: canvasWidth + 'px',
          height: canvasHeight + 'px',
          transform: `rotate(${canvasAngle + targetAngle}deg)`,
          transitionDuration: `${transitionDuration}s`
        }"
-        v-if="canvasImg"></image>
+        v-if="lotteryImg"></image>
       <view class="almost-lottery__action" @click="handleActionStart"></view>
       <!-- 为了兼容 app 端 ctx.measureText 所需的标签 -->
       <text class="almost-lottery__measureText">{{ measureText }}</text>
@@ -28,6 +28,8 @@
 </template>
 
 <script>
+	import { pathToBase64 } from '@/almost-utils/image-tools.js'
+	import { getStore, setStore, clearStore, downloadFile } from '@/almost-utils/almost-utils.js'
   export default {
     name: 'AlmostLottery',
     props: {
@@ -119,7 +121,22 @@
       imageHeight: {
         type: Number,
         default: 30
-      }
+      },
+			// 转盘绘制成功的提示
+			successMsg: {
+				type: String,
+				default: '奖品准备就绪，快来参与抽奖吧'
+			},
+			// 转盘绘制失败的提示
+			failMsg: {
+				type: String,
+				default: '奖品仍在准备中，请稍后再来...'
+			},
+			// 是否开启画板的缓存
+			canvasCached: {
+				type: Boolean,
+				default: true
+			}
     },
     data() {
       return {
@@ -128,7 +145,7 @@
         // 画板标识
         canvasId: 'almostLotteryCanvas',
         // 画板导出的图片
-        canvasImg: '',
+        lotteryImg: '',
         // 旋转到奖品目标需要的角度
         targetAngle: 0,
         // 旋转动画时间 单位 s
@@ -139,7 +156,11 @@
         stayIndex: 0,
         // 当前中奖奖品的序号
         targetIndex: 0,
+				// 是否存在可用的缓存转盘图
+				isCacheImg: false,
+				oldLotteryImg: '',
         // 解决 app 不支持 measureText 的问题
+				// app 已在 2.9.3 的版本中提供了对 measureText 的支持，将在后续版本逐渐稳定后移除相关兼容代码
         measureText: ''
       }
     },
@@ -355,8 +376,24 @@
           }
 
           // 绘制奖品图片
-          if (prizeItem.imgSrc) {
-            ctx.drawImage(prizeItem.imgSrc, -(this.imageWidth / 2), canvasW / 10, this.imageWidth, this.imageHeight)
+          if (prizeItem.prizeImage) {
+						// App-Android平台 系统 webview 更新到 Chrome84+ 后 canvas 组件绘制本地图像 uni.canvasToTempFilePath 会报错
+						// 统一将图片处理成 base64
+						// https://ask.dcloud.net.cn/question/103303
+						let reg = /^(https|http)/g
+						// 处理远程图片
+						if (reg.test(prizeItem.prizeImage)) {
+							console.warn('###当前数据列表中的奖品图片为网络图片，开始下载图片...###')
+							let res = await downloadFile(prizeItem.prizeImage)
+							if (res.ok) {
+								let tempFilePath = res.tempFilePath
+								prizeItem.prizeImage = await pathToBase64(tempFilePath)
+							}
+						} else {
+							prizeItem.prizeImage = await pathToBase64(prizeItem.prizeImage)
+						}
+						
+            ctx.drawImage(prizeItem.prizeImage, -(this.imageWidth / 2), canvasW / 10, this.imageWidth, this.imageHeight)
           }
 
           ctx.restore()
@@ -374,8 +411,19 @@
               destHeight: this.canvasHeight * this.pixelRatio,
               success: (res) => {
                 // console.log(res.apFilePath)
-                this.handlePrizeImg(res.apFilePath)
-              }
+                this.handlePrizeImg({
+									ok: true,
+									data: res.apFilePath,
+									msg: '画布导出生成图片成功'
+								})
+              },
+							fail: (err) => {
+                this.handlePrizeImg({
+									ok: false,
+									data: err,
+									msg: '画布导出生成图片失败'
+								})
+							}
             })
             // #endif
             // #ifndef MP-ALIPAY
@@ -386,18 +434,114 @@
               success: (res) => {
                 // 在 H5 平台下，tempFilePath 为 base64
                 // console.log(res.tempFilePath)
-                this.handlePrizeImg(res.tempFilePath)
-              }
+                this.handlePrizeImg({
+									ok: true,
+									data: res.tempFilePath,
+									msg: '画布导出生成图片成功'
+								})
+              },
+							fail: (err) => {
+                this.handlePrizeImg({
+									ok: false,
+									data: err,
+									msg: '画布导出生成图片失败'
+								})
+							}
             }, this)
             // #endif
           }, 500)
         })
       },
       // 处理导出的图片
-      handlePrizeImg(imgPath) {
-        this.canvasImg = imgPath
-        this.$emit('finish')
+      handlePrizeImg(res) {
+				if (res.ok) {
+					let data = res.data
+					
+					if (!this.canvasCached) {
+						this.lotteryImg = data
+						this.handlePrizeImgSuc(res)
+						return
+					}
+					
+					// #ifndef H5
+					if (this.isCacheImg) {
+						uni.getSavedFileList({
+							success: (sucRes) => {
+								let fileList = sucRes.fileList
+								// console.log('getSavedFileList Cached', fileList)
+								
+								let cached = false
+								for (let i = 0; i < fileList.length; i++) {
+									let item = fileList[i]
+									if (item.filePath === data) {
+										cached = true
+										this.lotteryImg = data
+										
+										console.info('经查，本地缓存中存在转盘图可用，本次将不再绘制转盘')
+										this.handlePrizeImgSuc(res)
+										break
+									}
+								}
+								
+								if (!cached) {
+									console.info('经查，本地缓存中存在转盘图不可用，需要重新初始化转盘绘制')
+									this.initCanvasDraw()
+								}
+							},
+							fail: (err) => {
+								this.initCanvasDraw()
+							}
+						})
+					} else {
+						uni.saveFile({
+							tempFilePath: data,
+							success: (sucRes) => {
+								let filePath = sucRes.savedFilePath
+								// console.log('saveFile', filePath)
+								setStore('lotteryImg', filePath)
+								this.lotteryImg = filePath
+								this.handlePrizeImgSuc({
+									ok: true,
+									data: filePath,
+									msg: '画布导出生成图片成功'
+								})
+							},
+							fail: (err) => {
+								this.handlePrizeImg({
+									ok: false,
+									data: err,
+									msg: '画布导出生成图片失败'
+								})
+							}
+						})
+					}
+					// #endif
+					// #ifdef H5
+					console.info('当前为 H5 端，直接使用导出的/缓存中的 base64 图')
+					setStore('lotteryImg', data)
+					this.lotteryImg = data
+					this.handlePrizeImgSuc(res)
+					// #endif
+				} else {
+					console.error('处理导出的图片失败', res)
+					uni.hideLoading()
+					// #ifdef H5
+					console.error('###当前为 H5 端，下载网络图片需要后端配置允许跨域###')
+					// #endif
+					// #ifdef MP
+					console.error('###当前为小程序端，下载网络图片需要配置域名白名单###')
+					// #endif
+				}
       },
+			// 处理图片完成
+			handlePrizeImgSuc (res) {
+				uni.hideLoading()
+				this.$emit('finish', {
+					ok: res.ok,
+					data: res.data,
+					msg: res.ok ? this.successMsg : this.failMsg
+				})
+			},
       // 兼容 app 端不支持 ctx.measureText
       // 已知问题：初始绘制时，低端安卓机 平均耗时 2s
       getTextWidth() {
@@ -414,6 +558,41 @@
         let maxLength = this.strMaxLen
         if (!value || !maxLength) return value
         return value.length > maxLength ? value.slice(0, maxLength - 1) + '...' : value
+      },
+			// 检查本地缓存中是否存在转盘图
+			checkCacheImg () {
+				console.log('检查本地缓存中是否存在转盘图')
+				// 检查是否已有缓存的转盘图
+				// 检查是否与本次奖品数据相同
+				this.oldLotteryImg = getStore('lotteryImg')
+				let oldPrizeList = getStore('prizeList')
+				let newPrizeList = JSON.stringify(this.prizeList)
+				if (this.oldLotteryImg) {
+					if (oldPrizeList === newPrizeList) {
+						console.log(`经查，本地缓存中存在转盘图 => ${this.oldLotteryImg}`)
+						this.isCacheImg = true
+						
+						console.log('需要继续判断这张缓存图是否可用')
+						this.handlePrizeImg({
+							ok: true,
+							data: this.oldLotteryImg,
+							msg: '画布导出生成图片成功'
+						})
+						return
+					}
+				}
+				
+				console.log('经查，本地缓存中不存在转盘图')
+				this.initCanvasDraw()
+			},
+      // 初始化绘制
+      initCanvasDraw () {
+				console.log('开始初始化转盘绘制')
+				this.isCacheImg = false
+				this.lotteryImg = ''
+				clearStore('lotteryImg')
+        setStore('prizeList', this.prizeList)
+        this.onCreateCanvas()
       }
     },
     mounted() {
@@ -421,8 +600,12 @@
         let stoTimer = setTimeout(() => {
           clearTimeout(stoTimer)
           stoTimer = null
-
-          this.onCreateCanvas()
+					
+					if (this.canvasCached) {
+						this.checkCacheImg()
+					} else {
+						this.onCreateCanvas()
+					}
           this.transitionDuration = this.duration
         }, 50)
       })

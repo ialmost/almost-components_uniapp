@@ -2,8 +2,8 @@
     "name" : "almost-lottery",
     "appid" : "",
     "description" : "",
-    "versionName" : "1.4.0",
-    "versionCode" : 10400,
+    "versionName" : "1.5.0",
+    "versionCode" : 10500,
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {

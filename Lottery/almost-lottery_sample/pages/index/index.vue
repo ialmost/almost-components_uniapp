@@ -30,8 +30,6 @@
 
 <script>
   import AlmostLottery from '@/components/almost-lottery/almost-lottery.vue'
-	import { pathToBase64 } from '@/utils/image-tools.js'
-	import { downImgFile } from '@/utils/utils.js'
   export default {
     name: 'Home',
     components: {
@@ -50,8 +48,10 @@
         prizeIndex: -1,
         // 中奖类目名称
         targetName: '',
-        // 是否由前端控制概率
-        isFrontend: true,
+				// 奖品是否设有库存
+				onStock: true,
+        // 是否由前端控制概率，默认不开启
+        onFrontend: false,
         // 权重随机数的最大值
         weightTotal: 0,
         // 权重数组
@@ -61,6 +61,7 @@
     methods: {
       // 重新生成
       handleInitCanvas () {
+				this.targetName = ''
         this.prizeList = []
         this.getPrizeList()
       },
@@ -76,39 +77,19 @@
 				if (res.ok) {
 					let data = res.data
 					if (data.length) {
-						// App-Android平台 系统 webview 更新到 Chrome84+ 后 canvas 组件绘制本地图像 uni.canvasToTempFilePath 会报错
-						// 统一将图片处理成 base64
-						// https://ask.dcloud.net.cn/question/103303
-						for (let i = 0; i < data.length; i++) {
-							let item = data[i]
-							if (item.prizeImage) {
-								let reg = /^(https|http)/g
-								
-								// 处理远程图片
-								if (reg.test(item.prizeImage)) {
-									console.warn('###当前图片为网络图片###')
-									let res = await downImgFile(item.prizeImage)
-									if (res.ok) {
-										let tempFilePath = res.tempFilePath
-										item.imgSrc = await pathToBase64(tempFilePath)
-									}
-								} else {
-									item.imgSrc = await pathToBase64(item.prizeImage)
-								}
-							}
-						}
-						
 						// stock 奖品库存
 						// weight 中奖概率，数值越大中奖概率越高
 						this.prizeList = data
 						
+						// 如果开启了前端控制概率
 						// 计算出权重的总和并生成权重数组
-						if (this.isFrontend) {
+						if (this.onFrontend) {
 						  this.prizeList.forEach((item) => this.weightTotal += item.weight)
 						  this.weightArr = this.prizeList.map((item) => item.weight)
 						}
 					}
 				} else {
+					uni.hideLoading()
 					uni.showToast({
 						title: '获取奖品失败'
 					})
@@ -124,14 +105,14 @@
 						resolve({
 							ok: true,
 							data: [
-								{ prizeId: 1, name: '0.1元现金', stock: 10, weight: 1, prizeImage: '/static/lottery-prize/git.png' },
+								{ prizeId: 1, name: '0.1元现金', stock: 10, weight: 0, prizeImage: '/static/lottery-prize/git.png' },
 								{ prizeId: 2, name: '10元现金', stock: 0, weight: 0, prizeImage: 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/56f085e0-bcfe-11ea-b244-a9f5e5565f30.png' },
 								{ prizeId: 3, name: '5元话费', stock: 1, weight: 0 },
 								{ prizeId: 4, name: '50元现金', stock: 0, weight: 0 },
-								{ prizeId: 5, name: '1卷抽纸', stock: 3, weight: 3 },
-								{ prizeId: 6, name: '0.2元现金', stock: 8, weight: 2 },
-								{ prizeId: 7, name: '谢谢参与', stock: 100, weight: 10000 },
-								{ prizeId: 8, name: '100金币', stock: 100, weight: 1000 }
+								{ prizeId: 5, name: '1卷抽纸', stock: 3, weight: 0 },
+								{ prizeId: 6, name: '0.2元现金', stock: 8, weight: 0 },
+								{ prizeId: 7, name: '谢谢参与', stock: 100, weight: 0 },
+								{ prizeId: 8, name: '100金币', stock: 100, weight: 0 }
 							]
 						})
 					}, 2000)
@@ -151,7 +132,11 @@
           // 判断是否由前端控制概率
           // 前端控制概率的情况下，需要拿到最接近随机权重且大于随机权重的值
           // 后端控制概率的情况下，通常会直接返回 prizeId
-          if (this.isFrontend && this.weightTotal) {
+          if (this.onFrontend) {
+						if (!this.weightTotal) {
+							console.warn('###当前已开启前端控制中奖概率，但是奖品数据列表中的 weight 参数似乎配置不正确###')
+							return
+						}
             console.warn('###当前处于前端控制中奖概率，安全起见，强烈建议由后端控制###')
             console.log('当前权重总和为 =>', this.weightTotal)
             
@@ -178,6 +163,7 @@
               this.prizeIndex = this.weightArr.indexOf(tempWeightArr[tempWeightArr.length - 1])
             }
           } else {
+						console.warn('###当前处于模拟的随机中奖概率，实际场景中，中奖概率应由后端控制###')
             // 这里随机产生的 prizeId 是模拟后端返回的 prizeId
             let prizeId = Math.floor(Math.random() * list.length)
             list.forEach((item, index) => {
@@ -189,22 +175,33 @@
           }
           
           console.log('本次抽中奖品 =>', this.prizeList[this.prizeIndex].name)
-          console.log('本次奖品库存 =>', this.prizeList[this.prizeIndex].stock)
+					
+					if (this.onStock) {
+						console.log('本次奖品库存 =>', this.prizeList[this.prizeIndex].stock)
+					}
         }, 200)
       },
       // 本次抽奖结束
       handleDrawEnd () {
         // 旋转结束后，可以执行拿到结果后的逻辑
         let prizeName = this.prizeList[this.prizeIndex].name
-        let prizeStock = this.prizeList[this.prizeIndex].stock
-        this.targetName = prizeName === '谢谢参与' ? prizeName : prizeStock ? `恭喜您，获得 ${prizeName}` : '很抱歉，您来晚了，当前奖品已无库存'
+				
+				if (this.onStock) {
+					let prizeStock = this.prizeList[this.prizeIndex].stock
+					this.targetName = prizeName === '谢谢参与' ? prizeName : prizeStock ? `恭喜您，获得 ${prizeName}` : '很抱歉，您来晚了，当前奖品已无库存'
+				}
+				
+        this.targetName = prizeName === '谢谢参与' ? prizeName : `恭喜您，获得 ${prizeName}`
       },
       // 抽奖转盘绘制完成
-      handleDrawFinish () {
-        console.log('抽奖转盘绘制完成')
-        uni.hideLoading()
+      handleDrawFinish (res) {
+        console.log('抽奖转盘绘制完成', res)
+				
         uni.showToast({
-          title: '奖品准备就绪'
+          title: res.msg,
+					duration: 2000,
+					mask: true,
+					icon: 'none'
         })
       }
     },
