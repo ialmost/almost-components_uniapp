@@ -43,7 +43,8 @@ export const downloadFile = (fileUrl) => {
     uni.downloadFile({
       url: fileUrl,
       success: (res) => {
-        if (res.statusCode === 200) {
+        // #ifdef MP-ALIPAY
+        if (res.errMsg === 'downloadFile:ok') {
           resolve({
             ok: true,
             tempFilePath: res.tempFilePath
@@ -54,6 +55,20 @@ export const downloadFile = (fileUrl) => {
             msg: '图片下载失败'
           })
         }
+        // #endif
+				// #ifndef MP-ALIPAY
+				if (res.statusCode === 200) {
+				  resolve({
+				    ok: true,
+				    tempFilePath: res.tempFilePath
+				  })
+				} else {
+				  resolve({
+				    ok: false,
+				    msg: '图片下载失败'
+				  })
+				}
+				// #endif
       },
       fail: (err) => {
         resolve({
@@ -63,4 +78,28 @@ export const downloadFile = (fileUrl) => {
       }
     })
   })
+}
+
+/**
+ * 清理应用已缓存的文件
+*/
+export const clearCacheFile = () => {
+	uni.getSavedFileList({
+		success: (res) => {
+			let fileList = res.fileList
+			if (fileList.length) {
+				for (let i = 0; i < fileList.length; i++) {
+					uni.removeSavedFile({
+						filePath: fileList[i].filePath,
+						complete: () => {
+							console.log('清除缓存已完成')
+						}
+					})
+				}
+			}
+		},
+		fail: (err) => {
+			console.log('getSavedFileList Fail')
+		}
+	})
 }

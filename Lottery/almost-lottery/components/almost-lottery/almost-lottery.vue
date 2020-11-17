@@ -385,12 +385,20 @@
 						if (reg.test(prizeItem.prizeImage)) {
 							console.warn('###当前数据列表中的奖品图片为网络图片，开始下载图片...###')
 							let res = await downloadFile(prizeItem.prizeImage)
+							console.log('处理远程图片', res)
 							if (res.ok) {
 								let tempFilePath = res.tempFilePath
+								// #ifndef MP
 								prizeItem.prizeImage = await pathToBase64(tempFilePath)
+								// #endif
+								// #ifdef MP
+								prizeItem.prizeImage = tempFilePath
+								// #endif
 							}
 						} else {
+							// #ifndef MP
 							prizeItem.prizeImage = await pathToBase64(prizeItem.prizeImage)
+							// #endif
 						}
 						
             ctx.drawImage(prizeItem.prizeImage, -(this.imageWidth / 2), canvasW / 10, this.imageWidth, this.imageHeight)

@@ -30,6 +30,7 @@
 
 <script>
   import AlmostLottery from '@/components/almost-lottery/almost-lottery.vue'
+	import { clearCacheFile } from '@/almost-utils/almost-utils.js'
   export default {
     name: 'Home',
     components: {
@@ -61,9 +62,12 @@
     methods: {
       // 重新生成
       handleInitCanvas () {
+				clearCacheFile()
+				
 				this.targetName = ''
         this.prizeList = []
         this.getPrizeList()
+				
       },
       // 获取奖品列表
       async getPrizeList () {
