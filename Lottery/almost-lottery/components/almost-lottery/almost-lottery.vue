@@ -1,6 +1,6 @@
 <template>
-  <view class="almost-lottery" :style="{ width: canvasWidth + 44 + 'px', height: canvasHeight + 44 + 'px'}">
-    <view class="almost-lottery-wrap" :style="{width: canvasWidth + 'px', height: canvasHeight + 'px'}">
+  <view class="almost-lottery" :style="{ width: canvasWidth + 40 + 'px', height: canvasHeight + 40 + 'px'}">
+    <view class="almost-lottery__wrap" :style="{width: canvasWidth + canvasMarginTotal + 'px', height: canvasHeight + canvasMarginTotal + 'px'}">
       <!-- #ifdef MP-ALIPAY -->
       <canvas :class="className" :id="canvasId" :width="canvasWidth" :height="canvasHeight" :style="{
          width: canvasWidth + 'px',
@@ -14,13 +14,16 @@
        }" />
       <!-- #endif -->
       <image class="canvas-img" :src="lotteryImg" :style="{
-         width: canvasWidth + 'px',
-         height: canvasHeight + 'px',
+         width: canvasWidth + canvasMarginTotal + 'px',
+         height: canvasHeight + canvasMarginTotal + 'px',
          transform: `rotate(${canvasAngle + targetAngle}deg)`,
          transitionDuration: `${transitionDuration}s`
        }"
         v-if="lotteryImg"></image>
-      <view class="almost-lottery__action" @click="handleActionStart"></view>
+      <view class="almost-lottery__action" :style="{
+         width: actionSize + 'px',
+         height: actionSize + 'px'
+       }" @click="handleActionStart"></view>
       <!-- 为了兼容 app 端 ctx.measureText 所需的标签 -->
       <text class="almost-lottery__measureText">{{ measureText }}</text>
     </view>
@@ -136,7 +139,12 @@
 			canvasCached: {
 				type: Boolean,
 				default: true
-			}
+			},
+			// 内圈与外圈的间距
+			canvasMargin: {
+        type: Number,
+        default: 5
+      }
     },
     data() {
       return {
@@ -199,7 +207,23 @@
       // 设备像素密度
       pixelRatio() {
         return uni.getSystemInfoSync().pixelRatio
-      }
+      },
+			// 内圈与外圈的距离
+			canvasMarginTotal () {
+				let diffNum = 5
+				let margin = this.canvasMargin * 2
+				if (this.canvasWidth > 240) {
+					return -(this.canvasWidth / 240 * 2) - margin
+				} else if (this.canvasWidth < 240) {
+					return diffNum + (this.canvasWidth / 240 * 2) - margin
+				} else {
+					return diffNum - margin
+				}
+			},
+			// 抽奖按钮的宽高
+			actionSize () {
+				return this.canvasWidth / 2.4
+			}
     },
     watch: {
       // 监听获奖序号的变动
@@ -626,15 +650,6 @@
   $actionBgUrl: '~static/almost-lottery/almost-lottery__action';
 
   .almost-lottery {
-    position: relative;
-    left: 0;
-    top: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .almost-lottery {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -648,11 +663,17 @@
       background-image: url($lotteryBgUrl + "2x.png");
     }
 
-    @media (-webkit-min-device-pixel-ratio: 3),
-    (min-device-pixel-ratio: 3) {
+    @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3) {
       background-image: url($lotteryBgUrl + "3x.png");
     }
   }
+	
+	.almost-lottery__wrap {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+	}
 
   .almost-lottery__canvas {
     position: absolute;
@@ -665,10 +686,6 @@
 
   .almost-lottery__action {
     position: absolute;
-    top: calc(50% - 62px);
-    left: calc(50% - 58px);
-    width: 114px;
-    height: 114px;
     background-repeat: no-repeat;
     background-position: center center;
     background-size: contain;
@@ -678,8 +695,7 @@
       background-image: url($actionBgUrl + "2x.png");
     }
 
-    @media (-webkit-min-device-pixel-ratio: 3),
-    (min-device-pixel-ratio: 3) {
+    @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3) {
       background-image: url($actionBgUrl + "3x.png");
     }
   }
@@ -694,6 +710,7 @@
   }
 
   .canvas-img {
+		display: block;
     transition: transform cubic-bezier(.34, .12, .05, .95);
   }
 </style>
