@@ -84,6 +84,7 @@ export const downloadFile = (fileUrl) => {
  * 清理应用已缓存的文件
 */
 export const clearCacheFile = () => {
+	// #ifndef H5
 	uni.getSavedFileList({
 		success: (res) => {
 			let fileList = res.fileList
@@ -102,4 +103,8 @@ export const clearCacheFile = () => {
 			console.log('getSavedFileList Fail')
 		}
 	})
+	// #endif
+	// #ifdef H5
+	clearStore()
+	// #endif
 }
