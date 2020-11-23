@@ -169,7 +169,7 @@
           } else {
 						console.warn('###当前处于模拟的随机中奖概率，实际场景中，中奖概率应由后端控制###')
             // 这里随机产生的 prizeId 是模拟后端返回的 prizeId
-            let prizeId = Math.floor(Math.random() * list.length)
+            let prizeId = Math.floor(Math.random() * list.length + 1)
             list.forEach((item, index) => {
               if (item.prizeId === prizeId) {
                 // 中奖下标
