@@ -128,62 +128,73 @@
         
         let list = [...this.prizeList]
         
-        // 模拟请求
-        let stoTimer = setTimeout(() => {
-          clearTimeout(stoTimer)
-          stoTimer = null
+        // 判断是否由前端控制概率
+        // 前端控制概率的情况下，需要拿到最接近随机权重且大于随机权重的值
+        // 后端控制概率的情况下，通常会直接返回 prizeId
+        if (this.onFrontend) {
+        	if (!this.weightTotal) {
+        		console.warn('###当前已开启前端控制中奖概率，但是奖品数据列表中的 weight 参数似乎配置不正确###')
+        		return
+        	}
+          console.warn('###当前处于前端控制中奖概率，安全起见，强烈建议由后端控制###')
+          console.log('当前权重总和为 =>', this.weightTotal)
           
-          // 判断是否由前端控制概率
-          // 前端控制概率的情况下，需要拿到最接近随机权重且大于随机权重的值
-          // 后端控制概率的情况下，通常会直接返回 prizeId
-          if (this.onFrontend) {
-						if (!this.weightTotal) {
-							console.warn('###当前已开启前端控制中奖概率，但是奖品数据列表中的 weight 参数似乎配置不正确###')
-							return
-						}
-            console.warn('###当前处于前端控制中奖概率，安全起见，强烈建议由后端控制###')
-            console.log('当前权重总和为 =>', this.weightTotal)
-            
-            // 注意这里使用了 Math.ceil，如果某个权重的值为 0，则始终无法中奖
-            let weight = Math.ceil(Math.random() * this.weightTotal)
-            console.log('本次权重随机数 =>', weight)
-            
-            // 生成大于等于随机权重的数组
-            let tempMaxArrs = []
-            list.forEach((item) => {
-              if (item.weight >= weight) {
-                tempMaxArrs.push(item.weight)
-              }
-            })
-            
-            // 如果大于随机权重的数组有值，先对这个数组排序然后取值
-            // 反之新建一个临时的包含所有权重的已排序数组，然后取值
-            if (tempMaxArrs.length) {
-              tempMaxArrs.sort((a, b) => a - b)
-              this.prizeIndex = this.weightArr.indexOf(tempMaxArrs[0])
-            } else {
-              let tempWeightArr = [...this.weightArr]
-              tempWeightArr.sort((a, b) => a - b)
-              this.prizeIndex = this.weightArr.indexOf(tempWeightArr[tempWeightArr.length - 1])
+          // 注意这里使用了 Math.ceil，如果某个权重的值为 0，则始终无法中奖
+          let weight = Math.ceil(Math.random() * this.weightTotal)
+          console.log('本次权重随机数 =>', weight)
+          
+          // 生成大于等于随机权重的数组
+          let tempMaxArrs = []
+          list.forEach((item) => {
+            if (item.weight >= weight) {
+              tempMaxArrs.push(item.weight)
             }
+          })
+          
+          // 如果大于随机权重的数组有值，先对这个数组排序然后取值
+          // 反之新建一个临时的包含所有权重的已排序数组，然后取值
+          if (tempMaxArrs.length) {
+            tempMaxArrs.sort((a, b) => a - b)
+            this.prizeIndex = this.weightArr.indexOf(tempMaxArrs[0])
           } else {
-						console.warn('###当前处于模拟的随机中奖概率，实际场景中，中奖概率应由后端控制###')
+            let tempWeightArr = [...this.weightArr]
+            tempWeightArr.sort((a, b) => a - b)
+            this.prizeIndex = this.weightArr.indexOf(tempWeightArr[tempWeightArr.length - 1])
+          }
+        
+          console.log('本次抽中奖品 =>', this.prizeList[this.prizeIndex].name)
+          
+          // 如果奖品设有库存
+          if (this.onStock) {
+            console.log('本次奖品库存 =>', this.prizeList[this.prizeIndex].stock)
+          }
+        } else {
+          // 模拟请求获取中奖信息
+          let stoTimer = setTimeout(() => {
+            clearTimeout(stoTimer)
+            stoTimer = null
+            
+            console.warn('###当前处于模拟的随机中奖概率，实际场景中，中奖概率应由后端控制###')
             // 这里随机产生的 prizeId 是模拟后端返回的 prizeId
             let prizeId = Math.floor(Math.random() * list.length + 1)
-            list.forEach((item, index) => {
+            
+            for (let i = 0; i < list.length; i++) {
+              let item = list[i]
               if (item.prizeId === prizeId) {
                 // 中奖下标
-                this.prizeIndex = index
+                this.prizeIndex = i
+                break
               }
-            })
-          }
-          
-          console.log('本次抽中奖品 =>', this.prizeList[this.prizeIndex].name)
-					
-					if (this.onStock) {
-						console.log('本次奖品库存 =>', this.prizeList[this.prizeIndex].stock)
-					}
-        }, 200)
+            }
+            
+            console.log('本次抽中奖品 =>', this.prizeList[this.prizeIndex].name)
+            
+            // 如果奖品设有库存
+            if (this.onStock) {
+            	console.log('本次奖品库存 =>', this.prizeList[this.prizeIndex].stock)
+            }
+          }, 500)
+        }
       },
       // 本次抽奖结束
       handleDrawEnd () {
