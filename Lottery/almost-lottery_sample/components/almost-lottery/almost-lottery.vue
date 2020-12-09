@@ -239,6 +239,8 @@
     methods: {
       // 开始旋转
       onRotateStart() {
+        if (this.isRotate) return
+        this.isRotate = true
         // 奖品总数
         let prizeCount = this.prizeList.length
         let baseAngle = 360 / prizeCount
@@ -278,8 +280,6 @@
       },
       // 点击 开始抽奖 按钮
       handleActionStart() {
-        if (this.isRotate) return
-        this.isRotate = true
         this.$emit('draw-start')
       },
       // 渲染转盘
