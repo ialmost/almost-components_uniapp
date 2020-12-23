@@ -47,6 +47,8 @@
         prizeList: [],
         // 中奖下标
         prizeIndex: -1,
+        // 是否正在抽奖中
+        prizeing: false,
         // 中奖类目名称
         targetName: '',
 				// 奖品是否设有库存
@@ -124,6 +126,9 @@
 			},
       // 本次抽奖开始
       handleDrawStart () {
+        if (this.prizeing) return
+        this.prizeing = true
+        
         this.targetName = ''
         
         let list = [...this.prizeList]
@@ -198,6 +203,8 @@
       },
       // 本次抽奖结束
       handleDrawEnd () {
+        this.prizeing = false
+        
         // 旋转结束后，可以执行拿到结果后的逻辑
         let prizeName = this.prizeList[this.prizeIndex].name
 				

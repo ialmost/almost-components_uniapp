@@ -280,6 +280,7 @@
       },
       // 点击 开始抽奖 按钮
       handleActionStart() {
+        if (this.isRotate) return
         this.$emit('draw-start')
       },
       // 渲染转盘
