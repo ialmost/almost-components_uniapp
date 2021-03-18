@@ -15,6 +15,7 @@ yarn-error.log*
 .project
 .idea
 .vscode
+.hbuilderx
 *.zip
 *.suo
 *.ntvs*
