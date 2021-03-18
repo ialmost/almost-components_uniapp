@@ -31,8 +31,7 @@
 </template>
 
 <script>
-	import { pathToBase64 } from '@/almost-utils/image-tools.js'
-	import { getStore, setStore, clearStore, downloadFile } from '@/almost-utils/almost-utils.js'
+	import { getStore, setStore, clearStore, downloadFile, pathToBase64 } from '@/uni_modules/almost-lottery/utils/almost-utils.js'
   export default {
     name: 'AlmostLottery',
     props: {
@@ -647,8 +646,8 @@
 </script>
 
 <style lang="scss" scoped>
-  $lotteryBgUrl: '~static/almost-lottery/almost-lottery__bg';
-  $actionBgUrl: '~static/almost-lottery/almost-lottery__action';
+  $lotteryBgUrl: '@/uni_modules/almost-lottery/static/almost-lottery/almost-lottery__bg';
+  $actionBgUrl: '@/uni_modules/almost-lottery/static/almost-lottery/almost-lottery__action';
 
   .almost-lottery {
     display: flex;

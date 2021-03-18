@@ -1,9 +1,11 @@
 <template>
   <view class="home">
+    <!-- title -->
     <view class="home-title">
       <text class="home-title__text">almost-lottery</text>
     </view>
-    <view class="home-wheel">
+    <!-- lottery -->
+    <view class="home-lottery">
       <almost-lottery
         :prize-list="prizeList"
         :ring-count="2"
@@ -19,9 +21,11 @@
       />
       <text class="almost-lottery__tip" v-else>奖品准备中...</text>
     </view>
+    <!-- result -->
     <view class="home-result">
       <text class="home-result__text">{{ targetName }}</text>
     </view>
+    <!-- action -->
     <view class="home-action" @tap="handleInitCanvas">
       <text class="home-action__text">重新生成-测试用</text>
     </view>
@@ -29,8 +33,8 @@
 </template>
 
 <script>
-  import AlmostLottery from '@/components/almost-lottery/almost-lottery.vue'
-	import { clearCacheFile } from '@/almost-utils/almost-utils.js'
+  import AlmostLottery from '@/uni_modules/almost-lottery/components/almost-lottery/almost-lottery.vue'
+	import { clearCacheFile } from '@/uni_modules/almost-lottery/utils/almost-utils.js'
   export default {
     name: 'Home',
     components: {
@@ -111,7 +115,7 @@
 						resolve({
 							ok: true,
 							data: [
-								{ prizeId: 1, name: '0.1元现金', stock: 10, weight: 0, prizeImage: '/static/lottery-prize/git.png' },
+								{ prizeId: 1, name: '0.1元现金', stock: 10, weight: 0, prizeImage: '/static/git.png' },
 								{ prizeId: 2, name: '10元现金', stock: 0, weight: 0, prizeImage: 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/56f085e0-bcfe-11ea-b244-a9f5e5565f30.png' },
 								{ prizeId: 3, name: '5元话费', stock: 1, weight: 0 },
 								{ prizeId: 4, name: '50元现金', stock: 0, weight: 0 },
@@ -238,7 +242,6 @@
 </script>
 
 <style lang="scss" scoped>
-  $wheelBgUrl: '~static/almost-lottery/almost-lottery__bg';
   .home {
     padding: 50px 0;
   }
@@ -260,7 +263,7 @@
     font-size: 20px;
     font-weight: bold;
   }
-  .home-wheel {
+  .home-lottery {
     text-align: center;
   }
   .almost-lottery__tip {
