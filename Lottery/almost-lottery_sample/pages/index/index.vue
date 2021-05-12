@@ -10,6 +10,7 @@
         :prize-list="prizeList"
         :ring-count="2"
         :duration="1"
+        :font-size="10"
         :canvas-width="canvasData.width"
         :canvas-height="canvasData.height"
         :prize-index="prizeIndex"

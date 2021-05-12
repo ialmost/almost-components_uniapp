@@ -1,11 +1,12 @@
 {
   "id": "almost-lottery",
   "displayName": "Almost-Lottery抽奖转盘（Canvas 版）",
-  "version": "1.5.6",
+  "version": "1.5.8",
   "description": "Almost-Lottery抽奖转盘（Canvas 版），支持APP、小程序、H5",
   "keywords": [
     "转盘",
-    "抽奖"
+    "抽奖",
+    "大转盘抽奖"
 ],
   "repository": "https://github.com/ialmost/almost-components_uniapp",
   "engines": {
