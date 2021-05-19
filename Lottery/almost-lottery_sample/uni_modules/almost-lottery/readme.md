@@ -128,6 +128,7 @@ line-height | 奖品名称多行情况下的行高 | *`Number`* | `16`
 str-key | 奖品名称所对应的键名 `key` ，比如 `{ name: '88元现金' }`，`str-key` 就是 `'name'` | *`String`* | `'name'`
 str-max-len | 奖品名称长度限制 | *`Number`* | `12`
 str-line-len | 奖品名称在多行情况下第一行文字的长度 | *`Number`* | `6`
+strMarginOutside | 奖品文字距离边缘的距离 | *`Number`* | `font-size` 的一半
 image-width | 奖品图片的宽度 | *`Number`* | `30`
 image-height | 奖品图片的高度 | *`Number`* | `30`
 successMsg | 转盘绘制成功的提示 | *`String`* | `'奖品准备就绪，快来参与抽奖吧'`

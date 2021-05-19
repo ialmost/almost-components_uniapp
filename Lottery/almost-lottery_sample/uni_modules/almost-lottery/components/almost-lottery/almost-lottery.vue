@@ -94,6 +94,11 @@
         type: Number,
         default: 12
       },
+      // 奖品文字距离边缘的距离
+      strMarginOutside: {
+        type: Number,
+        default: 0
+      },
       // 奖品文字多行情况下的行高
       lineHeight: {
         type: Number,
@@ -194,9 +199,9 @@
       insideRadius() {
         return 20
       },
-      // 字体的半径
+      // 文字距离边缘的距离
       textRadius() {
-        return this.fontSize / 2
+        return this.strMarginOutside || (this.fontSize / 2)
       },
       // 根据画板的宽度计算奖品文字与中心点的距离
       textDistance() {
@@ -359,7 +364,6 @@
           // 设置文本位置并处理换行
           // 是否需要换行
           let isLineBreak = rewardName.length > this.strLineLen
-          let textOffsetX = this.fontSize === 12 ? 0 : this.textRadius
           if (isLineBreak) {
             // 获得多行文本数组
             rewardName = rewardName.substring(0, this.strLineLen) + ',' + rewardName.substring(this.strLineLen)
@@ -370,7 +374,8 @@
               if (ctx.measureText && ctx.measureText(rewardNames[j]).width) {
                 // 文本的宽度信息
                 let tempStrSize = ctx.measureText(rewardNames[j])
-                ctx.fillText(rewardNames[j], -(tempStrSize.width / 2 + textOffsetX), j * this.lineHeight)
+                let tempStrWidth = -(tempStrSize.width / 2).toFixed(2)
+                ctx.fillText(rewardNames[j], tempStrWidth, j * this.lineHeight)
               } else {
                 this.measureText = rewardNames[j]
 
@@ -378,8 +383,8 @@
                 await this.$nextTick()
 
                 let textWidth = await this.getTextWidth()
-
-                ctx.fillText(rewardNames[j], -(textWidth / 2 + textOffsetX), j * this.lineHeight)
+                let tempStrWidth = -(textWidth / 2).toFixed(2)
+                ctx.fillText(rewardNames[j], tempStrWidth, j * this.lineHeight)
                 // console.log(rewardNames[j], textWidth, i)
               }
             }
@@ -387,7 +392,8 @@
             if (ctx.measureText && ctx.measureText(rewardName).width) {
               // 文本的宽度信息
               let tempStrSize = ctx.measureText(rewardName)
-              ctx.fillText(rewardName, -(tempStrSize.width / 2 + textOffsetX), 0)
+              let tempStrWidth = -(tempStrSize.width / 2).toFixed(2)
+              ctx.fillText(rewardName, tempStrWidth, 0)
             } else {
               this.measureText = rewardName
 
@@ -395,7 +401,8 @@
               await this.$nextTick()
 
               let textWidth = await this.getTextWidth()
-              ctx.fillText(rewardName, -(textWidth / 2 + textOffsetX), 0)
+              let tempStrWidth = -(textWidth / 2).toFixed(2)
+              ctx.fillText(rewardName, tempStrWidth, 0)
             }
           }
 
