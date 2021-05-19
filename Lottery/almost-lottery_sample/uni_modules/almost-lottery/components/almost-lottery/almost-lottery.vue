@@ -204,8 +204,8 @@
         return textZeroY - this.textRadius
       },
       // 设备像素密度
-      pixelRatio() {
-        return uni.getSystemInfoSync().pixelRatio
+      systemInfo() {
+        return uni.getSystemInfoSync()
       },
 			// 内圈与外圈的距离
 			canvasMarginTotal () {
@@ -439,8 +439,8 @@
 
             // #ifdef MP-ALIPAY
             ctx.toTempFilePath({
-              destWidth: this.canvasWidth * this.pixelRatio,
-              destHeight: this.canvasHeight * this.pixelRatio,
+              destWidth: this.canvasWidth,
+              destHeight: this.canvasHeight,
               success: (res) => {
                 // console.log(res.apFilePath)
                 this.handlePrizeImg({
@@ -460,8 +460,8 @@
             // #endif
             // #ifndef MP-ALIPAY
             uni.canvasToTempFilePath({
-              destWidth: this.canvasWidth * this.pixelRatio,
-              destHeight: this.canvasHeight * this.pixelRatio,
+              destWidth: this.canvasWidth * this.systemInfo.pixelRatio,
+              destHeight: this.canvasHeight * this.systemInfo.pixelRatio,
               canvasId: this.canvasId,
               success: (res) => {
                 // 在 H5 平台下，tempFilePath 为 base64
@@ -549,10 +549,13 @@
 					}
 					// #endif
 					// #ifdef H5
-					console.info('当前为 H5 端，直接使用导出的/缓存中的 base64 图')
 					setStore('lotteryImg', data)
 					this.lotteryImg = data
 					this.handlePrizeImgSuc(res)
+          
+          // console info
+          let consoleText = this.isCacheImg ? '缓存' : '导出'
+          console.info(`当前为 H5 端，使用${consoleText}中的 base64 图`)
 					// #endif
 				} else {
 					console.error('处理导出的图片失败', res)
