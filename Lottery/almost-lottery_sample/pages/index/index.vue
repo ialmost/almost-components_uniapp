@@ -116,14 +116,14 @@
 						resolve({
 							ok: true,
 							data: [
-								{ prizeId: 1, name: '0.1元现金', stock: 10, weight: 0, prizeImage: '/static/git.png' },
+								{ prizeId: 1, name: '0.1元现金', stock: 10, weight: 1, prizeImage: '/static/git.png' },
 								{ prizeId: 2, name: '10元现金', stock: 0, weight: 0, prizeImage: 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/56f085e0-bcfe-11ea-b244-a9f5e5565f30.png' },
 								{ prizeId: 3, name: '5元话费', stock: 1, weight: 0 },
 								{ prizeId: 4, name: '50元现金', stock: 0, weight: 0 },
 								{ prizeId: 5, name: '1卷抽纸', stock: 3, weight: 0 },
 								{ prizeId: 6, name: '0.2元现金', stock: 8, weight: 0 },
-								{ prizeId: 7, name: '谢谢参与', stock: 100, weight: 0 },
-								{ prizeId: 8, name: '100金币', stock: 100, weight: 0 }
+								{ prizeId: 7, name: '谢谢参与', stock: 100, weight: 10000 },
+								{ prizeId: 8, name: '100金币', stock: 100, weight: 10000 }
 							]
 						})
 					}, 2000)
@@ -163,9 +163,36 @@
           
           // 如果大于随机权重的数组有值，先对这个数组排序然后取值
           // 反之新建一个临时的包含所有权重的已排序数组，然后取值
-          if (tempMaxArrs.length) {
+          let tempMaxArrsLen = tempMaxArrs.length
+          if (tempMaxArrsLen) {
             tempMaxArrs.sort((a, b) => a - b)
-            this.prizeIndex = this.weightArr.indexOf(tempMaxArrs[0])
+            // 取值时，如果存在多个值，分两种情况
+            if (tempMaxArrsLen > 1) {
+              // 值不相等的情况下取最接近的值，也就是第1个值
+              let sumWeight = tempMaxArrs.reduce((a, b) => a + b)
+              if ((sumWeight / tempMaxArrsLen) !== tempMaxArrs[0]) {
+                this.prizeIndex = this.weightArr.indexOf(tempMaxArrs[0])
+              } else {
+                // 值相等时，随机取值，当然这里你可以自己决定是否随机取值
+                let sameWeight = tempMaxArrs[0]
+                let sameWeightArr = []
+                let sameWeightItem = {}
+                this.weightArr.forEach((item, index) => {
+                  if (item === sameWeight) {
+                    sameWeightArr.push({
+                      weight: item,
+                      index
+                    })
+                  }
+                })
+                console.log('sameWeightArr', sameWeightArr)
+                sameWeightItem = sameWeightArr[Math.floor(Math.random() * sameWeightArr.length)]
+                console.log('sameWeightItem', sameWeightItem)
+                this.prizeIndex = sameWeightItem.index
+              }
+            } else {
+              this.prizeIndex = this.weightArr.indexOf(tempMaxArrs[0])
+            }
           } else {
             let tempWeightArr = [...this.weightArr]
             tempWeightArr.sort((a, b) => a - b)

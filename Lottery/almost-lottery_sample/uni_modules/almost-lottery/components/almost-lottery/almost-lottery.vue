@@ -204,8 +204,8 @@
         return textZeroY - this.textRadius
       },
       // 设备像素密度
-      pixelRatio() {
-        return uni.getSystemInfoSync().pixelRatio
+      systemInfo() {
+        return uni.getSystemInfoSync()
       },
 			// 内圈与外圈的距离
 			canvasMarginTotal () {
@@ -483,8 +483,8 @@
             // #endif
             // #ifdef APP-PLUS || H5
             uni.canvasToTempFilePath({
-              destWidth: this.canvasWidth * this.pixelRatio,
-              destHeight: this.canvasHeight * this.pixelRatio,
+              destWidth: this.canvasWidth * this.systemInfo.pixelRatio,
+              destHeight: this.canvasHeight * this.systemInfo.pixelRatio,
               canvasId: this.canvasId,
               success: (res) => {
                 // 在 H5 平台下，tempFilePath 为 base64
