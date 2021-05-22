@@ -45,8 +45,11 @@
 // template
 // @reset-index="prizeIndex = -1" 必须默认写入到 template 中，不可删除
 <almost-lottery
-  :prize-list="prizeList"
-  :prize-index="prizeIndex"
+  :strFontSize="10"
+  :ringCount="2"
+  :duration="1"
+  :prizeList="prizeList"
+  :prizeIndex="prizeIndex"
   @reset-index="prizeIndex = -1"
   @draw-start="handleDrawStart"
   @draw-end="handleDrawEnd"
@@ -114,23 +117,24 @@ export default {
 #### Props
 参数 | 说明 | 类型 | 默认值
 :---|:---|:---|:---
-canvas-width | Canvas 的宽度 | *`Number`* | `240`
-canvas-height | Canvas 的高度 | *`Number`* | `240`
-prize-index | 获奖奖品在奖品列表中的序号，**每次抽奖结束后会自动重置为 `-1`** | *`Number`* | `-1`
-prize-list | 奖品列表，支持奇数（尽量能被 `360` 除尽），**为奇数时需要重设 `colors` 参数** | *`Array`* | -
+canvasWidth | Canvas 的宽度 | *`Number`* | `240`
+canvasHeight | Canvas 的高度 | *`Number`* | `240`
+prizeIndex | 获奖奖品在奖品列表中的序号，**每次抽奖结束后会自动重置为 `-1`** | *`Number`* | `-1`
+prizeList | 奖品列表，支持奇数（尽量能被 `360` 除尽），**为奇数时需要重设 `colors` 参数** | *`Array`* | -
 colors | 奖品区块对应的背景颜色，默认 2 个颜色相互交替，**也可以对每个区块设置不同颜色** | *`Array`* | `['#FFFFFF', '#FFE9AA']`
+strokeColor | 奖品区块边框颜色 | *`String`* | `'#FFE9AA'`
 duration | 转盘旋转的动画时长，单位：秒 | *`Number`* | `8`
-ring-count | 旋转的圈数 | *`Number`* | `8`
-pointer-position | 点击抽奖按钮指针的位置，可选值 `'edge'` => 指向边界 `'middle'` => 指向中间 | *`String`* | `'edge'`
-font-color | 奖品名称的颜色 | *`String`* | `'#C30B29'`
-font-size | 奖品名称的字号 | *`Number`* | `12`
-line-height | 奖品名称多行情况下的行高 | *`Number`* | `16`
-str-key | 奖品名称所对应的键名 `key` ，比如 `{ name: '88元现金' }`，`str-key` 就是 `'name'` | *`String`* | `'name'`
-str-max-len | 奖品名称长度限制 | *`Number`* | `12`
-str-line-len | 奖品名称在多行情况下第一行文字的长度 | *`Number`* | `6`
+ringCount | 旋转的圈数 | *`Number`* | `8`
+pointerPosition | 点击抽奖按钮指针的位置，可选值 `'edge'` => 指向边界 `'middle'` => 指向中间 | *`String`* | `'edge'`
+strFontColor | 奖品名称的颜色 | *`String`* | `'#C30B29'`
+strFontSize | 奖品名称的字号 | *`Number`* | `12`
+strLineHeight | 奖品名称多行情况下的行高 | *`Number`* | `16`
+strKey | 奖品称所对应的键名 `key` ，比如 `{ name: '88元现金' }`，`str-key` 就是 `'name'` | *`String`* | `'name'`
+strMaxLen | 奖品名称长度限制 | *`Number`* | `12`
+strLineLen | 奖品名称在多行情况下第一行文字的长度 | *`Number`* | `6`
 strMarginOutside | 奖品文字距离边缘的距离 | *`Number`* | `font-size` 的一半
-image-width | 奖品图片的宽度 | *`Number`* | `30`
-image-height | 奖品图片的高度 | *`Number`* | `30`
+imageWidth | 奖品图片的宽度 | *`Number`* | `30`
+imageHeight | 奖品图片的高度 | *`Number`* | `30`
 successMsg | 转盘绘制成功的提示 | *`String`* | `'奖品准备就绪，快来参与抽奖吧'`
 failMsg | 转盘绘制失败的提示 | *`String`* | `'奖品仍在准备中，请稍后再来...'`
 canvasCached | 是否开启缓存，避免在数据不变的情况下重复绘制 | *`Boolean`* | `true`

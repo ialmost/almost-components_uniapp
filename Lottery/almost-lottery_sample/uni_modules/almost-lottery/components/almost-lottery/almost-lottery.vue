@@ -66,6 +66,11 @@
           '#FFE9AA'
         ]
       },
+      // 描边颜色
+      strokeColor: {
+        type: String,
+        default: '#FFE9AA'
+      },
       // 旋转动画时间 单位s
       duration: {
         type: Number,
@@ -85,12 +90,12 @@
         }
       },
       // 字体颜色
-      fontColor: {
+      strFontColor: {
         type: String,
         default: '#C30B29'
       },
       // 文字的大小
-      fontSize: {
+      strFontSize: {
         type: Number,
         default: 12
       },
@@ -100,7 +105,7 @@
         default: 0
       },
       // 奖品文字多行情况下的行高
-      lineHeight: {
+      strLineHeight: {
         type: Number,
         default: 16
       },
@@ -201,7 +206,7 @@
       },
       // 文字距离边缘的距离
       textRadius() {
-        return this.strMarginOutside || (this.fontSize / 2)
+        return this.strMarginOutside || (this.strFontSize / 2)
       },
       // 根据画板的宽度计算奖品文字与中心点的距离
       textDistance() {
@@ -302,16 +307,16 @@
         let baseAngle = Math.PI * 2 / prizeCount
 
         // 设置描边颜色
-        ctx.setStrokeStyle('#FFBE04')
+        ctx.setStrokeStyle(`${this.strokeColor}`)
 
         // 设置字体和字号
         // #ifndef MP
         let fontFamily =
           '-apple-system, BlinkMacSystemFont, \'PingFang SC\', \'Helvetica Neue\', STHeiti, \'Microsoft Yahei\', Tahoma, Simsun, sans-serif'
-        ctx.font = `${this.fontSize}px ${fontFamily}`
+        ctx.font = `${this.strFontSize}px ${fontFamily}`
         // #endif
         // #ifdef MP
-        ctx.setFontSize(this.fontSize)
+        ctx.setFontSize(this.strFontSize)
         // #endif
 
         // 注意，开始画的位置是从0°角的位置开始画的。也就是水平向右的方向。
@@ -323,22 +328,31 @@
 
           // 保存当前画布的状态
           ctx.save()
-
-          // 开始画内容
-          ctx.beginPath()
-
+          
           // 开始画圆弧
+          ctx.beginPath()
+          
           // x => 圆弧对应的圆心横坐标 x
           // y => 圆弧对应的圆心横坐标 y
           // radius => 圆弧的半径大小
           // startAngle => 圆弧开始的角度，单位是弧度
           // endAngle => 圆弧结束的角度，单位是弧度
           // anticlockwise(可选) => 绘制方向，true 为逆时针，false 为顺时针
+          
+          // 外圆边框
           ctx.arc(canvasW * 0.5, canvasH * 0.5, this.outsideRadius, angle, angle + baseAngle, false)
-          ctx.arc(canvasW * 0.5, canvasH * 0.5, this.insideRadius, angle + baseAngle, angle, true)
-
-          // 开始链接线条
           ctx.stroke()
+          // 内圆边框
+          ctx.arc(canvasW * 0.5, canvasH * 0.5, this.insideRadius, angle + baseAngle, angle, true)
+          ctx.stroke()
+          
+          // 区块边框
+          ctx.arc(canvasW * 0.5, canvasH * 0.5, this.outsideRadius, angle, angle + baseAngle, false)
+          ctx.stroke()
+          
+          ctx.arc(canvasW * 0.5, canvasH * 0.5, this.insideRadius, angle + baseAngle, angle, true)
+          ctx.stroke()
+          
           // 每个奖品区块背景填充颜色
           if (this.colors.length === 2) {
             ctx.setFillStyle(this.colors[i % 2])
@@ -355,7 +369,7 @@
           ctx.translate(translateX, translateY)
 
           // 绘制奖品名称
-          ctx.setFillStyle(this.fontColor)
+          ctx.setFillStyle(this.strFontColor)
           let rewardName = this.strLimit(prizeItem[this.strKey])
 
           // rotate方法旋转当前的绘图，因为文字是和当前扇形中心线垂直的
@@ -375,7 +389,7 @@
                 // 文本的宽度信息
                 let tempStrSize = ctx.measureText(rewardNames[j])
                 let tempStrWidth = -(tempStrSize.width / 2).toFixed(2)
-                ctx.fillText(rewardNames[j], tempStrWidth, j * this.lineHeight)
+                ctx.fillText(rewardNames[j], tempStrWidth, j * this.strLineHeight)
               } else {
                 this.measureText = rewardNames[j]
 
@@ -384,7 +398,7 @@
 
                 let textWidth = await this.getTextWidth()
                 let tempStrWidth = -(textWidth / 2).toFixed(2)
-                ctx.fillText(rewardNames[j], tempStrWidth, j * this.lineHeight)
+                ctx.fillText(rewardNames[j], tempStrWidth, j * this.strLineHeight)
                 // console.log(rewardNames[j], textWidth, i)
               }
             }
