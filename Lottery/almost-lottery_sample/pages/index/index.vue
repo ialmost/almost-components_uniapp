@@ -82,7 +82,8 @@
           title: '奖品准备中...'
         })
 				
-        let res = await this.requestPrizeList()
+        // 等待接口返回的数据进一步处理
+        let res = await this.requestApiGetPrizeList()
 				console.log('获取奖品列表', res)
 				
 				if (res.ok) {
@@ -106,8 +107,9 @@
 					})
 				}
       },
-			// 模拟请求奖品列表接口
-			requestPrizeList () {
+			// 模拟请求 获取奖品列表 接口，
+      // 注意这里返回的是一个 Promise
+			requestApiGetPrizeList () {
 				return new Promise((resolve, reject) => {
 					let requestTimer = setTimeout(() => {
 						clearTimeout(requestTimer)
@@ -260,7 +262,7 @@
       }
     },
     onLoad () {
-      // 模拟请求奖品数据
+      // 请求奖品数据
       this.getPrizeList()
     },
     onUnload () {

@@ -1,32 +1,54 @@
 <template>
-  <view class="almost-lottery" :style="{ width: canvasWidth + 40 + 'px', height: canvasHeight + 40 + 'px'}">
-    <view class="almost-lottery__wrap" :style="{width: canvasWidth + canvasMarginTotal + 'px', height: canvasHeight + canvasMarginTotal + 'px'}">
-      <!-- #ifdef MP-ALIPAY -->
-      <canvas :class="className" :id="canvasId" :width="canvasWidth" :height="canvasHeight" :style="{
-         width: canvasWidth + 'px',
-         height: canvasHeight + 'px'
-       }" />
-      <!-- #endif -->
-      <!-- #ifndef MP-ALIPAY -->
-      <canvas :class="className" :canvas-id="canvasId" :width="canvasWidth" :height="canvasHeight" :style="{
-         width: canvasWidth + 'px',
-         height: canvasHeight + 'px'
-       }" />
-      <!-- #endif -->
-      <image class="canvas-img" :src="lotteryImg" :style="{
-         width: canvasWidth + canvasMarginTotal + 'px',
-         height: canvasHeight + canvasMarginTotal + 'px',
-         transform: `rotate(${canvasAngle + targetAngle}deg)`,
-         transitionDuration: `${transitionDuration}s`
-       }"
-        v-if="lotteryImg"></image>
-      <view class="almost-lottery__action" :style="{
-         width: actionSize + 'px',
-         height: actionSize + 'px'
-       }" @click="handleActionStart"></view>
+  <view class="almost-lottery">
+    <view class="almost-lottery__wrap" :style="{ width: canvasWidth + 40 + 'px', height: canvasWidth + 40 + 'px'}">
+      <image
+        class="canvas-img"
+        mode="widthFix"
+        :src="lotteryImg"
+        :style="{
+          width: canvasWidth + canvasMarginTotal + 'px',
+          height: canvasWidth + canvasMarginTotal + 'px',
+          transform: `rotate(${canvasAngle + targetAngle}deg)`,
+          transitionDuration: `${transitionDuration}s`
+        }"
+        v-if="lotteryImg"
+      ></image>
+      <view
+        class="almost-lottery__action"
+        :style="{
+          width: actionSize + 'px',
+          height: actionSize + 'px'
+        }"
+        @click="handleActionStart"
+      ></view>
       <!-- 为了兼容 app 端 ctx.measureText 所需的标签 -->
       <text class="almost-lottery__measureText">{{ measureText }}</text>
     </view>
+    
+    <!-- #ifdef MP-ALIPAY -->
+    <canvas 
+      :class="className"
+      :id="canvasId"
+      :width="higtCanvasSize"
+      :height="higtCanvasSize"
+      :style="{
+        width: higtCanvasSize + 'px',
+        height: higtCanvasSize + 'px'
+      }"
+    />
+    <!-- #endif -->
+    <!-- #ifndef MP-ALIPAY -->
+    <canvas
+      :class="className"
+      :canvas-id="canvasId"
+      :width="higtCanvasSize"
+      :height="higtCanvasSize"
+      :style="{
+        width: higtCanvasSize + 'px',
+        height: higtCanvasSize + 'px'
+      }"
+    />
+    <!-- #endif -->
   </view>
 </template>
 
@@ -66,6 +88,11 @@
           '#FFE9AA'
         ]
       },
+      // 是否开启奖品区块描边
+      stroked: {
+				type: Boolean,
+				default: false
+			},
       // 描边颜色
       strokeColor: {
         type: String,
@@ -147,7 +174,7 @@
 			// 是否开启画板的缓存
 			canvasCached: {
 				type: Boolean,
-				default: true
+				default: false
 			},
 			// 内圈与外圈的间距
 			canvasMargin: {
@@ -182,6 +209,18 @@
       }
     },
     computed: {
+      // 设备像素密度
+      systemInfo() {
+        return uni.getSystemInfoSync()
+      },
+      // 高清尺寸
+      higtCanvasSize() {
+        return this.canvasWidth * this.systemInfo.pixelRatio
+      },
+      // 高清字体
+      higtFontSize() {
+        return this.strFontSize * this.systemInfo.pixelRatio
+      },
       // 根据奖品列表计算 canvas 旋转角度
       canvasAngle() {
         let prizeCount = this.prizeList.length
@@ -198,27 +237,23 @@
       },
       // 外圆的半径
       outsideRadius() {
-        return this.canvasWidth / 2
+        return this.higtCanvasSize / 2
       },
       // 内圆的半径
       insideRadius() {
-        return 20
+        return 20 * this.systemInfo.pixelRatio
       },
       // 文字距离边缘的距离
       textRadius() {
-        return this.strMarginOutside || (this.strFontSize / 2)
+        return this.strMarginOutside * this.systemInfo.pixelRatio || (this.higtFontSize / 2)
       },
       // 根据画板的宽度计算奖品文字与中心点的距离
       textDistance() {
         const textZeroY = Math.round(this.outsideRadius - (this.insideRadius / 2))
         return textZeroY - this.textRadius
       },
-      // 设备像素密度
-      systemInfo() {
-        return uni.getSystemInfoSync()
-      },
 			// 内圈与外圈的距离
-			canvasMarginTotal () {
+			canvasMarginTotal() {
 				let diffNum = 5
 				let margin = this.canvasMargin * 2
 				if (this.canvasWidth > 240) {
@@ -230,7 +265,7 @@
 				}
 			},
 			// 抽奖按钮的宽高
-			actionSize () {
+			actionSize() {
 				return this.canvasWidth / 2.4
 			}
     },
@@ -299,24 +334,21 @@
         const ctx = uni.createCanvasContext(canvasId, this)
 
         // canvas 的宽高
-        let canvasW = this.canvasWidth
-        let canvasH = this.canvasHeight
+        let canvasW = this.higtCanvasSize
+        let canvasH = this.higtCanvasSize
 
         // 根据奖品个数计算 角度
         let prizeCount = this.prizeList.length
         let baseAngle = Math.PI * 2 / prizeCount
 
-        // 设置描边颜色
-        ctx.setStrokeStyle(`${this.strokeColor}`)
-
         // 设置字体和字号
         // #ifndef MP
         let fontFamily =
           '-apple-system, BlinkMacSystemFont, \'PingFang SC\', \'Helvetica Neue\', STHeiti, \'Microsoft Yahei\', Tahoma, Simsun, sans-serif'
-        ctx.font = `${this.strFontSize}px ${fontFamily}`
+        ctx.font = `${this.higtFontSize}px ${fontFamily}`
         // #endif
         // #ifdef MP
-        ctx.setFontSize(this.strFontSize)
+        ctx.setFontSize(this.higtFontSize)
         // #endif
 
         // 注意，开始画的位置是从0°角的位置开始画的。也就是水平向右的方向。
@@ -329,9 +361,6 @@
           // 保存当前画布的状态
           ctx.save()
           
-          // 开始画圆弧
-          ctx.beginPath()
-          
           // x => 圆弧对应的圆心横坐标 x
           // y => 圆弧对应的圆心横坐标 y
           // radius => 圆弧的半径大小
@@ -339,19 +368,11 @@
           // endAngle => 圆弧结束的角度，单位是弧度
           // anticlockwise(可选) => 绘制方向，true 为逆时针，false 为顺时针
           
-          // 外圆边框
+          ctx.beginPath()
+          // 外圆
           ctx.arc(canvasW * 0.5, canvasH * 0.5, this.outsideRadius, angle, angle + baseAngle, false)
-          ctx.stroke()
-          // 内圆边框
+          // 内圆
           ctx.arc(canvasW * 0.5, canvasH * 0.5, this.insideRadius, angle + baseAngle, angle, true)
-          ctx.stroke()
-          
-          // 区块边框
-          ctx.arc(canvasW * 0.5, canvasH * 0.5, this.outsideRadius, angle, angle + baseAngle, false)
-          ctx.stroke()
-          
-          ctx.arc(canvasW * 0.5, canvasH * 0.5, this.insideRadius, angle + baseAngle, angle, true)
-          ctx.stroke()
           
           // 每个奖品区块背景填充颜色
           if (this.colors.length === 2) {
@@ -361,6 +382,14 @@
           }
           // 填充颜色
           ctx.fill()
+          
+          // 开启描边
+          if (this.stroked) {
+            // 设置描边颜色
+            ctx.setStrokeStyle(`${this.strokeColor}`)
+            // 描边
+            ctx.stroke()
+          }
 
           // 开始绘制奖品内容
           // 重新映射画布上的 (0,0) 位置
@@ -446,7 +475,7 @@
 							// #endif
 						}
 						
-            ctx.drawImage(prizeItem.prizeImage, -(this.imageWidth / 2), canvasW / 10, this.imageWidth, this.imageHeight)
+            ctx.drawImage(prizeItem.prizeImage, -(this.imageWidth * this.systemInfo.pixelRatio / 2), canvasW / 10, this.imageWidth * this.systemInfo.pixelRatio, this.imageHeight * this.systemInfo.pixelRatio)
           }
 
           ctx.restore()
@@ -460,8 +489,8 @@
 
             // #ifdef MP-ALIPAY
             ctx.toTempFilePath({
-              destWidth: this.canvasWidth,
-              destHeight: this.canvasHeight,
+              destWidth: this.canvasWidth * this.systemInfo.pixelRatio,
+              destHeight: this.canvasHeight * this.systemInfo.pixelRatio,
               success: (res) => {
                 // console.log(res.apFilePath)
                 this.handlePrizeImg({
@@ -479,33 +508,9 @@
 							}
             })
             // #endif
-            // #ifdef MP
+            
+            // #ifndef MP-ALIPAY
             uni.canvasToTempFilePath({
-              destWidth: this.canvasWidth,
-              destHeight: this.canvasHeight,
-              canvasId: this.canvasId,
-              success: (res) => {
-                // 在 H5 平台下，tempFilePath 为 base64
-                // console.log(res.tempFilePath)
-                this.handlePrizeImg({
-									ok: true,
-									data: res.tempFilePath,
-									msg: '画布导出生成图片成功'
-								})
-              },
-							fail: (err) => {
-                this.handlePrizeImg({
-									ok: false,
-									data: err,
-									msg: '画布导出生成图片失败'
-								})
-							}
-            }, this)
-            // #endif
-            // #ifdef APP-PLUS || H5
-            uni.canvasToTempFilePath({
-              destWidth: this.canvasWidth * this.systemInfo.pixelRatio,
-              destHeight: this.canvasHeight * this.systemInfo.pixelRatio,
               canvasId: this.canvasId,
               success: (res) => {
                 // 在 H5 平台下，tempFilePath 为 base64
