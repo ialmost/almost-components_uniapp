@@ -1,6 +1,7 @@
 <template>
   <view :class="['almost-lottery', lotteryBg && 'almost-lottery__custom']">
     <view class="almost-lottery__wrap" :style="{ width: canvasWidth + 40 + 'px', height: canvasWidth + 40 + 'px'}">
+      <image :src="lotteryBg" mode="widthFix" class="almost-lottery__bg-outside" :style="{ width: canvasWidth + 40 + 'px', height: canvasWidth + 40 + 'px'}"></image>
       <image
         class="canvas-img"
         mode="widthFix"
@@ -13,6 +14,7 @@
         }"
         v-if="lotteryImg"
       ></image>
+      <image :src="actionBg" mode="widthFix" class="almost-lottery__bg-action" :style="{ width: actionSize + 'px', height: actionSize + 'px'}" v-if="actionBg" @click="handleActionStart"></image>
       <view
         :class="['almost-lottery__action', actionBg && 'almost-lottery__action-custom']"
         :style="{
@@ -20,6 +22,7 @@
           height: actionSize + 'px'
         }"
         @click="handleActionStart"
+        v-else
       ></view>
       <!-- 为了兼容 app 端 ctx.measureText 所需的标签 -->
       <text class="almost-lottery__measureText">{{ measureText }}</text>
@@ -783,5 +786,11 @@
 	.almost-lottery__custom,
   .almost-lottery__action-custom {
     background: none;
+  }
+  .almost-lottery__bg-outside {
+    position: absolute;
+  }
+  .almost-lottery__bg-action {
+    position: absolute;
   }
 </style>

@@ -19,6 +19,8 @@
         :canvasHeight="canvasData.height"
         :ringCount="2"
         :duration="1"
+        :lotteryBg="lotteryBg"
+        :actionBg="actionBg"
         :prizeList="prizeList"
         :prizeIndex="prizeIndex"
         @reset-index="prizeIndex = -1"
@@ -95,6 +97,9 @@
         prizeList: [],
         // 中奖下标
         prizeIndex: -1,
+        // 背景图
+        lotteryBg: 'https://raw.githubusercontent.com/ialmost/almost-components_uniapp/dev/Lottery/almost-lottery_sample/static/lottery-bg.png',
+        actionBg: 'https://raw.githubusercontent.com/ialmost/almost-components_uniapp/dev/Lottery/almost-lottery_sample/static/action-bg.png',
 				// 奖品是否设有库存
 				onStock: true,
         
