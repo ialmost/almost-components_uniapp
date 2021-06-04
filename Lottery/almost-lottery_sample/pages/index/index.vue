@@ -9,9 +9,9 @@
       <view class="tip"><text class="tip-content">每次抽奖消耗 {{ goldNum }} 金币，不限次数</text></view>
     </view>
     <!-- action -->
-    <view class="almost-action" @tap="handleInitCanvas" v-if="isDev">
+    <!-- <view class="almost-action" @tap="handleInitCanvas" v-if="isDev">
       <text class="text">重新生成画板-开发模式使用</text>
-    </view>
+    </view> -->
     <!-- lottery -->
     <view class="almost-lottery__wheel">
       <almost-lottery
@@ -19,8 +19,6 @@
         :canvasHeight="canvasData.height"
         :ringCount="2"
         :duration="1"
-        :lotteryBg="lotteryBg"
-        :actionBg="actionBg"
         :prizeList="prizeList"
         :prizeIndex="prizeIndex"
         @reset-index="prizeIndex = -1"
