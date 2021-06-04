@@ -1,5 +1,5 @@
 <template>
-  <view class="almost-lottery">
+  <view :class="['almost-lottery', lotteryBg && 'almost-lottery__custom']">
     <view class="almost-lottery__wrap" :style="{ width: canvasWidth + 40 + 'px', height: canvasWidth + 40 + 'px'}">
       <image
         class="canvas-img"
@@ -14,7 +14,7 @@
         v-if="lotteryImg"
       ></image>
       <view
-        class="almost-lottery__action"
+        :class="['almost-lottery__action', actionBg && 'almost-lottery__action-custom']"
         :style="{
           width: actionSize + 'px',
           height: actionSize + 'px'
@@ -88,6 +88,16 @@
           '#FFE9AA'
         ]
       },
+      // 转盘外环背景图
+      lotteryBg: {
+        type: String,
+        default: ''
+      },
+      // 抽奖按钮背景图
+      actionBg: {
+        type: String,
+        default: ''
+      },
       // 是否开启奖品区块描边
       stroked: {
 				type: Boolean,
@@ -132,9 +142,9 @@
         default: 0
       },
       // 奖品文字多行情况下的行高
-      strLineHeight: {
+      strHeightMultiple: {
         type: Number,
-        default: 16
+        default: 1.2
       },
       // 奖品名称所对应的 key 值
       strKey: {
@@ -220,6 +230,10 @@
       // 高清字体
       higtFontSize() {
         return this.strFontSize * this.systemInfo.pixelRatio
+      },
+      // 高清行高
+      higtHeightMultiple() {
+        return this.strFontSize * this.strHeightMultiple * this.systemInfo.pixelRatio
       },
       // 根据奖品列表计算 canvas 旋转角度
       canvasAngle() {
@@ -418,7 +432,7 @@
                 // 文本的宽度信息
                 let tempStrSize = ctx.measureText(rewardNames[j])
                 let tempStrWidth = -(tempStrSize.width / 2).toFixed(2)
-                ctx.fillText(rewardNames[j], tempStrWidth, j * this.strLineHeight)
+                ctx.fillText(rewardNames[j], tempStrWidth, j * this.higtHeightMultiple)
               } else {
                 this.measureText = rewardNames[j]
 
@@ -427,7 +441,7 @@
 
                 let textWidth = await this.getTextWidth()
                 let tempStrWidth = -(textWidth / 2).toFixed(2)
-                ctx.fillText(rewardNames[j], tempStrWidth, j * this.strLineHeight)
+                ctx.fillText(rewardNames[j], tempStrWidth, j * this.higtHeightMultiple)
                 // console.log(rewardNames[j], textWidth, i)
               }
             }
@@ -719,7 +733,7 @@
       background-image: url($lotteryBgUrl + "3x.png");
     }
   }
-	
+  
 	.almost-lottery__wrap {
     position: relative;
     display: flex;
@@ -764,5 +778,10 @@
   .canvas-img {
 		display: block;
     transition: transform cubic-bezier(.34, .12, .05, .95);
+  }
+  
+	.almost-lottery__custom,
+  .almost-lottery__action-custom {
+    background: none;
   }
 </style>

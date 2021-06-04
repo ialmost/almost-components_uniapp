@@ -130,7 +130,7 @@ ringCount | 旋转的圈数 | *`Number`* | `8`
 pointerPosition | 点击抽奖按钮指针的位置，可选值 `'edge'` => 指向边界 `'middle'` => 指向中间 | *`String`* | `'edge'`
 strFontColor | 奖品名称的颜色 | *`String`* | `'#C30B29'`
 strFontSize | 奖品名称的字号 | *`Number`* | `12`
-strLineHeight | 奖品名称多行情况下的行高 | *`Number`* | `16`
+strHeightMultiple | 奖品名称多行情况下的行高 | *`Number`* | `1.2`
 strKey | 奖品名称所对应的键名 `key` ，比如 `{ name: '88元现金' }`，`strKey` 就是 `'name'` | *`String`* | `'name'`
 strMaxLen | 奖品名称长度限制 | *`Number`* | `12`
 strLineLen | 奖品名称在多行情况下第一行文字的长度 | *`Number`* | `6`
