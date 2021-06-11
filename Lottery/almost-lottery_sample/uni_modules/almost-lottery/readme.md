@@ -18,14 +18,18 @@
 ## 功能概要
 - [x] 可配置奖品文字
 - [x] 可配置每个奖品区块的背景颜色
+- [x] 可配置奖品区块是否开启描边以及边框的颜色，默认不开启
+- [x] 可配置转盘外环和抽奖按钮图，**必须使用网络地址图片**，默认使用内置图片
+- [x] 组件内 `SCSS` 样式中可替换转盘外环图及点击抽奖按钮图，分别是 `$lotteryBgUrl` 和 `$actionBgUrl`，**如需替换，注意适配高清设备**
 - [x] 可配置每个奖品区块的奖品图片，**当图片是网络地址时，小程序端需要配置白名单，H5端需要允许跨域**
 - [x] 奖品列表支持奇数，**奇数时需尽量能被 `360` 除尽**
-- [x] 组件内 `SCSS` 样式中可替换转盘外环背景图及点击抽奖按钮图，分别是 `$lotteryBgUrl` 和 `$actionBgUrl`，**如需替换，需要适配高清设备**
-- [x] 转盘外环和抽奖按钮图可使用网络地址图片，默认使用内置图片
-- [x] 可配置中奖概率，**强烈推荐中奖概率应由后端控制**
 - [x] 可配置内圈与外圈的间距
-- [x] 可配置奖品区块是否开启描边以及边框的颜色，默认不开启
 - [x] 可配置画板是否缓存，默认不开启
+
+## 示例项目附加功能
+- [x] 中奖概率，**强烈推荐中奖概率应由后端控制**
+- [x] 抽奖次数
+- [x] 付费抽奖
 
 
 ## 注意事项
@@ -47,9 +51,6 @@
 // template
 // @reset-index="prizeIndex = -1" 必须默认写入到 template 中，不可删除
 <almost-lottery
-  :strFontSize="10"
-  :ringCount="2"
-  :duration="1"
   :prizeList="prizeList"
   :prizeIndex="prizeIndex"
   @reset-index="prizeIndex = -1"
@@ -67,31 +68,14 @@ export default {
   },
   data () {
     return {
-      // 获奖奖品序号，每次抽奖结束后需要重置为 -1
-      prizeIndex: -1,
       // 奖品数据
-      prizeList: [
-        { prizeId: 1, name: '0.1元现金', stock: 10, weight: 1, prizeImage: '/static/git.png' },
-        { prizeId: 2, name: '10元现金', stock: 0, weight: 0, prizeImage: 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/56f085e0-bcfe-11ea-b244-a9f5e5565f30.png' },
-        { prizeId: 3, name: '5元话费', stock: 1, weight: 0 },
-        { prizeId: 4, name: '50元现金', stock: 0, weight: 0 },
-        { prizeId: 5, name: '1卷抽纸', stock: 3, weight: 3 },
-        { prizeId: 6, name: '0.20元现金', stock: 8, weight: 2 },
-        { prizeId: 7, name: '谢谢参与', stock: 100, weight: 10000 },
-        { prizeId: 8, name: '100金币', stock: 100, weight: 1000 }
-      ],
-      // 中奖下标
-      prizeIndex: -1,
-      // 中奖类目名称
-      targetName: '',
+      // 以下是奖品配置数据
+      // 奖品数据
+      prizeList: [],
       // 奖品是否设有库存
       onStock: true,
-      // 是否由前端控制概率，默认不开启
-      onFrontend: false,
-      // 权重随机数的最大值
-      weightTotal: 0,
-      // 权重数组
-      weightArr: []
+      // 中奖下标
+      prizeIndex: -1
     }
   },
   methods: {
@@ -119,8 +103,9 @@ export default {
 #### Props
 参数 | 说明 | 类型 | 默认值
 :---|:---|:---|:---
-canvasWidth | Canvas 的宽度 | *`Number`* | `240`
-canvasHeight | Canvas 的高度 | *`Number`* | `240`
+canvasId | Canvas的标识，多画板情况下需要配置不同的标识 | *`String`* | `'almostLotteryCanvas'`
+canvasWidth | Canvas的宽度 | *`Number`* | `240`
+canvasHeight | Canvas的高度 | *`Number`* | `240`
 prizeIndex | 获奖奖品在奖品列表中的序号，**每次抽奖结束后会自动重置为 `-1`** | *`Number`* | `-1`
 prizeList | 奖品列表，支持奇数（尽量能被 `360` 除尽），**为奇数时需要重设 `colors` 参数** | *`Array`* | -
 lotteryBg | 转盘外环图片，仅支持网络地址 | `String` | -
@@ -137,7 +122,7 @@ strHeightMultiple | 奖品名称多行情况下的行高 | *`Number`* | `1.2`
 strKey | 奖品名称所对应的键名 `key` ，比如 `{ name: '88元现金' }`，`strKey` 就是 `'name'` | *`String`* | `'name'`
 strMaxLen | 奖品名称长度限制 | *`Number`* | `12`
 strLineLen | 奖品名称在多行情况下第一行文字的长度 | *`Number`* | `6`
-strMarginOutside | 奖品文字距离边缘的距离 | *`Number`* | `font-size` 的一半
+strMarginOutside | 奖品文字距离边缘的距离 | *`Number`* | `strFontSize 的一半`
 imageWidth | 奖品图片的宽度 | *`Number`* | `30`
 imageHeight | 奖品图片的高度 | *`Number`* | `30`
 successMsg | 转盘绘制成功的提示 | *`String`* | `'奖品准备就绪，快来参与抽奖吧'`

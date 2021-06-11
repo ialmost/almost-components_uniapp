@@ -9,14 +9,15 @@
       <view class="tip"><text class="tip-content">每次抽奖消耗 {{ goldNum }} 金币，不限次数</text></view>
     </view>
     <!-- action -->
-    <!-- <view class="almost-action" @tap="handleInitCanvas" v-if="isDev">
+    <view class="almost-action" @tap="handleInitCanvas" v-if="isDev">
       <text class="text">重新生成画板-开发模式使用</text>
-    </view> -->
+    </view>
     <!-- lottery -->
     <view class="almost-lottery__wheel">
       <almost-lottery
-        :canvasWidth="canvasData.width"
-        :canvasHeight="canvasData.height"
+        :canvasId="canvasConfig.canvasId"
+        :canvasWidth="canvasConfig.width"
+        :canvasHeight="canvasConfig.height"
         :ringCount="2"
         :duration="1"
         :prizeList="prizeList"
@@ -85,21 +86,27 @@
         // 开启调试模式
         isDev: true,
         
-        // 以下是抽奖配置相关数据
-        // canvas 宽高
-        canvasData: {
+        // 以下是画板配置相关数据
+        // canvas id、宽、高
+        canvasConfig: {
+          canvasId: 'almostLotteryCanvas',
           width: 280,
           height: 280
         },
+        
+        // 以下是转盘 UI 配置
+        // 转盘外环图
+        lotteryBg: 'https://raw.githubusercontent.com/ialmost/almost-components_uniapp/dev/Lottery/almost-lottery_sample/static/lottery-bg.png',
+        // 抽奖按钮图
+        actionBg: 'https://raw.githubusercontent.com/ialmost/almost-components_uniapp/dev/Lottery/almost-lottery_sample/static/action-bg.png',
+        
+        // 以下是奖品配置数据
         // 奖品数据
         prizeList: [],
-        // 中奖下标
-        prizeIndex: -1,
-        // 背景图
-        lotteryBg: 'https://raw.githubusercontent.com/ialmost/almost-components_uniapp/dev/Lottery/almost-lottery_sample/static/lottery-bg.png',
-        actionBg: 'https://raw.githubusercontent.com/ialmost/almost-components_uniapp/dev/Lottery/almost-lottery_sample/static/action-bg.png',
 				// 奖品是否设有库存
 				onStock: true,
+        // 中奖下标
+        prizeIndex: -1,
         
         // 是否正在抽奖中，避免重复触发
         prizeing: false,
@@ -150,8 +157,6 @@
 				if (res.ok) {
 					let data = res.data
 					if (data.length) {
-						// stock 奖品库存
-						// weight 中奖概率，数值越大中奖概率越高
 						this.prizeList = data
             console.log('已获取到奖品列表数据，开始绘制抽奖转盘')
 						
@@ -177,6 +182,8 @@
 						clearTimeout(requestTimer)
 						requestTimer = null
 						
+            // stock 奖品库存
+						// weight 中奖概率，数值越大中奖概率越高，权重一样时随机中奖
 						resolve({
 							ok: true,
 							data: [
@@ -208,6 +215,7 @@
             title: '金币不足',
             content: '是否前往赚取金币？',
             success: (res) => {
+              // 这里需要根据业务需求处理，一般情况下会引导用户前往赚取金币的页面
               console.log('金币不足', res)
             }
           })

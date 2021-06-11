@@ -61,6 +61,11 @@
     name: 'AlmostLottery',
     props: {
       // canvas 宽度
+      canvasId: {
+        type: String,
+        default: 'almostLotteryCanvas'
+      },
+      // canvas 宽度
       canvasWidth: {
         type: Number,
         default: 240
@@ -199,8 +204,6 @@
       return {
         // 画板className
         className: 'almost-lottery__canvas',
-        // 画板标识
-        canvasId: 'almostLotteryCanvas',
         // 画板导出的图片
         lotteryImg: '',
         // 旋转到奖品目标需要的角度
@@ -569,20 +572,23 @@
 								// console.log('getSavedFileList Cached', fileList)
 								
 								let cached = false
-								for (let i = 0; i < fileList.length; i++) {
-									let item = fileList[i]
-									if (item.filePath === data) {
-										cached = true
-										this.lotteryImg = data
-										
-										console.info('经查，本地缓存中存在转盘图可用，本次将不再绘制转盘')
-										this.handlePrizeImgSuc(res)
-										break
-									}
-								}
+                
+                if (fileList.length) {
+                  for (let i = 0; i < fileList.length; i++) {
+                  	let item = fileList[i]
+                  	if (item.filePath === data) {
+                  		cached = true
+                  		this.lotteryImg = data
+                  		
+                  		console.info('经查，本地缓存中存在的转盘图可用，本次将不再绘制转盘')
+                  		this.handlePrizeImgSuc(res)
+                  		break
+                  	}
+                  }
+                }
 								
 								if (!cached) {
-									console.info('经查，本地缓存中存在转盘图不可用，需要重新初始化转盘绘制')
+									console.info('经查，本地缓存中存在的转盘图不可用，需要重新初始化转盘绘制')
 									this.initCanvasDraw()
 								}
 							},
@@ -596,7 +602,7 @@
 							success: (sucRes) => {
 								let filePath = sucRes.savedFilePath
 								// console.log('saveFile', filePath)
-								setStore('lotteryImg', filePath)
+								setStore(`${this.canvasId}LotteryImg`, filePath)
 								this.lotteryImg = filePath
 								this.handlePrizeImgSuc({
 									ok: true,
@@ -615,7 +621,7 @@
 					}
 					// #endif
 					// #ifdef H5
-					setStore('lotteryImg', data)
+					setStore(`${this.canvasId}LotteryImg`, data)
 					this.lotteryImg = data
 					this.handlePrizeImgSuc(res)
           
@@ -665,8 +671,8 @@
 				console.log('检查本地缓存中是否存在转盘图')
 				// 检查是否已有缓存的转盘图
 				// 检查是否与本次奖品数据相同
-				this.oldLotteryImg = getStore('lotteryImg')
-				let oldPrizeList = getStore('prizeList')
+				this.oldLotteryImg = getStore(`${this.canvasId}LotteryImg`)
+				let oldPrizeList = getStore(`${this.canvasId}PrizeList`)
 				let newPrizeList = JSON.stringify(this.prizeList)
 				if (this.oldLotteryImg) {
 					if (oldPrizeList === newPrizeList) {
@@ -691,8 +697,8 @@
 				console.log('开始初始化转盘绘制')
 				this.isCacheImg = false
 				this.lotteryImg = ''
-				clearStore('lotteryImg')
-        setStore('prizeList', this.prizeList)
+				clearStore(`${this.canvasId}LotteryImg`)
+        setStore(`${this.canvasId}PrizeList`, this.prizeList)
         this.onCreateCanvas()
       }
     },
