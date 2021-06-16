@@ -1,6 +1,6 @@
 <template>
-  <view :class="['almost-lottery', lotteryBg && 'almost-lottery__custom']">
-    <view class="almost-lottery__wrap" :style="{ width: canvasWidth + 40 + 'px', height: canvasWidth + 40 + 'px'}">
+  <view :class="['almost-lottery', lotteryImg && 'almost-lottery__bg', lotteryBg && 'almost-lottery__custom']">
+    <view class="almost-lottery__wrap" :style="{ width: canvasWidth + 40 + 'px', height: canvasWidth + 40 + 'px'}" v-if="lotteryImg">
       <image :src="lotteryBg" mode="widthFix" class="almost-lottery__bg-outside" :style="{ width: canvasWidth + 40 + 'px', height: canvasWidth + 40 + 'px'}"></image>
       <image
         class="canvas-img"
@@ -12,7 +12,6 @@
           transform: `rotate(${canvasAngle + targetAngle}deg)`,
           transitionDuration: `${transitionDuration}s`
         }"
-        v-if="lotteryImg"
       ></image>
       <image :src="actionBg" mode="widthFix" class="almost-lottery__bg-action" :style="{ width: actionSize + 'px', height: actionSize + 'px'}" v-if="actionBg" @click="handleActionStart"></image>
       <view
@@ -27,6 +26,7 @@
       <!-- 为了兼容 app 端 ctx.measureText 所需的标签 -->
       <text class="almost-lottery__measureText">{{ measureText }}</text>
     </view>
+    <text class="almost-lottery__tip" v-else>{{ almostLotteryTip }}</text>
     
     <!-- #ifdef MP-ALIPAY -->
     <canvas 
@@ -219,6 +219,8 @@
 				// 是否存在可用的缓存转盘图
 				isCacheImg: false,
 				oldLotteryImg: '',
+        // 转盘绘制时的提示
+        almostLotteryTip: '奖品准备中...',
         // 解决 app 不支持 measureText 的问题
 				// app 已在 2.9.3 的版本中提供了对 measureText 的支持，将在后续版本逐渐稳定后移除相关兼容代码
         measureText: ''
@@ -344,6 +346,7 @@
       },
       // 点击 开始抽奖 按钮
       handleActionStart() {
+        if (!this.lotteryImg) return
         if (this.isRotate) return
         this.$emit('draw-start')
       },
@@ -477,7 +480,17 @@
 						let reg = /^(https|http)/g
 						// 处理远程图片
 						if (reg.test(prizeItem.prizeImage)) {
-							console.warn('###当前数据列表中的奖品图片为网络图片，开始下载图片...###')
+              let platformTips = ''
+              // #ifdef APP-PLUS
+							platformTips = ''
+              // #endif
+              // #ifdef MP
+							platformTips = '需要处理好下载域名的白名单问题，'
+              // #endif
+              // #ifdef H5
+							platformTips = '需要处理好跨域问题，'
+              // #endif
+							console.warn(`###当前数据列表中的奖品图片为网络图片，${platformTips}开始尝试下载图片...###`)
 							let res = await downloadFile(prizeItem.prizeImage)
 							console.log('处理远程图片', res)
 							if (res.ok) {
@@ -488,7 +501,13 @@
 								// #ifdef MP
 								prizeItem.prizeImage = tempFilePath
 								// #endif
-							}
+							} else {
+                this.handlePrizeImgSuc({
+                  ok: false,
+                  data: res.data,
+                  msg: res.msg
+                })
+              }
 						} else {
 							// #ifndef MP
 							prizeItem.prizeImage = await pathToBase64(prizeItem.prizeImage)
@@ -648,6 +667,7 @@
 					data: res.data,
 					msg: res.ok ? this.successMsg : this.failMsg
 				})
+        this.almostLotteryTip = res.ok ? this.successMsg : this.failMsg
 			},
       // 兼容 app 端不支持 ctx.measureText
       // 已知问题：初始绘制时，低端安卓机 平均耗时 2s
@@ -729,15 +749,17 @@
     justify-content: center;
     align-items: center;
     margin: 0 auto;
+  }
+  .almost-lottery__bg {
     background-repeat: no-repeat;
     background-position: center center;
     background-size: contain;
     background-image: url($lotteryBgUrl + ".png");
-
+    
     @media (-webkit-min-device-pixel-ratio: 2), (min-device-pixel-ratio: 2) {
       background-image: url($lotteryBgUrl + "2x.png");
     }
-
+    
     @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3) {
       background-image: url($lotteryBgUrl + "3x.png");
     }
@@ -749,6 +771,11 @@
     justify-content: center;
     align-items: center;
 	}
+  .almost-lottery__tip {
+    color: #FFFFFF;
+    font-size: 24rpx;
+    text-align: center;
+  }
 
   .almost-lottery__canvas {
     position: absolute;

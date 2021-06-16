@@ -28,7 +28,6 @@
         @finish="handleDrawFinish"
         v-if="prizeList.length"
       />
-      <text class="tip" v-else>奖品准备中...</text>
       <view class="count">
         <text class="text">剩余免费抽奖 {{ freeNum }} 次</text>
       </view>
@@ -367,11 +366,11 @@
       },
       // 抽奖转盘绘制完成
       handleDrawFinish (res) {
-        console.log('抽奖转盘绘制完成，可以开始抽奖啦', res)
+        console.log('抽奖转盘绘制完成', res)
 				
         uni.showToast({
           title: res.msg,
-					duration: 2000,
+					duration: 3000,
 					mask: true,
 					icon: 'none'
         })
@@ -447,10 +446,6 @@
   
   .almost-lottery__wheel {
     text-align: center;
-    .tip {
-      color: #FFFFFF;
-      font-size: 24rpx;
-    }
     .count {
       display: flex;
       flex-direction: column;

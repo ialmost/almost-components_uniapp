@@ -47,11 +47,13 @@ export const downloadFile = (fileUrl) => {
         if (res.errMsg === 'downloadFile:ok') {
           resolve({
             ok: true,
+            data: res.errMsg,
             tempFilePath: res.tempFilePath
           })
         } else {
           resolve({
             ok: false,
+            data: res.errMsg,
             msg: '图片下载失败'
           })
         }
@@ -60,11 +62,13 @@ export const downloadFile = (fileUrl) => {
 				if (res.statusCode === 200) {
 				  resolve({
 				    ok: true,
+            data: res.errMsg,
 				    tempFilePath: res.tempFilePath
 				  })
 				} else {
 				  resolve({
 				    ok: false,
+            data: res.errMsg,
 				    msg: '图片下载失败'
 				  })
 				}
@@ -73,7 +77,8 @@ export const downloadFile = (fileUrl) => {
       fail: (err) => {
         resolve({
           ok: false,
-          msg: `图片下载失败，${err}`
+          data: err.errMsg,
+          msg: '图片下载失败'
         })
       }
     })
