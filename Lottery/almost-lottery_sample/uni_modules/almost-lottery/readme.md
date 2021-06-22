@@ -1,5 +1,5 @@
 # almost-lottery
-*使用 Canvas 绘制的抽奖转盘*
+*使用 Canvas 绘制的抽奖转盘，提供奇数、缓存等众多配置项，更有抽奖概率、抽奖次数、付费抽奖等功能内置于示例项目中*
 
 
 > <br />
@@ -136,7 +136,7 @@ canvasMargin | 内圈与外圈的间距 | *`Number`* | `5`
 @reset-index | 每次抽奖结束后重置获奖的序号为 `-1`，**该事件必须默认写入到 `template` 中，不可删除** | -
 @draw-start | 转盘旋转开始时触发 | -
 @draw-end | 转盘旋转结束时触发 | -
-@finish | Canvas转盘绘制完成时触发 | ok: 绘制是否成功, data: 转盘的图片, msg: 绘制结果的提示
+@finish | Canvas转盘绘制完成时触发 | `{ ok: 绘制是否成功, data: 转盘的图片, msg: 绘制结果的提示 }`
 
 #### prizeList 数据结构
 键名 | 说明 | 类型
