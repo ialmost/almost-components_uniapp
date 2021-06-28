@@ -353,9 +353,9 @@
           // 如果奖品设有库存
           if (this.onStock) {
             let prizeStock = this.prizeList[this.prizeIndex].stock
-            tipContent = prizeStock ? `恭喜您，获得 ${prizeName}` : '很抱歉，您来晚了，当前奖品已无库存'
+            tipContent = prizeStock ? `恭喜您，获得 ${prizeName}` : `很抱歉，您来晚了，当前奖品 ${prizeName} 已无库存`
           } else {
-            tipContent = `恭喜您，获得${prizeName}！`
+            tipContent = `恭喜您，获得 ${prizeName} ！`
           }
         }
         

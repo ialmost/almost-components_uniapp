@@ -1,9 +1,17 @@
 <template>
-  <view :class="['almost-lottery', lotteryImg && 'almost-lottery__bg', lotteryBg && 'almost-lottery__custom']">
+  <view class="almost-lottery">
     <view class="almost-lottery__wrap" :style="{ width: canvasWidth + 40 + 'px', height: canvasWidth + 40 + 'px'}" v-if="lotteryImg">
-      <image :src="lotteryBg" mode="widthFix" class="almost-lottery__bg-outside" :style="{ width: canvasWidth + 40 + 'px', height: canvasWidth + 40 + 'px'}"></image>
       <image
-        class="canvas-img"
+        :src="lotteryBg"
+        mode="widthFix"
+        class="almost-lottery__bg"
+        :style="{
+          width: canvasWidth + 40 + 'px',
+          height: canvasWidth + 40 + 'px'
+        }"
+      ></image>
+      <image
+        class="almost-lottery__canvas-img"
         mode="widthFix"
         :src="lotteryImg"
         :style="{
@@ -13,16 +21,18 @@
           transitionDuration: `${transitionDuration}s`
         }"
       ></image>
-      <image :src="actionBg" mode="widthFix" class="almost-lottery__bg-action" :style="{ width: actionSize + 'px', height: actionSize + 'px'}" v-if="actionBg" @click="handleActionStart"></image>
-      <view
-        :class="['almost-lottery__action', actionBg && 'almost-lottery__action-custom']"
+      <image
+        :src="actionBg"
+        mode="widthFix"
+        class="almost-lottery__action almost-lottery__action-img"
         :style="{
           width: actionSize + 'px',
-          height: actionSize + 'px'
+          height: actionSize + 'px',
+          transform: `rotate(${actionAngle + targetActionAngle}deg)`,
+          transitionDuration: `${transitionDuration}s`
         }"
         @click="handleActionStart"
-        v-else
-      ></view>
+      ></image>
       <!-- 为了兼容 app 端 ctx.measureText 所需的标签 -->
       <text class="almost-lottery__measureText">{{ measureText }}</text>
     </view>
@@ -99,12 +109,12 @@
       // 转盘外环背景图
       lotteryBg: {
         type: String,
-        default: ''
+        default: '/uni_modules/almost-lottery/static/almost-lottery/almost-lottery__bg2x.png'
       },
       // 抽奖按钮背景图
       actionBg: {
         type: String,
-        default: ''
+        default: '/uni_modules/almost-lottery/static/almost-lottery/almost-lottery__action2x.png'
       },
       // 是否开启奖品区块描边
       stroked: {
@@ -115,6 +125,11 @@
       strokeColor: {
         type: String,
         default: '#FFE9AA'
+      },
+      // 旋转的类型
+      rotateType: {
+        type: String,
+        default: 'roulette'
       },
       // 旋转动画时间 单位s
       duration: {
@@ -208,6 +223,7 @@
         lotteryImg: '',
         // 旋转到奖品目标需要的角度
         targetAngle: 0,
+        targetActionAngle: 0,
         // 旋转动画时间 单位 s
         transitionDuration: 0,
         // 是否正在旋转
@@ -245,17 +261,20 @@
       },
       // 根据奖品列表计算 canvas 旋转角度
       canvasAngle() {
+        let result = 0
+        
         let prizeCount = this.prizeList.length
         let prizeClip = 360 / prizeCount
-        let result = 0
-
         let diffNum = 90 / prizeClip
-        if (this.pointerPosition === 'edge') {
+        if (this.pointerPosition === 'edge' || this.rotateType === 'pointer') {
           result = -(prizeClip * diffNum)
         } else {
           result = -(prizeClip * diffNum + prizeClip / 2)
         }
         return result
+      },
+      actionAngle() {
+        return 0
       },
       // 外圆的半径
       outsideRadius() {
@@ -311,20 +330,39 @@
         let prizeCount = this.prizeList.length
         let baseAngle = 360 / prizeCount
         let angles = 0
-        if (this.targetAngle === 0) {
-          // 第一次旋转
-          // 因为第一个奖品是从0°开始的，即水平向右方向
-          // 第一次旋转角度 = 270度 - (停留的序号-目标序号) * 每个奖品区间角度 - 每个奖品区间角度的一半 - canvas自身旋转的度数
-          angles = (270 - (this.targetIndex - this.stayIndex) * baseAngle - baseAngle / 2) - this.canvasAngle
+        
+        if (this.rotateType === 'pointer') {
+          if (this.targetActionAngle === 0) {
+            // 第一次旋转
+            angles = (this.targetIndex - this.stayIndex) * baseAngle + baseAngle / 2 - this.actionAngle
+          } else {
+            // 后续旋转
+            // 后续继续旋转 就只需要计算停留的位置与目标位置的角度
+            angles = (this.targetIndex - this.stayIndex) * baseAngle
+          }
+          
+          // 更新目前序号
+          this.stayIndex = this.targetIndex
+          // 转 8 圈，圈数越多，转的越快
+          this.targetActionAngle += angles + 360 * this.ringCount
+          console.log('targetActionAngle', this.targetActionAngle)
         } else {
-          // 后续旋转
-          // 后续继续旋转 就只需要计算停留的位置与目标位置的角度
-          angles = -(this.targetIndex - this.stayIndex) * baseAngle
+          if (this.targetAngle === 0) {
+            // 第一次旋转
+            // 因为第一个奖品是从0°开始的，即水平向右方向
+            // 第一次旋转角度 = 270度 - (停留的序号-目标序号) * 每个奖品区间角度 - 每个奖品区间角度的一半 - canvas自身旋转的度数
+            angles = (270 - (this.targetIndex - this.stayIndex) * baseAngle - baseAngle / 2) - this.canvasAngle
+          } else {
+            // 后续旋转
+            // 后续继续旋转 就只需要计算停留的位置与目标位置的角度
+            angles = -(this.targetIndex - this.stayIndex) * baseAngle
+          }
+          
+          // 更新目前序号
+          this.stayIndex = this.targetIndex
+          // 转 8 圈，圈数越多，转的越快
+          this.targetAngle += angles + 360 * this.ringCount
         }
-        // 更新目前序号
-        this.stayIndex = this.targetIndex
-        // 转 8 圈，圈数越多，转的越快
-        this.targetAngle += angles + 360 * this.ringCount
 
         // 计算转盘结束的时间，预加一些延迟确保转盘停止后触发结束事件
         let endTime = this.transitionDuration * 1000 + 100
@@ -741,28 +779,11 @@
 </script>
 
 <style lang="scss" scoped>
-  $lotteryBgUrl: '@/uni_modules/almost-lottery/static/almost-lottery/almost-lottery__bg';
-  $actionBgUrl: '@/uni_modules/almost-lottery/static/almost-lottery/almost-lottery__action';
-
   .almost-lottery {
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 0 auto;
-  }
-  .almost-lottery__bg {
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: contain;
-    background-image: url($lotteryBgUrl + ".png");
-    
-    @media (-webkit-min-device-pixel-ratio: 2), (min-device-pixel-ratio: 2) {
-      background-image: url($lotteryBgUrl + "2x.png");
-    }
-    
-    @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3) {
-      background-image: url($lotteryBgUrl + "3x.png");
-    }
   }
   
 	.almost-lottery__wrap {
@@ -771,14 +792,14 @@
     justify-content: center;
     align-items: center;
 	}
-  .almost-lottery__tip {
-    color: #FFFFFF;
-    font-size: 24rpx;
-    text-align: center;
+
+  .almost-lottery__action,
+  .almost-lottery__bg,
+  .almost-lottery__canvas {
+    position: absolute;
   }
 
   .almost-lottery__canvas {
-    position: absolute;
     left: -9999px;
     opacity: 0;
     display: flex;
@@ -786,22 +807,18 @@
     align-items: center;
   }
 
-  .almost-lottery__action {
-    position: absolute;
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: contain;
-    background-image: url($actionBgUrl + ".png");
-
-    @media (-webkit-min-device-pixel-ratio: 2), (min-device-pixel-ratio: 2) {
-      background-image: url($actionBgUrl + "2x.png");
-    }
-
-    @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3) {
-      background-image: url($actionBgUrl + "3x.png");
-    }
+  .almost-lottery__canvas-img,
+  .almost-lottery__action-bg {
+		display: block;
+    transition: transform cubic-bezier(.34, .12, .05, .95);
   }
 
+  .almost-lottery__tip {
+    color: #FFFFFF;
+    font-size: 24rpx;
+    text-align: center;
+  }
+  
   .almost-lottery__measureText {
     position: absolute;
     left: 0;
@@ -809,21 +826,5 @@
     white-space: nowrap;
     font-size: 12px;
     opacity: 0;
-  }
-
-  .canvas-img {
-		display: block;
-    transition: transform cubic-bezier(.34, .12, .05, .95);
-  }
-  
-	.almost-lottery__custom,
-  .almost-lottery__action-custom {
-    background: none;
-  }
-  .almost-lottery__bg-outside {
-    position: absolute;
-  }
-  .almost-lottery__bg-action {
-    position: absolute;
   }
 </style>

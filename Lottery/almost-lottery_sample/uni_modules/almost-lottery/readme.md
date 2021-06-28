@@ -19,11 +19,11 @@
 - [x] 可配置奖品文字
 - [x] 可配置每个奖品区块的背景颜色
 - [x] 可配置奖品区块是否开启描边以及边框的颜色，默认不开启
-- [x] 可配置转盘外环和抽奖按钮图，**必须使用网络地址图片**，默认使用内置的本地图片
-- [x] 组件内 `SCSS` 样式中可替换转盘外环图及点击抽奖按钮图，分别是 `$lotteryBgUrl` 和 `$actionBgUrl`，**如需替换，注意适配高清设备**
+- [x] 可配置转盘外环和抽奖按钮图
 - [x] 可配置每个奖品区块的奖品图片，**当图片是网络地址时，小程序端需要配置白名单，H5端需要允许跨域**
 - [x] 奖品列表支持奇数，**奇数时需尽量能被 `360` 除尽**
 - [x] 可配置内圈与外圈的间距
+- [x] 可配置轮盘旋转或指针旋转
 - [x] 可配置画板是否缓存，默认不开启
 
 ## 示例项目附加功能
@@ -68,7 +68,6 @@ export default {
   },
   data () {
     return {
-      // 奖品数据
       // 以下是奖品配置数据
       // 奖品数据
       prizeList: [],
@@ -108,11 +107,12 @@ canvasWidth | Canvas的宽度 | *`Number`* | `240`
 canvasHeight | Canvas的高度 | *`Number`* | `240`
 prizeIndex | 获奖奖品在奖品列表中的序号，**每次抽奖结束后会自动重置为 `-1`** | *`Number`* | `-1`
 prizeList | 奖品列表，支持奇数（尽量能被 `360` 除尽），**为奇数时需要重设 `colors` 参数** | *`Array`* | -
-lotteryBg | 转盘外环图片，仅支持网络地址 | `String` | -
-actionBg | 抽奖按钮图片，仅支持网络地址 | `String` | -
+lotteryBg | 转盘外环图片 | `String` | `默认内置的本地图片`
+actionBg | 抽奖按钮图片 | `String` | `默认内置的本地图片`
 colors | 奖品区块对应的背景颜色，默认 2 个颜色相互交替，**也可以对每个区块设置不同颜色** | *`Array`* | `['#FFFFFF', '#FFE9AA']`
 stroked | 是否开启奖品区块描边 | *`Boolean`* | `false`
 strokeColor | 奖品区块边框颜色 | *`String`* | `'#FFE9AA'`
+rotateType | 旋转的类型，可选值 `'roulette'` => 轮盘旋转 `'pointer'` => 指针旋转 | *`String`* | `'roulette'`
 duration | 转盘旋转的动画时长，单位：秒 | *`Number`* | `8`
 ringCount | 旋转的圈数 | *`Number`* | `8`
 pointerPosition | 点击抽奖按钮指针的位置，可选值 `'edge'` => 指向边界 `'middle'` => 指向中间 | *`String`* | `'edge'`
