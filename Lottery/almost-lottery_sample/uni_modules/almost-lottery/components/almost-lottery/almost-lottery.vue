@@ -164,6 +164,11 @@
         type: Number,
         default: 0
       },
+      // 奖品图片距离奖品文字的距离
+      imgMarginStr: {
+        type: Number,
+        default: 25
+      },
       // 奖品文字多行情况下的行高
       strHeightMultiple: {
         type: Number,
@@ -552,7 +557,9 @@
 							// #endif
 						}
 						
-            ctx.drawImage(prizeItem.prizeImage, -(this.imageWidth * this.systemInfo.pixelRatio / 2), canvasW / 10, this.imageWidth * this.systemInfo.pixelRatio, this.imageHeight * this.systemInfo.pixelRatio)
+            let prizeImageX = -(this.imageWidth * this.systemInfo.pixelRatio / 2)
+            let prizeImageY = this.imgMarginStr * this.systemInfo.pixelRatio
+            ctx.drawImage(prizeItem.prizeImage, prizeImageX, prizeImageY, this.imageWidth * this.systemInfo.pixelRatio, this.imageHeight * this.systemInfo.pixelRatio)
           }
 
           ctx.restore()

@@ -123,6 +123,7 @@ strKey | 奖品名称所对应的键名 `key` ，比如 `{ name: '88元现金' }
 strMaxLen | 奖品名称长度限制 | *`Number`* | `12`
 strLineLen | 奖品名称在多行情况下第一行文字的长度 | *`Number`* | `6`
 strMarginOutside | 奖品文字距离边缘的距离 | *`Number`* | `strFontSize 的一半`
+imgMarginStr |  奖品图片距离奖品文字的距离 | *`Number`* | `25`
 imageWidth | 奖品图片的宽度 | *`Number`* | `30`
 imageHeight | 奖品图片的高度 | *`Number`* | `30`
 successMsg | 转盘绘制成功的提示 | *`String`* | `'奖品准备就绪，快来参与抽奖吧'`
