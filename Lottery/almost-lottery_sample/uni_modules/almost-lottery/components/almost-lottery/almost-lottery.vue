@@ -190,12 +190,12 @@
         default: 6
       },
       // 奖品图片的宽
-      imageWidth: {
+      imgWidth: {
         type: Number,
         default: 30
       },
       // 奖品图片的高
-      imageHeight: {
+      imgHeight: {
         type: Number,
         default: 30
       },
@@ -557,9 +557,9 @@
 							// #endif
 						}
 						
-            let prizeImageX = -(this.imageWidth * this.systemInfo.pixelRatio / 2)
+            let prizeImageX = -(this.imgWidth * this.systemInfo.pixelRatio / 2)
             let prizeImageY = this.imgMarginStr * this.systemInfo.pixelRatio
-            ctx.drawImage(prizeItem.prizeImage, prizeImageX, prizeImageY, this.imageWidth * this.systemInfo.pixelRatio, this.imageHeight * this.systemInfo.pixelRatio)
+            ctx.drawImage(prizeItem.prizeImage, prizeImageX, prizeImageY, this.imgWidth * this.systemInfo.pixelRatio, this.imgHeight * this.systemInfo.pixelRatio)
           }
 
           ctx.restore()

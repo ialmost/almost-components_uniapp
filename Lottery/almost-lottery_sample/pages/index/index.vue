@@ -207,6 +207,14 @@
         
         // 还有免费数次或者剩余金币足够抽一次
         if (this.freeNum > 0 || this.goldCoin >= this.goldNum) {
+        
+          // 更新免费次数或金币余额
+          if (this.freeNum > 0) {
+            this.freeNum--
+          } else if (this.goldCoin >= this.goldNum) {
+            this.goldCoin -= this.goldNum
+          }
+          
           this.tryLotteryDraw()
         } else {
           this.prizeing = false
@@ -334,13 +342,6 @@
       // 本次抽奖结束
       handleDrawEnd () {
         console.log('旋转结束，执行拿到结果后到逻辑')
-        
-        // 更新免费次数和金币余额
-        if (this.freeNum > 0) {
-          this.freeNum--
-        } else {
-          if (this.goldCoin >= this.goldNum) this.goldCoin -= this.goldNum
-        }
         
         // 旋转结束后，开始处理拿到结果后的逻辑
         this.prizeing = false

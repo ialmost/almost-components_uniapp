@@ -1,3 +1,7 @@
+## 1.7.6（2021-07-02）
+本次更新：
+- 调整 `imageWidth` 、 `imageHeight` 字段为 `imgWidth` 、 `imgHeight` 
+- 更新示例项目
 ## 1.7.5（2021-07-01）
 本次更新：
 - 新增配置项 `imgMarginStr` 奖品图片距离奖品文字的距离
