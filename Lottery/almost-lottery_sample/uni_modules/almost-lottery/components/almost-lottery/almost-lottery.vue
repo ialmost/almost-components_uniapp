@@ -81,12 +81,12 @@
       // canvas 宽度
       canvasWidth: {
         type: Number,
-        default: 240
+        default: 280
       },
       // canvas 高度
       canvasHeight: {
         type: Number,
-        default: 240
+        default: 280
       },
       // 转盘外圈的宽度
       outerWidth: {

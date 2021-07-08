@@ -103,8 +103,8 @@ export default {
 参数 | 说明 | 类型 | 默认值
 :---|:---|:---|:---
 canvasId | Canvas的标识，**多画板情况下需要配置不同的标识** | *`String`* | `'almostLotteryCanvas'`
-canvasWidth | Canvas的宽度 | *`Number`* | `240`
-canvasHeight | Canvas的高度 | *`Number`* | `240`
+canvasWidth | Canvas的宽度 | *`Number`* | `280`
+canvasHeight | Canvas的高度 | *`Number`* | `280`
 outerWidth | 转盘外圈的宽度 | *`Number`* | `320`
 outerHeight | 转盘外圈的高度 | *`Number`* | `320`
 canvasMargin | 内圈与外圈的间距 | *`Number`* | `5`
