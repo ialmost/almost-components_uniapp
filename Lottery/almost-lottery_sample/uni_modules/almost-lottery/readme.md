@@ -105,6 +105,11 @@ export default {
 canvasId | Canvas的标识，**多画板情况下需要配置不同的标识** | *`String`* | `'almostLotteryCanvas'`
 canvasWidth | Canvas的宽度 | *`Number`* | `240`
 canvasHeight | Canvas的高度 | *`Number`* | `240`
+outerWidth | 转盘外圈的宽度 | *`Number`* | `320`
+outerHeight | 转盘外圈的高度 | *`Number`* | `320`
+canvasMargin | 内圈与外圈的间距 | *`Number`* | `5`
+actionWidth | 抽奖按钮的宽度 | *`Number`* | `120`
+actionHeight | 抽奖按钮的高度 | *`Number`* | `120`
 prizeIndex | 获奖奖品在奖品列表中的序号，**每次抽奖结束后会自动重置为 `-1`** | *`Number`* | `-1`
 prizeList | 奖品列表，支持奇数（尽量能被 `360` 除尽），**为奇数时需要重设 `colors` 参数** | *`Array`* | -
 lotteryBg | 转盘外环图片 | `String` | `默认内置的本地图片`
@@ -129,7 +134,6 @@ imgHeight | 奖品图片的高度 | *`Number`* | `30`
 successMsg | 转盘绘制成功的提示 | *`String`* | `'奖品准备就绪，快来参与抽奖吧'`
 failMsg | 转盘绘制失败的提示 | *`String`* | `'奖品仍在准备中，请稍后再来...'`
 canvasCached | 是否开启缓存，避免在数据不变的情况下重复绘制，建议在生产环境中开启 | *`Boolean`* | `false`
-canvasMargin | 内圈与外圈的间距 | *`Number`* | `5`
 
 #### Events
 事件名 | 说明 | 回调参数

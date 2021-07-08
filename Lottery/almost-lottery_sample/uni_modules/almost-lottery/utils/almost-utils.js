@@ -26,10 +26,32 @@ export const getStore = (name) => {
  */
 export const clearStore = (name) => {
   if (name) {
-		uni.removeStorageSync(name)
+    uni.removeStorageSync(name)
   } else {
     console.log('清理本地全部缓存')
     uni.clearStorageSync()
+  }
+}
+
+/**
+ * 计算文本的长度
+ * @param {String} text - 文本内容
+ */
+export const clacTextLen = (text) => {
+  if (!text) return
+  text += ''
+  let clacLen = 0
+  for (let i = 0; i < text.length; i++) {
+    if ((text.charCodeAt(i) < 0) || (text.charCodeAt(i) > 255)) {
+      clacLen += 2
+    } else {
+      clacLen += 1
+    }
+  }
+  // console.log(`当前文本 ${text} 的长度为 ${clacLen / 2}`)
+  return {
+    byteLen: clacLen,
+    realLen: clacLen / 2
   }
 }
 

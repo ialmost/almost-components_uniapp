@@ -1,13 +1,13 @@
 <template>
   <view class="almost-lottery">
-    <view class="almost-lottery__wrap" :style="{ width: canvasWidth + 40 + 'px', height: canvasWidth + 40 + 'px'}" v-if="lotteryImg">
+    <view class="almost-lottery__wrap" :style="{ width: outerWidth + higtCanvasMargin + 'px', height: outerWidth + higtCanvasMargin + 'px'}" v-if="lotteryImg">
       <image
         :src="lotteryBg"
         mode="widthFix"
         class="almost-lottery__bg"
         :style="{
-          width: canvasWidth + 40 + 'px',
-          height: canvasWidth + 40 + 'px'
+          width: outerWidth + higtCanvasMargin + 'px',
+          height: outerWidth + higtCanvasMargin + 'px'
         }"
       ></image>
       <image
@@ -15,8 +15,8 @@
         mode="widthFix"
         :src="lotteryImg"
         :style="{
-          width: canvasWidth + canvasMarginTotal + 'px',
-          height: canvasWidth + canvasMarginTotal + 'px',
+          width: canvasWidth + 'px',
+          height: canvasWidth  + 'px',
           transform: `rotate(${canvasAngle + targetAngle}deg)`,
           transitionDuration: `${transitionDuration}s`
         }"
@@ -26,17 +26,20 @@
         mode="widthFix"
         class="almost-lottery__action almost-lottery__action-img"
         :style="{
-          width: actionSize + 'px',
-          height: actionSize + 'px',
+          width: actionWidth + 'px',
+          height: actionHeight + 'px',
           transform: `rotate(${actionAngle + targetActionAngle}deg)`,
           transitionDuration: `${transitionDuration}s`
         }"
         @click="handleActionStart"
       ></image>
-      <!-- 为了兼容 app 端 ctx.measureText 所需的标签 -->
-      <text class="almost-lottery__measureText">{{ measureText }}</text>
     </view>
+    
+    <!-- 正在绘制转盘时的提示文本 -->
     <text class="almost-lottery__tip" v-else>{{ almostLotteryTip }}</text>
+    
+    <!-- 为了兼容 app 端 ctx.measureText 所需的标签 -->
+    <text class="almost-lottery__measureText" :style="{ fontSize: higtFontSize + 'px' }">{{ measureText }}</text>
     
     <!-- #ifdef MP-ALIPAY -->
     <canvas 
@@ -66,7 +69,7 @@
 </template>
 
 <script>
-	import { getStore, setStore, clearStore, downloadFile, pathToBase64 } from '@/uni_modules/almost-lottery/utils/almost-utils.js'
+	import { getStore, setStore, clearStore, clacTextLen, downloadFile, pathToBase64 } from '@/uni_modules/almost-lottery/utils/almost-utils.js'
   export default {
     name: 'AlmostLottery',
     props: {
@@ -84,6 +87,31 @@
       canvasHeight: {
         type: Number,
         default: 240
+      },
+      // 转盘外圈的宽度
+      outerWidth: {
+        type: Number,
+        default: 320
+      },
+      // 转盘外圈的高度
+      outerHeight: {
+        type: Number,
+        default: 320
+      },
+			// 内圈与外圈的间距
+			canvasMargin: {
+        type: Number,
+        default: 5
+      },
+      // 抽奖按钮的宽度
+      actionWidth: {
+        type: Number,
+        default: 120
+      },
+      // 抽奖按钮的高度
+      actionHeight: {
+        type: Number,
+        default: 120
       },
       // 奖品列表
       prizeList: {
@@ -213,12 +241,7 @@
 			canvasCached: {
 				type: Boolean,
 				default: false
-			},
-			// 内圈与外圈的间距
-			canvasMargin: {
-        type: Number,
-        default: 5
-      }
+			}
     },
     data() {
       return {
@@ -264,6 +287,10 @@
       higtHeightMultiple() {
         return this.strFontSize * this.strHeightMultiple * this.systemInfo.pixelRatio
       },
+      // 高清内外圈间距
+      higtCanvasMargin() {
+        return this.canvasMargin * this.systemInfo.pixelRatio
+      },
       // 根据奖品列表计算 canvas 旋转角度
       canvasAngle() {
         let result = 0
@@ -297,23 +324,7 @@
       textDistance() {
         const textZeroY = Math.round(this.outsideRadius - (this.insideRadius / 2))
         return textZeroY - this.textRadius
-      },
-			// 内圈与外圈的距离
-			canvasMarginTotal() {
-				let diffNum = 5
-				let margin = this.canvasMargin * 2
-				if (this.canvasWidth > 240) {
-					return -(this.canvasWidth / 240 * 2) - margin
-				} else if (this.canvasWidth < 240) {
-					return diffNum + (this.canvasWidth / 240 * 2) - margin
-				} else {
-					return diffNum - margin
-				}
-			},
-			// 抽奖按钮的宽高
-			actionSize() {
-				return this.canvasWidth / 2.4
-			}
+      }
     },
     watch: {
       // 监听获奖序号的变动
@@ -472,15 +483,26 @@
 
           // 设置文本位置并处理换行
           // 是否需要换行
-          let isLineBreak = rewardName.length > this.strLineLen
+          let realLen = clacTextLen(rewardName).realLen
+          let isLineBreak = realLen > this.strLineLen
           if (isLineBreak) {
             // 获得多行文本数组
-            rewardName = rewardName.substring(0, this.strLineLen) + ',' + rewardName.substring(this.strLineLen)
+            let firstText = ''
+            let lastText = ''
+            let firstCount = 0
+            for (let j = 0; j < rewardName.length; j++) {
+              firstCount += clacTextLen(rewardName[j]).byteLen
+              if (firstCount <= (this.strLineLen * 2)) {
+                firstText += rewardName[j]
+              } else {
+                lastText += rewardName[j]
+              }
+            }
+            rewardName = firstText + ',' + lastText
             let rewardNames = rewardName.split(',')
-
             // 循环文本数组，计算每一行的文本宽度
             for (let j = 0; j < rewardNames.length; j++) {
-              if (ctx.measureText && ctx.measureText(rewardNames[j]).width) {
+              if (ctx.measureText && ctx.measureText(rewardNames[j]).width > 0) {
                 // 文本的宽度信息
                 let tempStrSize = ctx.measureText(rewardNames[j])
                 let tempStrWidth = -(tempStrSize.width / 2).toFixed(2)
@@ -498,7 +520,7 @@
               }
             }
           } else {
-            if (ctx.measureText && ctx.measureText(rewardName).width) {
+            if (ctx.measureText && ctx.measureText(rewardName).width > 0) {
               // 文本的宽度信息
               let tempStrSize = ctx.measureText(rewardName)
               let tempStrWidth = -(tempStrSize.width / 2).toFixed(2)
@@ -716,9 +738,13 @@
 			},
       // 兼容 app 端不支持 ctx.measureText
       // 已知问题：初始绘制时，低端安卓机 平均耗时 2s
+      // hbx 2.8.12+ 已在 app 端支持
       getTextWidth() {
+        console.warn('正在采用兼容方式获取文本的 size 信息，虽然没有任何问题，如果可以，请将此 systemInfo 及 hbx 版本号 反馈给作者', this.systemInfo)
+        let query = uni.createSelectorQuery().in(this)
+        let nodesRef = query.select('.almost-lottery__measureText')
         return new Promise((resolve, reject) => {
-          uni.createSelectorQuery().in(this).select('.almost-lottery__measureText').fields({
+          nodesRef.fields({
             size: true,
           }, (res) => {
             resolve(res.width)
@@ -729,7 +755,7 @@
       strLimit(value) {
         let maxLength = this.strMaxLen
         if (!value || !maxLength) return value
-        return value.length > maxLength ? value.slice(0, maxLength - 1) + '...' : value
+        return clacTextLen(value).realLen > maxLength ? value.slice(0, maxLength - 1) + '...' : value
       },
 			// 检查本地缓存中是否存在转盘图
 			checkCacheImg () {
