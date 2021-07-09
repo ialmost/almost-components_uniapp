@@ -189,8 +189,8 @@
 								{ prizeId: 1, name: '0.1元现金', stock: 10, weight: 1, prizeImage: '/static/git.png' },
 								{ prizeId: 2, name: '10元现金', stock: 0, weight: 0, prizeImage: 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/56f085e0-bcfe-11ea-b244-a9f5e5565f30.png' },
 								{ prizeId: 3, name: '5元话费', stock: 1, weight: 0 },
-								{ prizeId: 4, name: '50元现金', stock: 0, weight: 0 },
-								{ prizeId: 5, name: '1卷抽纸', stock: 3, weight: 0 },
+								{ prizeId: 4, name: '50元现金', stock: 0, weight: 0, prizeImage: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAYAAADE6YVjAAAB2klEQVRIia3Wv09TURjG8U+u2kQZcNENh2ok0cnJ0R+L0RB2g/EvwITEwRgnV0Zx0fAHYBh0khBD4sBAmAgDiwQNg4qwmSBDAYf7Fi+n97al9UlObnvO836f3tO355b2GsAYZrCBPRzGdSPmx8J3YtXwDDsB7TR2wl/rNmAYK13C07ES9W11E9s9BjTHdnBKVf8PAcWgehpwCssF0w/5FzqLgw7AA7zDQ/wqzC8H90jjSeFMYW0Yr8PzALfjOh7z1wve2YTzpLlQw2ay+KZ1N7vS24SziVqGexhKzB07pEJXk/dDwTetdZ9HewwZLWFNw2oyudZjQFNrCW8109pqS32GpPX1TOu586fPkLR+IEMjmbzYZ0ha34Atx/fwW58hXxPeFixo7Yg7PQbcKmEtZFgsMb/C4AkDBuUnQKpFuFZI3cZuvP6C+8g6wDP572O95C4Og49/W/YJl/G5YPqO9yV3dh4f8LMCfhjcI93Afix8xAX5SVx2YBY10yagEdxjmiwY7uISXuIFrlSEPG0TMllWcAbzYViXd0rzeXC6ImSiImA+eKU6h7mCeV/eCBMnCJkLzpHSztnFCJ7L//ZkOFv1iRLtRd1IcLpSHVP4jccVnkexPqXkmd7UX15b7tiz29ReAAAAAElFTkSuQmCC' },
+								{ prizeId: 5, name: '1卷抽纸', stock: 3, weight: 0, prizeImage: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAABCElEQVRoge3YMa4BURSH8Y8o7UAp0WgkotBZwluAfhqlZSgUGr23ENUUCpppJnTswAIUSCaTiziZJ8d9/193zdzrfMltABF5plb+oLscDoAV0Pn8OC/lwDhL0k35QT3wstcIuM61Cj0IhXiNuAvOFwr5SgrxRiHeKMSbhnHfAVgU1i1gajhnBpwK6wnQtgxkDTlmSTq/L7rLYQ9byG+WpLvCOT8YQ6K5WgrxRiHeKMQbhXijEG8U4o1CvIkmxPrDquwMrI37KlFJSJake2BUxVlW0VytaEKsV6t5+8Ohak3rRmtIH9hav/QvRHO1FOKNQrwJheQfn+I9wflCIeNHLzuQc51PRP6rC1ZeIm1I8cC5AAAAAElFTkSuQmCC' },
 								{ prizeId: 6, name: '0.2元现金', stock: 8, weight: 0 },
 								{ prizeId: 7, name: '谢谢参与', stock: 100, weight: 10000 },
 								{ prizeId: 8, name: '100金币', stock: 100, weight: 10000 }

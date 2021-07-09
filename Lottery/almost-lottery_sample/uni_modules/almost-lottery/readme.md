@@ -7,6 +7,7 @@
 > 如果用着还行，请支持一下
 > - 前往 [GitHub](https://github.com/ialmost/almost-components_uniapp) 给个 Star
 > - 前往 [UniApp](https://ext.dcloud.net.cn/plugin?id=1030) 给个五星
+> - 使用中遇到问题时，可以添加 **QQ群 20441313**
 > 
 > <br />
 
@@ -150,4 +151,4 @@ prizeId | 奖品对应 `ID` | *`Number`*
 name | 奖品名称 | *`String`*
 stock | 奖品库存 | *`Number`*
 weight | 奖品权重 | *`Number`*
-prizeImage | 奖品图片地址 | *`String`*
+prizeImage | 奖品图片地址，仅支持`http`和`https`协议 | *`String`*

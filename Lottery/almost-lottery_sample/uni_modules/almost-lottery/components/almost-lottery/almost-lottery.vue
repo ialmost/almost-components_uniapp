@@ -69,6 +69,7 @@
 </template>
 
 <script>
+  const systemInfo = uni.getSystemInfoSync()
 	import { getStore, setStore, clearStore, clacTextLen, downloadFile, pathToBase64 } from '@/uni_modules/almost-lottery/utils/almost-utils.js'
   export default {
     name: 'AlmostLottery',
@@ -271,25 +272,21 @@
       }
     },
     computed: {
-      // 设备像素密度
-      systemInfo() {
-        return uni.getSystemInfoSync()
-      },
       // 高清尺寸
       higtCanvasSize() {
-        return this.canvasWidth * this.systemInfo.pixelRatio
+        return this.canvasWidth * systemInfo.pixelRatio
       },
       // 高清字体
       higtFontSize() {
-        return this.strFontSize * this.systemInfo.pixelRatio
+        return this.strFontSize * systemInfo.pixelRatio
       },
       // 高清行高
       higtHeightMultiple() {
-        return this.strFontSize * this.strHeightMultiple * this.systemInfo.pixelRatio
+        return this.strFontSize * this.strHeightMultiple * systemInfo.pixelRatio
       },
       // 高清内外圈间距
       higtCanvasMargin() {
-        return this.canvasMargin * this.systemInfo.pixelRatio
+        return this.canvasMargin * systemInfo.pixelRatio
       },
       // 根据奖品列表计算 canvas 旋转角度
       canvasAngle() {
@@ -314,11 +311,11 @@
       },
       // 内圆的半径
       insideRadius() {
-        return 20 * this.systemInfo.pixelRatio
+        return 20 * systemInfo.pixelRatio
       },
       // 文字距离边缘的距离
       textRadius() {
-        return this.strMarginOutside * this.systemInfo.pixelRatio || (this.higtFontSize / 2)
+        return this.strMarginOutside * systemInfo.pixelRatio || (this.higtFontSize / 2)
       },
       // 根据画板的宽度计算奖品文字与中心点的距离
       textDistance() {
@@ -574,14 +571,19 @@
                 })
               }
 						} else {
+              console.log('处理非远程图片', prizeItem.prizeImage)
 							// #ifndef MP
-							prizeItem.prizeImage = await pathToBase64(prizeItem.prizeImage)
+              if (prizeItem.prizeImage.indexOf(';base64,') === -1) {
+                prizeItem.prizeImage = await pathToBase64(prizeItem.prizeImage)
+              }
 							// #endif
 						}
-						
-            let prizeImageX = -(this.imgWidth * this.systemInfo.pixelRatio / 2)
-            let prizeImageY = this.imgMarginStr * this.systemInfo.pixelRatio
-            ctx.drawImage(prizeItem.prizeImage, prizeImageX, prizeImageY, this.imgWidth * this.systemInfo.pixelRatio, this.imgHeight * this.systemInfo.pixelRatio)
+            
+            let prizeImageX = -(this.imgWidth * systemInfo.pixelRatio / 2)
+            let prizeImageY = this.imgMarginStr * systemInfo.pixelRatio
+            let prizeImageW = this.imgWidth * systemInfo.pixelRatio
+            let prizeImageH = this.imgHeight * systemInfo.pixelRatio
+            ctx.drawImage(prizeItem.prizeImage, prizeImageX, prizeImageY, prizeImageW, prizeImageH)
           }
 
           ctx.restore()
@@ -595,8 +597,8 @@
 
             // #ifdef MP-ALIPAY
             ctx.toTempFilePath({
-              destWidth: this.canvasWidth * this.systemInfo.pixelRatio,
-              destHeight: this.canvasHeight * this.systemInfo.pixelRatio,
+              destWidth: this.canvasWidth * systemInfo.pixelRatio,
+              destHeight: this.canvasHeight * systemInfo.pixelRatio,
               success: (res) => {
                 // console.log(res.apFilePath)
                 this.handlePrizeImg({
@@ -740,7 +742,7 @@
       // 已知问题：初始绘制时，低端安卓机 平均耗时 2s
       // hbx 2.8.12+ 已在 app 端支持
       getTextWidth() {
-        console.warn('正在采用兼容方式获取文本的 size 信息，虽然没有任何问题，如果可以，请将此 systemInfo 及 hbx 版本号 反馈给作者', this.systemInfo)
+        console.warn('正在采用兼容方式获取文本的 size 信息，虽然没有任何问题，如果可以，请将此 systemInfo 及 hbx 版本号 反馈给作者', systemInfo)
         let query = uni.createSelectorQuery().in(this)
         let nodesRef = query.select('.almost-lottery__measureText')
         return new Promise((resolve, reject) => {
