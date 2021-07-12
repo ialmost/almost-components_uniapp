@@ -4,9 +4,9 @@
 			"path": "pages/index/index",
 			"style": {
 				"navigationBarTitleText": "Almost-Lottery抽奖转盘",
-        "app-plus": {
-          "scrollIndicator": "none"
-        }
+		    "app-plus": {
+		      "scrollIndicator": "none"
+		    }
 			}
 		}
 	],

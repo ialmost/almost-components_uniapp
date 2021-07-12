@@ -145,6 +145,11 @@
         type: String,
         default: '/uni_modules/almost-lottery/static/almost-lottery/almost-lottery__action2x.png'
       },
+      // 是否绘制奖品名称
+      prizeNameDrawed: {
+				type: Boolean,
+				default: true
+      },
       // 是否开启奖品区块描边
       stroked: {
 				type: Boolean,
@@ -480,57 +485,59 @@
 
           // 设置文本位置并处理换行
           // 是否需要换行
-          let realLen = clacTextLen(rewardName).realLen
-          let isLineBreak = realLen > this.strLineLen
-          if (isLineBreak) {
-            // 获得多行文本数组
-            let firstText = ''
-            let lastText = ''
-            let firstCount = 0
-            for (let j = 0; j < rewardName.length; j++) {
-              firstCount += clacTextLen(rewardName[j]).byteLen
-              if (firstCount <= (this.strLineLen * 2)) {
-                firstText += rewardName[j]
-              } else {
-                lastText += rewardName[j]
+          if (rewardName && this.prizeNameDrawed) {
+            let realLen = clacTextLen(rewardName).realLen
+            let isLineBreak = realLen > this.strLineLen
+            if (isLineBreak) {
+              // 获得多行文本数组
+              let firstText = ''
+              let lastText = ''
+              let firstCount = 0
+              for (let j = 0; j < rewardName.length; j++) {
+                firstCount += clacTextLen(rewardName[j]).byteLen
+                if (firstCount <= (this.strLineLen * 2)) {
+                  firstText += rewardName[j]
+                } else {
+                  lastText += rewardName[j]
+                }
               }
-            }
-            rewardName = firstText + ',' + lastText
-            let rewardNames = rewardName.split(',')
-            // 循环文本数组，计算每一行的文本宽度
-            for (let j = 0; j < rewardNames.length; j++) {
-              if (ctx.measureText && ctx.measureText(rewardNames[j]).width > 0) {
+              rewardName = firstText + ',' + lastText
+              let rewardNames = rewardName.split(',')
+              // 循环文本数组，计算每一行的文本宽度
+              for (let j = 0; j < rewardNames.length; j++) {
+                if (ctx.measureText && ctx.measureText(rewardNames[j]).width > 0) {
+                  // 文本的宽度信息
+                  let tempStrSize = ctx.measureText(rewardNames[j])
+                  let tempStrWidth = -(tempStrSize.width / 2).toFixed(2)
+                  ctx.fillText(rewardNames[j], tempStrWidth, j * this.higtHeightMultiple)
+                } else {
+                  this.measureText = rewardNames[j]
+            
+                  // 等待页面重新渲染
+                  await this.$nextTick()
+            
+                  let textWidth = await this.getTextWidth()
+                  let tempStrWidth = -(textWidth / 2).toFixed(2)
+                  ctx.fillText(rewardNames[j], tempStrWidth, j * this.higtHeightMultiple)
+                  // console.log(rewardNames[j], textWidth, i)
+                }
+              }
+            } else {
+              if (ctx.measureText && ctx.measureText(rewardName).width > 0) {
                 // 文本的宽度信息
-                let tempStrSize = ctx.measureText(rewardNames[j])
+                let tempStrSize = ctx.measureText(rewardName)
                 let tempStrWidth = -(tempStrSize.width / 2).toFixed(2)
-                ctx.fillText(rewardNames[j], tempStrWidth, j * this.higtHeightMultiple)
+                ctx.fillText(rewardName, tempStrWidth, 0)
               } else {
-                this.measureText = rewardNames[j]
-
+                this.measureText = rewardName
+            
                 // 等待页面重新渲染
                 await this.$nextTick()
-
+            
                 let textWidth = await this.getTextWidth()
                 let tempStrWidth = -(textWidth / 2).toFixed(2)
-                ctx.fillText(rewardNames[j], tempStrWidth, j * this.higtHeightMultiple)
-                // console.log(rewardNames[j], textWidth, i)
+                ctx.fillText(rewardName, tempStrWidth, 0)
               }
-            }
-          } else {
-            if (ctx.measureText && ctx.measureText(rewardName).width > 0) {
-              // 文本的宽度信息
-              let tempStrSize = ctx.measureText(rewardName)
-              let tempStrWidth = -(tempStrSize.width / 2).toFixed(2)
-              ctx.fillText(rewardName, tempStrWidth, 0)
-            } else {
-              this.measureText = rewardName
-
-              // 等待页面重新渲染
-              await this.$nextTick()
-
-              let textWidth = await this.getTextWidth()
-              let tempStrWidth = -(textWidth / 2).toFixed(2)
-              ctx.fillText(rewardName, tempStrWidth, 0)
             }
           }
 

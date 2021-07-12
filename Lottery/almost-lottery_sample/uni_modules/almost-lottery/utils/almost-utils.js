@@ -38,7 +38,7 @@ export const clearStore = (name) => {
  * @param {String} text - 文本内容
  */
 export const clacTextLen = (text) => {
-  if (!text) return
+  if (!text) return { byteLen: 0, realLen: 0 }
   text += ''
   let clacLen = 0
   for (let i = 0; i < text.length; i++) {
