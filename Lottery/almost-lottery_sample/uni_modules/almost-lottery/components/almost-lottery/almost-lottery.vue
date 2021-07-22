@@ -204,7 +204,7 @@
         default: 25
       },
       // 奖品文字多行情况下的行高
-      strHeightMultiple: {
+      strLineHeight: {
         type: Number,
         default: 1.2
       },
@@ -287,7 +287,7 @@
       },
       // 高清行高
       higtHeightMultiple() {
-        return this.strFontSize * this.strHeightMultiple * systemInfo.pixelRatio
+        return this.strFontSize * this.strLineHeight * systemInfo.pixelRatio
       },
       // 高清内外圈间距
       higtCanvasMargin() {
@@ -420,15 +420,8 @@
         let prizeCount = this.prizeList.length
         let baseAngle = Math.PI * 2 / prizeCount
 
-        // 设置字体和字号
-        // #ifndef MP
-        let fontFamily =
-          '-apple-system, BlinkMacSystemFont, \'PingFang SC\', \'Helvetica Neue\', STHeiti, \'Microsoft Yahei\', Tahoma, Simsun, sans-serif'
-        ctx.font = `${this.higtFontSize}px ${fontFamily}`
-        // #endif
-        // #ifdef MP
+        // 设置字体
         ctx.setFontSize(this.higtFontSize)
-        // #endif
 
         // 注意，开始画的位置是从0°角的位置开始画的。也就是水平向右的方向。
         // 画具体内容

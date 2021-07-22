@@ -13,7 +13,7 @@
 
 
 ## 高能预警
-- 本插件已支持 `uni_modules` 模式，强烈推荐使用该模式，**非 `uni_modules` 模式不再维护**
+- 本插件仅支持 `uni_modules` 模式，强烈推荐使用该模式，**非 `uni_modules` 模式不再维护**
 - 在使用本插件之前，强烈建议使用 `HBuilderX` 导入示例项目验证可用性并参照修改
 
 ## 功能概要
@@ -126,7 +126,7 @@ ringCount | 旋转的圈数 | *`Number`* | `8`
 pointerPosition | 点击抽奖按钮指针的位置，可选值 `'edge'` => 指向边界 `'middle'` => 指向中间 | *`String`* | `'edge'`
 strFontColor | 奖品名称的颜色 | *`String`* | `'#C30B29'`
 strFontSize | 奖品名称的字号 | *`Number`* | `12`
-strHeightMultiple | 奖品名称多行情况下的行高 | *`Number`* | `1.2`
+strLineHeight | 奖品名称多行情况下的行高 | *`Number`* | `1.2`
 strKey | 奖品名称所对应的键名 `key` ，比如 `{ name: '88元现金' }`，`strKey` 就是 `'name'` | *`String`* | `'name'`
 strMaxLen | 奖品名称长度限制 | *`Number`* | `12`
 strLineLen | 奖品名称在多行情况下第一行文字的长度 | *`Number`* | `6`
@@ -153,4 +153,4 @@ prizeId | 奖品对应 `ID` | *`Number`*
 name | 奖品名称 | *`String`*
 stock | 奖品库存 | *`Number`*
 weight | 奖品权重 | *`Number`*
-prizeImage | 奖品图片地址，仅支持`http`和`https`协议 | *`String`*
+prizeImage | 奖品图片地址，网络图片仅支持`http`和`https`协议 | *`String`*
