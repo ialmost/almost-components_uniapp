@@ -15,6 +15,8 @@
 ## 高能预警
 - 本插件仅支持 `uni_modules` 模式，强烈推荐使用该模式，**非 `uni_modules` 模式不再维护**
 - 在使用本插件之前，强烈建议使用 `HBuilderX` 导入示例项目验证可用性并参照修改
+- [Almost-Lottery抽奖转盘云端一体页面](https://ext.dcloud.net.cn/plugin?id=5763)
+- [Almost-Lottery抽奖转盘Admin配置中心](https://ext.dcloud.net.cn/plugin?id=5762)
 
 ## 功能概要
 - [x] 可配置奖品文字

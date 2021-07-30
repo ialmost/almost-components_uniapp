@@ -396,7 +396,7 @@
           clearTimeout(resetPrizeTimer)
           resetPrizeTimer = null
 
-          // 每次抽奖结束后都要重置父级附件的 prizeIndex
+          // 每次抽奖结束后都要重置父级组件的 prizeIndex
           this.$emit('reset-index')
         }, endTime + 50)
       },
@@ -757,7 +757,7 @@
       strLimit(value) {
         let maxLength = this.strMaxLen
         if (!value || !maxLength) return value
-        return clacTextLen(value).realLen > maxLength ? value.slice(0, maxLength - 1) + '...' : value
+        return clacTextLen(value).realLen > maxLength ? value.slice(0, maxLength - 1) + '..' : value
       },
 			// 检查本地缓存中是否存在转盘图
 			checkCacheImg () {

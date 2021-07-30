@@ -9,7 +9,7 @@
       <view class="tip"><text class="tip-content">每次抽奖消耗 {{ goldNum }} 金币，不限次数</text></view>
     </view>
     <!-- action -->
-    <view class="almost-action" @tap="handleInitCanvas" v-if="isDev">
+    <view class="almost-lottery__action-dev" @tap="handleInitCanvas" v-if="isDev">
       <text class="text">重新生成画板-开发模式使用</text>
     </view>
     <!-- lottery -->
@@ -28,7 +28,7 @@
         @finish="handleDrawFinish"
         v-if="prizeList.length"
       />
-      <view class="count">
+      <view class="almost-lottery__count">
         <text class="text">剩余免费抽奖 {{ freeNum }} 次</text>
       </view>
     </view>
@@ -114,7 +114,7 @@
         // 是否由前端控制概率，默认不开启，强烈建议由后端控制
         onFrontend: false,
         // 权重随机数的最大值
-        weightTotal: 0,
+        weightMax: 0,
         // 权重数组
         weightArr: [],
         
@@ -160,10 +160,13 @@
             console.log('已获取到奖品列表数据，开始绘制抽奖转盘')
 						
 						// 如果开启了前端控制概率
-						// 计算出权重的总和并生成权重数组
+						// 得出权重的最大值并生成权重数组
 						if (this.onFrontend) {
-						  this.prizeList.forEach((item) => this.weightTotal += item.weight)
-						  this.weightArr = this.prizeList.map((item) => item.weight)
+              // 生成权重数组并排序取得最大值
+              this.weightArr = this.prizeList.map((item) => item.weight)
+              let weightArrSort = [...this.weightArr]
+              weightArrSort.sort((a, b) => b - a)
+              this.weightMax = weightArrSort[0]
 						}
 					}
 				} else {
@@ -186,14 +189,14 @@
 						resolve({
 							ok: true,
 							data: [
-								{ prizeId: 1, name: '0.1元现金', stock: 10, weight: 1, prizeImage: '/static/git.png' },
-								{ prizeId: 2, name: '10元现金', stock: 0, weight: 0, prizeImage: 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/56f085e0-bcfe-11ea-b244-a9f5e5565f30.png' },
-								{ prizeId: 3, name: '5元话费', stock: 1, weight: 0 },
-								{ prizeId: 4, name: '50元现金', stock: 0, weight: 0, prizeImage: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAYAAADE6YVjAAAB2klEQVRIia3Wv09TURjG8U+u2kQZcNENh2ok0cnJ0R+L0RB2g/EvwITEwRgnV0Zx0fAHYBh0khBD4sBAmAgDiwQNg4qwmSBDAYf7Fi+n97al9UlObnvO836f3tO355b2GsAYZrCBPRzGdSPmx8J3YtXwDDsB7TR2wl/rNmAYK13C07ES9W11E9s9BjTHdnBKVf8PAcWgehpwCssF0w/5FzqLgw7AA7zDQ/wqzC8H90jjSeFMYW0Yr8PzALfjOh7z1wve2YTzpLlQw2ay+KZ1N7vS24SziVqGexhKzB07pEJXk/dDwTetdZ9HewwZLWFNw2oyudZjQFNrCW8109pqS32GpPX1TOu586fPkLR+IEMjmbzYZ0ha34Atx/fwW58hXxPeFixo7Yg7PQbcKmEtZFgsMb/C4AkDBuUnQKpFuFZI3cZuvP6C+8g6wDP572O95C4Og49/W/YJl/G5YPqO9yV3dh4f8LMCfhjcI93Afix8xAX5SVx2YBY10yagEdxjmiwY7uISXuIFrlSEPG0TMllWcAbzYViXd0rzeXC6ImSiImA+eKU6h7mCeV/eCBMnCJkLzpHSztnFCJ7L//ZkOFv1iRLtRd1IcLpSHVP4jccVnkexPqXkmd7UX15b7tiz29ReAAAAAElFTkSuQmCC' },
-								{ prizeId: 5, name: '1卷抽纸', stock: 3, weight: 0, prizeImage: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAABCElEQVRoge3YMa4BURSH8Y8o7UAp0WgkotBZwluAfhqlZSgUGr23ENUUCpppJnTswAIUSCaTiziZJ8d9/193zdzrfMltABF5plb+oLscDoAV0Pn8OC/lwDhL0k35QT3wstcIuM61Cj0IhXiNuAvOFwr5SgrxRiHeKMSbhnHfAVgU1i1gajhnBpwK6wnQtgxkDTlmSTq/L7rLYQ9byG+WpLvCOT8YQ6K5WgrxRiHeKMQbhXijEG8U4o1CvIkmxPrDquwMrI37KlFJSJake2BUxVlW0VytaEKsV6t5+8Ohak3rRmtIH9hav/QvRHO1FOKNQrwJheQfn+I9wflCIeNHLzuQc51PRP6rC1ZeIm1I8cC5AAAAAElFTkSuQmCC' },
-								{ prizeId: 6, name: '0.2元现金', stock: 8, weight: 0 },
+								{ prizeId: 1, name: '0.1元现金', stock: 10, weight: 200, prizeImage: '/static/git.png' },
+								{ prizeId: 2, name: '10元现金', stock: 0, weight: 50, prizeImage: 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/56f085e0-bcfe-11ea-b244-a9f5e5565f30.png' },
+								{ prizeId: 3, name: '5元话费', stock: 1, weight: 80 },
+								{ prizeId: 4, name: '50元现金', stock: 0, weight: 10, prizeImage: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAYAAADE6YVjAAAB2klEQVRIia3Wv09TURjG8U+u2kQZcNENh2ok0cnJ0R+L0RB2g/EvwITEwRgnV0Zx0fAHYBh0khBD4sBAmAgDiwQNg4qwmSBDAYf7Fi+n97al9UlObnvO836f3tO355b2GsAYZrCBPRzGdSPmx8J3YtXwDDsB7TR2wl/rNmAYK13C07ES9W11E9s9BjTHdnBKVf8PAcWgehpwCssF0w/5FzqLgw7AA7zDQ/wqzC8H90jjSeFMYW0Yr8PzALfjOh7z1wve2YTzpLlQw2ay+KZ1N7vS24SziVqGexhKzB07pEJXk/dDwTetdZ9HewwZLWFNw2oyudZjQFNrCW8109pqS32GpPX1TOu586fPkLR+IEMjmbzYZ0ha34Atx/fwW58hXxPeFixo7Yg7PQbcKmEtZFgsMb/C4AkDBuUnQKpFuFZI3cZuvP6C+8g6wDP572O95C4Og49/W/YJl/G5YPqO9yV3dh4f8LMCfhjcI93Afix8xAX5SVx2YBY10yagEdxjmiwY7uISXuIFrlSEPG0TMllWcAbzYViXd0rzeXC6ImSiImA+eKU6h7mCeV/eCBMnCJkLzpHSztnFCJ7L//ZkOFv1iRLtRd1IcLpSHVP4jccVnkexPqXkmd7UX15b7tiz29ReAAAAAElFTkSuQmCC' },
+								{ prizeId: 5, name: '1卷抽纸', stock: 3, weight: 3000, prizeImage: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAABCElEQVRoge3YMa4BURSH8Y8o7UAp0WgkotBZwluAfhqlZSgUGr23ENUUCpppJnTswAIUSCaTiziZJ8d9/193zdzrfMltABF5plb+oLscDoAV0Pn8OC/lwDhL0k35QT3wstcIuM61Cj0IhXiNuAvOFwr5SgrxRiHeKMSbhnHfAVgU1i1gajhnBpwK6wnQtgxkDTlmSTq/L7rLYQ9byG+WpLvCOT8YQ6K5WgrxRiHeKMQbhXijEG8U4o1CvIkmxPrDquwMrI37KlFJSJake2BUxVlW0VytaEKsV6t5+8Ohak3rRmtIH9hav/QvRHO1FOKNQrwJheQfn+I9wflCIeNHLzuQc51PRP6rC1ZeIm1I8cC5AAAAAElFTkSuQmCC' },
+								{ prizeId: 6, name: '0.2元现金', stock: 8, weight: 120 },
 								{ prizeId: 7, name: '谢谢参与', stock: 100, weight: 10000 },
-								{ prizeId: 8, name: '100金币', stock: 100, weight: 10000 }
+								{ prizeId: 8, name: '100金币', stock: 100, weight: 3000 }
 							]
 						})
 					}, 2000)
@@ -243,25 +246,24 @@
         console.warn('###当前处于前端控制中奖概率，安全起见，强烈建议由后端控制###')
         // 前端控制概率的情况下，需要拿到最接近随机权重且大于随机权重的值
         // 后端控制概率的情况下，通常会直接返回 prizeId
-        if (!this.weightTotal) {
+        if (!this.weightMax) {
         	console.warn('###当前已开启前端控制中奖概率，但是奖品数据列表中的 weight 参数似乎配置不正确###')
         	return
         }
-        console.log('当前权重总和为 =>', this.weightTotal)
+        console.log('当前权重最大值为 =>', this.weightMax)
         
         // 注意这里使用了 Math.ceil，如果某个权重的值为 0，则始终无法中奖
-        let weight = Math.ceil(Math.random() * this.weightTotal)
-        console.log('本次权重随机数 =>', weight)
-        
-        let list = [...this.prizeList]
+        let randomWeight = Math.ceil(Math.random() * this.weightMax)
+        console.log('本次权重随机数 =>', randomWeight)
         
         // 生成大于等于随机权重的数组
         let tempMaxArrs = []
-        list.forEach((item) => {
-          if (item.weight >= weight) {
+        this.prizeList.forEach((item) => {
+          if (item.weight >= randomWeight) {
             tempMaxArrs.push(item.weight)
           }
         })
+        console.log('tempMaxArrs', tempMaxArrs)
         
         // 如果大于随机权重的数组有值，先对这个数组排序然后取值
         // 反之新建一个临时的包含所有权重的已排序数组，然后取值
@@ -270,12 +272,19 @@
           tempMaxArrs.sort((a, b) => a - b)
           // 取值时，如果存在多个值，分两种情况
           if (tempMaxArrsLen > 1) {
+            // 检查是否存在重复的值
+            let sameCount = 0
+            for (let i = 0; i < tempMaxArrs.length; i++) {
+              if (tempMaxArrs[i] === tempMaxArrs[0]) {
+                sameCount++
+              }
+            }
+            
             // 值不相等的情况下取最接近的值，也就是第1个值
-            let sumWeight = tempMaxArrs.reduce((a, b) => a + b)
-            if ((sumWeight / tempMaxArrsLen) !== tempMaxArrs[0]) {
+            if (sameCount === 1) {
               this.prizeIndex = this.weightArr.indexOf(tempMaxArrs[0])
             } else {
-              // 值相等时，随机取值，当然这里你可以自己决定是否随机取值
+              // 存在值相等时，随机取值，当然这里你可以自己决定是否随机取值
               let sameWeight = tempMaxArrs[0]
               let sameWeightArr = []
               let sameWeightItem = {}
@@ -295,12 +304,8 @@
           } else {
             this.prizeIndex = this.weightArr.indexOf(tempMaxArrs[0])
           }
-        } else {
-          let tempWeightArr = [...this.weightArr]
-          tempWeightArr.sort((a, b) => a - b)
-          this.prizeIndex = this.weightArr.indexOf(tempWeightArr[tempWeightArr.length - 1])
         }
-                
+        
         console.log('本次抽中奖品 =>', this.prizeList[this.prizeIndex].name)
         
         // 如果奖品设有库存
@@ -447,7 +452,7 @@
   
   .almost-lottery__wheel {
     text-align: center;
-    .count {
+    .almost-lottery__count {
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -514,7 +519,7 @@
     }
   }
   
-  .almost-action {
+  .almost-lottery__action-dev {
     display: flex;
     flex-direction: row;
     justify-content: center;
