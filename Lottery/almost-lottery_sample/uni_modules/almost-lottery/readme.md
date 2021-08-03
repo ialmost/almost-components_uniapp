@@ -12,18 +12,21 @@
 > <br />
 
 
+## 基于 uniCloud 开发的云端 Almost-Lottery 抽奖转盘，欢迎尝试体验
+- [Almost-Lottery抽奖转盘的云端一体页面](https://ext.dcloud.net.cn/plugin?id=5763)
+- [Almost-Lottery抽奖转盘的配置中心](https://ext.dcloud.net.cn/plugin?id=5762)
+
+
 ## 高能预警
 - 本插件仅支持 `uni_modules` 模式，强烈推荐使用该模式，**非 `uni_modules` 模式不再维护**
 - 在使用本插件之前，强烈建议使用 `HBuilderX` 导入示例项目验证可用性并参照修改
-- [Almost-Lottery抽奖转盘云端一体页面](https://ext.dcloud.net.cn/plugin?id=5763)
-- [Almost-Lottery抽奖转盘Admin配置中心](https://ext.dcloud.net.cn/plugin?id=5762)
 
 ## 功能概要
-- [x] 可配置奖品文字
+- [x] 可配置奖品文字 **支持横向/竖向展示**
 - [x] 可配置每个奖品区块的背景颜色
 - [x] 可配置奖品区块是否开启描边以及边框的颜色，默认不开启
 - [x] 可配置转盘外环和抽奖按钮图
-- [x] 可配置每个奖品区块的奖品图片，**当图片是网络地址时，小程序端需要配置白名单，H5端需要允许跨域**
+- [x] 可配置每个奖品区块的奖品图片，**当图片是网络地址时，小程序端需要配置白名单，H5端需要允许跨域，奖品文字为竖向时不支持展示奖品图片**
 - [x] 奖品列表支持奇数，**奇数时需尽量能被 `360` 除尽**
 - [x] 可配置内圈与外圈的间距
 - [x] 可配置轮盘旋转或指针旋转
@@ -121,6 +124,7 @@ actionBg | 抽奖按钮图片 | `String` | `默认内置的本地图片`
 colors | 奖品区块对应的背景颜色，默认 2 个颜色相互交替，**也可以对每个区块设置不同颜色** | *`Array`* | `['#FFFFFF', '#FFE9AA']`
 prizeNameDrawed | 是否绘制奖品名称 | *`Boolean`* | `true`
 stroked | 是否开启奖品区块描边 | *`Boolean`* | `false`
+strDirection | 奖品名称展示方向，可选值 `'horizontal'` => 横向 `'vertical'` => 竖向 | *`String`* | `'horizontal'`
 strokeColor | 奖品区块边框颜色 | *`String`* | `'#FFE9AA'`
 rotateType | 旋转的类型，可选值 `'roulette'` => 轮盘旋转 `'pointer'` => 指针旋转 | *`String`* | `'roulette'`
 duration | 转盘旋转的动画时长，单位：秒 | *`Number`* | `8`
@@ -130,8 +134,8 @@ strFontColor | 奖品名称的颜色 | *`String`* | `'#C30B29'`
 strFontSize | 奖品名称的字号 | *`Number`* | `12`
 strLineHeight | 奖品名称多行情况下的行高 | *`Number`* | `1.2`
 strKey | 奖品名称所对应的键名 `key` ，比如 `{ name: '88元现金' }`，`strKey` 就是 `'name'` | *`String`* | `'name'`
-strMaxLen | 奖品名称长度限制 | *`Number`* | `12`
-strLineLen | 奖品名称在多行情况下第一行文字的长度 | *`Number`* | `6`
+strMaxLen | 奖品名称长度限制，**文字竖向时不生效** | *`Number`* | `12`
+strLineLen | 奖品名称在多行情况下第一行文字的长度，**文字竖向时不生效** | *`Number`* | `6`
 strMarginOutside | 奖品文字相对轮盘边缘的距离 | *`Number`* | `strFontSize 的一半`
 imgMarginStr |  奖品图片相对奖品文字的距离 | *`Number`* | `25`
 imgWidth | 奖品图片的宽度 | *`Number`* | `30`

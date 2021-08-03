@@ -1,0 +1,13 @@
+{
+  "passwordSecret": [{
+    "version": 1,
+    "value": "almost-lottery-cloud-password"
+  }],
+  "tokenSecret": "almost-lottery-cloud-token",
+  "tokenExpiresIn": 7200,
+  "tokenExpiresThreshold": 600,
+  "passwordErrorLimit": 6,
+  "passwordErrorRetryTime": 3600,
+  "autoSetInviteCode": false,
+  "forceInviteCode": false
+}

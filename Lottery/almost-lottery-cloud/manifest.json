@@ -1,14 +1,15 @@
 {
-    "name" : "Almost-Lottery抽奖转盘",
-    "appid" : "",
-    "description" : "提供奇数、缓存等众多配置项，更有抽奖概率、抽奖次数、付费抽奖等功能内置于示例项目中，完美支持APP、各平台小程序、H5、PC",
-    "versionName" : "1.7.15",
-    "versionCode" : 10715,
+    "name" : "almost-lottery-cloud",
+    "appid" : "__UNI__F7C97DF",
+    "description" : "",
+    "versionName" : "1.0.1",
+    "versionCode" : 10001,
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {
         "usingComponents" : true,
-        "nvueCompiler" : "uni-app",
+        "nvueStyleCompiler" : "uni-app",
+        "compilerVersion" : 3,
         "splashscreen" : {
             "alwaysShowBeforeRender" : true,
             "waiting" : true,
@@ -24,28 +25,20 @@
                 "permissions" : [
                     "<uses-permission android:name=\"android.permission.CHANGE_NETWORK_STATE\"/>",
                     "<uses-permission android:name=\"android.permission.MOUNT_UNMOUNT_FILESYSTEMS\"/>",
-                    "<uses-permission android:name=\"android.permission.READ_CONTACTS\"/>",
                     "<uses-permission android:name=\"android.permission.VIBRATE\"/>",
                     "<uses-permission android:name=\"android.permission.READ_LOGS\"/>",
                     "<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\"/>",
                     "<uses-feature android:name=\"android.hardware.camera.autofocus\"/>",
-                    "<uses-permission android:name=\"android.permission.WRITE_CONTACTS\"/>",
                     "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>",
                     "<uses-permission android:name=\"android.permission.CAMERA\"/>",
-                    "<uses-permission android:name=\"android.permission.RECORD_AUDIO\"/>",
                     "<uses-permission android:name=\"android.permission.GET_ACCOUNTS\"/>",
-                    "<uses-permission android:name=\"android.permission.MODIFY_AUDIO_SETTINGS\"/>",
                     "<uses-permission android:name=\"android.permission.READ_PHONE_STATE\"/>",
                     "<uses-permission android:name=\"android.permission.CHANGE_WIFI_STATE\"/>",
                     "<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>",
-                    "<uses-permission android:name=\"android.permission.CALL_PHONE\"/>",
                     "<uses-permission android:name=\"android.permission.FLASHLIGHT\"/>",
-                    "<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\"/>",
                     "<uses-feature android:name=\"android.hardware.camera\"/>",
-                    "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\"/>",
                     "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
-                ],
-                "abiFilters" : [ "armeabi-v7a", "arm64-v8a", "x86" ]
+                ]
             },
             /* ios打包配置 */
             "ios" : {},
@@ -59,8 +52,7 @@
     "mp-weixin" : {
         "appid" : "",
         "setting" : {
-            "urlCheck" : false,
-            "es6" : true
+            "urlCheck" : false
         },
         "usingComponents" : true
     },
@@ -68,26 +60,15 @@
         "usingComponents" : true
     },
     "mp-baidu" : {
-        "usingComponents" : true,
-        "setting" : {
-            "urlCheck" : false
-        }
+        "usingComponents" : true
     },
     "mp-toutiao" : {
-        "usingComponents" : true,
-        "setting" : {
-            "urlCheck" : false,
-            "es6" : true
-        }
+        "usingComponents" : true
     },
-    "mp-qq" : {
-        "setting" : {
-            "urlCheck" : false,
-            "es6" : true
-        }
+    "uniStatistics" : {
+        "enable" : false
     },
     "h5" : {
-        "title" : "Almost-Lottery抽奖转盘",
         "router" : {
             "mode" : "history"
         }
