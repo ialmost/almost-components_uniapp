@@ -1,5 +1,5 @@
 # Almost-Lottery抽奖转盘的云端一体页面
-*基于Almost-Lottery抽奖转盘，并结合配套的uniCloud Admin插件，实现打通前后端的云端一体页面*
+*基于Almost-Lottery抽奖转盘的云端一体页面，并结合配套的Almost-Lottery抽奖转盘的配置中心，实现前后端完美衔接*
 
 
 > <br />
