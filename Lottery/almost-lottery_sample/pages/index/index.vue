@@ -15,13 +15,13 @@
     <!-- lottery -->
     <view class="almost-lottery__wheel">
       <almost-lottery
-        :canvasId="canvasConfig.canvasId"
-        :canvasWidth="canvasConfig.width"
-        :canvasHeight="canvasConfig.height"
-        :ringCount="2"
+        :canvas-id="canvasConfig.canvasId"
+        :canvas-width="canvasConfig.width"
+        :canvas-height="canvasConfig.height"
+        :ring-count="2"
         :duration="1"
-        :prizeList="prizeList"
-        :prizeIndex="prizeIndex"
+        :prize-list="prizeList"
+        :prize-index="prizeIndex"
         @reset-index="prizeIndex = -1"
         @draw-start="handleDrawStart"
         @draw-end="handleDrawEnd"
