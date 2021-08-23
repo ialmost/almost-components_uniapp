@@ -383,8 +383,7 @@
       }
     },
     onLoad () {
-      // 请求奖品数据
-      this.getPrizeList()
+      this.handleInitCanvas()
     },
     onUnload () {
       uni.hideLoading()
