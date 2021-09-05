@@ -141,7 +141,6 @@
 				
         this.prizeList = []
         this.getPrizeList()
-				
       },
       // 获取奖品列表
       async getPrizeList () {

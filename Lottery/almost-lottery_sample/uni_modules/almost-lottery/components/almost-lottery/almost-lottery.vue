@@ -1,10 +1,16 @@
 <template>
   <view class="almost-lottery">
-    <view class="almost-lottery__wrap" :style="{ width: outerWidth + higtCanvasMargin + 'px', height: outerWidth + higtCanvasMargin + 'px'}" v-if="lotteryImg">
+    <view class="almost-lottery__wrap"
+      :style="{
+        width: outerWidth + higtCanvasMargin + 'px',
+        height: outerWidth + higtCanvasMargin + 'px'
+      }"
+      v-if="lotteryImg"
+    >
       <image
-        :src="lotteryBg"
-        mode="widthFix"
         class="almost-lottery__bg"
+        mode="widthFix"
+        :src="lotteryBg"
         :style="{
           width: outerWidth + higtCanvasMargin + 'px',
           height: outerWidth + higtCanvasMargin + 'px'
@@ -22,9 +28,9 @@
         }"
       ></image>
       <image
-        :src="actionBg"
+        class="almost-lottery__action almost-lottery__action-bg"
         mode="widthFix"
-        class="almost-lottery__action almost-lottery__action-img"
+        :src="actionBg"
         :style="{
           width: actionWidth + 'px',
           height: actionHeight + 'px',
