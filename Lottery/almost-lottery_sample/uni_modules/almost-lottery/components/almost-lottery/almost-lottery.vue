@@ -1,48 +1,48 @@
 <template>
   <view class="almost-lottery">
-    <view class="almost-lottery__wrap"
-      :style="{
-        width: outerWidth + higtCanvasMargin + 'px',
-        height: outerWidth + higtCanvasMargin + 'px'
-      }"
-      v-if="lotteryImg"
-    >
-      <image
-        class="almost-lottery__bg"
-        mode="widthFix"
-        :src="lotteryBg"
-        :style="{
-          width: outerWidth + higtCanvasMargin + 'px',
-          height: outerWidth + higtCanvasMargin + 'px'
-        }"
-      ></image>
-      <image
-        class="almost-lottery__canvas-img"
-        mode="widthFix"
-        :src="lotteryImg"
-        :style="{
-          width: canvasWidth + 'px',
-          height: canvasWidth  + 'px',
-          transform: `rotate(${canvasAngle + targetAngle}deg)`,
-          transitionDuration: `${transitionDuration}s`
-        }"
-      ></image>
-      <image
-        class="almost-lottery__action almost-lottery__action-bg"
-        mode="widthFix"
-        :src="actionBg"
-        :style="{
-          width: actionWidth + 'px',
-          height: actionHeight + 'px',
-          transform: `rotate(${actionAngle + targetActionAngle}deg)`,
-          transitionDuration: `${transitionDuration}s`
-        }"
-        @click="handleActionStart"
-      ></image>
-    </view>
+    <view id="almost-lottery__wrap" class="almost-lottery__wrap" :style="{ width: lotterySize + 'rpx', height: lotterySize + 'rpx' }">
+      <view id="almost-lottery__action" :style="{ width: actionSize + 'rpx', height: actionSize + 'rpx', left: canvasMarginOutside + 'rpx' }"></view>
+      <view id="str-margin-outside" :style="{ left: strMarginOutside + 'rpx' }"></view>
+      <view id="img-margin-str" :style="{ left: imgMarginStr + 'rpx' }"></view>
+      <view id="img-size" :style="{ width: imgWidth + 'rpx', height: imgHeight + 'rpx' }"></view>
+      <template v-if="lotteryImg">
+        <image
+          class="almost-lottery__bg"
+          mode="widthFix"
+          :src="lotteryBg"
+          :style="{
+            width: lotteryPxSize + 'px',
+            height: lotteryPxSize + 'px'
+          }"
+        ></image>
+        <image
+          class="almost-lottery__canvas-img"
+          mode="widthFix"
+          :src="lotteryImg"
+          :style="{
+            width: canvasPxSize + 'px',
+            height: canvasPxSize  + 'px',
+            transform: `rotate(${canvasAngle + targetAngle}deg)`,
+            transitionDuration: `${transitionDuration}s`
+          }"
+        ></image>
+        <image
+          class="almost-lottery__action almost-lottery__action-bg"
+          mode="widthFix"
+          :src="actionBg"
+          :style="{
+            width: actionPxSize + 'px',
+            height: actionPxSize + 'px',
+            transform: `rotate(${actionAngle + targetActionAngle}deg)`,
+            transitionDuration: `${transitionDuration}s`
+          }"
+          @click="handleActionStart"
+        ></image>
+      </template>
     
-    <!-- 正在绘制转盘时的提示文本 -->
-    <text class="almost-lottery__tip" v-else>{{ almostLotteryTip }}</text>
+      <!-- 正在绘制转盘时的提示文本 -->
+      <text class="almost-lottery__tip" v-else>{{ almostLotteryTip }}</text>
+    </view>
     
     <!-- 为了兼容 app 端 ctx.measureText 所需的标签 -->
     <text class="almost-lottery__measureText" :style="{ fontSize: higtFontSize + 'px' }">{{ measureText }}</text>
@@ -80,45 +80,30 @@
   export default {
     name: 'AlmostLottery',
     props: {
-      // canvas 宽度
+      // 设计稿的像素比基准值
+      pixelRatio: {
+        type: Number,
+        default: 2
+      },
+      // canvas 标识
       canvasId: {
         type: String,
-        default: 'almostLotteryCanvas'
+        default: 'almostLottery'
       },
-      // canvas 宽度
-      canvasWidth: {
+      // 抽奖转盘的整体尺寸
+      lotterySize: {
         type: Number,
-        default: 280
+        default: 600
       },
-      // canvas 高度
-      canvasHeight: {
+      // 抽奖按钮的尺寸
+      actionSize: {
         type: Number,
-        default: 280
+        default: 200
       },
-      // 转盘外圈的宽度
-      outerWidth: {
+			// canvas边缘距离转盘边缘的距离
+			canvasMarginOutside: {
         type: Number,
-        default: 320
-      },
-      // 转盘外圈的高度
-      outerHeight: {
-        type: Number,
-        default: 320
-      },
-			// 内圈与外圈的间距
-			canvasMargin: {
-        type: Number,
-        default: 5
-      },
-      // 抽奖按钮的宽度
-      actionWidth: {
-        type: Number,
-        default: 120
-      },
-      // 抽奖按钮的高度
-      actionHeight: {
-        type: Number,
-        default: 120
+        default: 90
       },
       // 奖品列表
       prizeList: {
@@ -202,7 +187,7 @@
       // 文字的大小
       strFontSize: {
         type: Number,
-        default: 12
+        default: 24
       },
       // 奖品文字距离边缘的距离
       strMarginOutside: {
@@ -212,7 +197,7 @@
       // 奖品图片距离奖品文字的距离
       imgMarginStr: {
         type: Number,
-        default: 25
+        default: 60
       },
       // 奖品文字多行情况下的行高
       strLineHeight: {
@@ -237,12 +222,12 @@
       // 奖品图片的宽
       imgWidth: {
         type: Number,
-        default: 30
+        default: 50
       },
       // 奖品图片的高
       imgHeight: {
         type: Number,
-        default: 30
+        default: 50
       },
 			// 转盘绘制成功的提示
 			successMsg: {
@@ -264,6 +249,19 @@
       return {
         // 画板className
         className: 'almost-lottery__canvas',
+        // 抽奖转盘的整体px尺寸
+        lotteryPxSize: 0,
+        // 画板的px尺寸
+        canvasPxSize: 0,
+        // 抽奖按钮的px尺寸
+        actionPxSize: 0,
+        // 奖品文字距离转盘边缘的距离
+        strMarginPxOutside: 0,
+        // 奖品图片相对奖品文字的距离
+        imgMarginPxStr: 0,
+        // 奖品图片的宽、高
+        imgPxWidth: 0,
+        imgPxHeight: 0,
         // 画板导出的图片
         lotteryImg: '',
         // 旋转到奖品目标需要的角度
@@ -290,19 +288,15 @@
     computed: {
       // 高清尺寸
       higtCanvasSize() {
-        return this.canvasWidth * systemInfo.pixelRatio
+        return this.canvasPxSize * systemInfo.pixelRatio
       },
       // 高清字体
       higtFontSize() {
-        return this.strFontSize * systemInfo.pixelRatio
+        return (this.strFontSize / this.pixelRatio) * systemInfo.pixelRatio
       },
       // 高清行高
       higtHeightMultiple() {
-        return this.strFontSize * this.strLineHeight * systemInfo.pixelRatio
-      },
-      // 高清内外圈间距
-      higtCanvasMargin() {
-        return this.canvasMargin * systemInfo.pixelRatio
+        return (this.strFontSize / this.pixelRatio) * this.strLineHeight * systemInfo.pixelRatio
       },
       // 根据奖品列表计算 canvas 旋转角度
       canvasAngle() {
@@ -331,7 +325,7 @@
       },
       // 文字距离边缘的距离
       textRadius() {
-        return this.strMarginOutside * systemInfo.pixelRatio || (this.higtFontSize / 2)
+        return this.strMarginPxOutside * systemInfo.pixelRatio || (this.higtFontSize / 2)
       },
       // 根据画板的宽度计算奖品文字与中心点的距离
       textDistance() {
@@ -613,10 +607,10 @@
 							// #endif
 						}
             
-            let prizeImageX = -(this.imgWidth * systemInfo.pixelRatio / 2)
-            let prizeImageY = this.imgMarginStr * systemInfo.pixelRatio
-            let prizeImageW = this.imgWidth * systemInfo.pixelRatio
-            let prizeImageH = this.imgHeight * systemInfo.pixelRatio
+            let prizeImageX = -(this.imgPxWidth * systemInfo.pixelRatio / 2)
+            let prizeImageY = this.imgMarginPxStr * systemInfo.pixelRatio
+            let prizeImageW = this.imgPxWidth * systemInfo.pixelRatio
+            let prizeImageH = this.imgPxHeight * systemInfo.pixelRatio
             ctx.drawImage(prizeItem.prizeImage, prizeImageX, prizeImageY, prizeImageW, prizeImageH)
           }
 
@@ -631,8 +625,8 @@
 
             // #ifdef MP-ALIPAY
             ctx.toTempFilePath({
-              destWidth: this.canvasWidth * systemInfo.pixelRatio,
-              destHeight: this.canvasHeight * systemInfo.pixelRatio,
+              destWidth: this.higtCanvasSize,
+              destHeight: this.higtCanvasSize,
               success: (res) => {
                 // console.log(res.apFilePath)
                 this.handlePrizeImg({
@@ -827,6 +821,55 @@
 				clearStore(`${this.canvasId}LotteryImg`)
         setStore(`${this.canvasId}PrizeList`, this.prizeList)
         this.onCreateCanvas()
+      },
+      // 预处理初始化
+      async beforeInit () {
+        // 处理 rpx 自适应尺寸
+        let lotterySize = await new Promise((resolve) => {
+          uni.createSelectorQuery().in(this).select('#almost-lottery__wrap').boundingClientRect((rects) => {
+            resolve(rects)
+            console.log('处理 lottery rpx 的自适应', rects)
+          }).exec()
+        })
+        let actionSize = await new Promise((resolve) => {
+          uni.createSelectorQuery().in(this).select('#almost-lottery__action').boundingClientRect((rects) => {
+            resolve(rects)
+            console.log('处理 action rpx 的自适应', rects)
+          }).exec()
+        })
+        let strMarginSize = await new Promise((resolve) => {
+          uni.createSelectorQuery().in(this).select('#str-margin-outside').boundingClientRect((rects) => {
+            resolve(rects)
+            console.log('处理 str-margin-outside rpx 的自适应', rects)
+          }).exec()
+        })
+        let imgMarginStr = await new Promise((resolve) => {
+          uni.createSelectorQuery().in(this).select('#img-margin-str').boundingClientRect((rects) => {
+            resolve(rects)
+            console.log('处理 img-margin-str rpx 的自适应', rects)
+          }).exec()
+        })
+        let imgSize = await new Promise((resolve) => {
+          uni.createSelectorQuery().in(this).select('#img-size').boundingClientRect((rects) => {
+            resolve(rects)
+            console.log('处理 img-size rpx 的自适应', rects)
+          }).exec()
+        })
+        this.lotteryPxSize = lotterySize.width
+        this.actionPxSize = actionSize.width
+        this.canvasPxSize = this.lotteryPxSize - actionSize.left + lotterySize.left
+        this.strMarginPxOutside = strMarginSize.left - lotterySize.left
+        this.imgMarginPxStr = imgMarginStr.left - lotterySize.left
+        this.imgPxWidth = imgSize.width
+        this.imgPxHeight = imgSize.height
+        
+        // 判断画板是否设置缓存
+        if (this.canvasCached) {
+        	this.checkCacheImg()
+        } else {
+        	this.initCanvasDraw()
+        }
+        this.transitionDuration = this.duration
       }
     },
     mounted() {
@@ -834,13 +877,8 @@
         let stoTimer = setTimeout(() => {
           clearTimeout(stoTimer)
           stoTimer = null
-					
-					if (this.canvasCached) {
-						this.checkCacheImg()
-					} else {
-						this.onCreateCanvas()
-					}
-          this.transitionDuration = this.duration
+          
+          this.beforeInit()
         }, 50)
       })
     }
@@ -850,13 +888,27 @@
 <style lang="scss" scoped>
   .almost-lottery {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin: 0 auto;
+  }
+  
+  #almost-lottery__wrap {
+    position: relative;
+    // background-color: red;
+  }
+  #almost-lottery__action,
+  #str-margin-outside,
+  #img-margin-str,
+  #img-size {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: -1;
+    // background-color: blue;
   }
   
 	.almost-lottery__wrap {
-    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;

@@ -15,9 +15,8 @@
     <!-- lottery -->
     <view class="almost-lottery__wheel">
       <almost-lottery
-        :canvas-id="canvasConfig.canvasId"
-        :canvas-width="canvasConfig.width"
-        :canvas-height="canvasConfig.height"
+        :lottery-size="lotteryConfig.lotterySize"
+        :action-size="lotteryConfig.actionSize"
         :ring-count="2"
         :duration="1"
         :prize-list="prizeList"
@@ -85,12 +84,12 @@
         // 开启调试模式
         isDev: true,
         
-        // 以下是画板配置相关数据
-        // canvas id、宽、高
-        canvasConfig: {
-          canvasId: 'almostLotteryCanvas',
-          width: 280,
-          height: 280
+        // 以下是转盘配置相关数据
+        lotteryConfig: {
+          // 抽奖转盘的整体尺寸，单位rpx
+          lotterySize: 600,
+          // 抽奖按钮的尺寸，单位rpx
+          actionSize: 200
         },
         
         // 以下是转盘 UI 配置
@@ -144,9 +143,9 @@
       },
       // 获取奖品列表
       async getPrizeList () {
-        uni.showLoading({
-          title: '奖品准备中...'
-        })
+        // uni.showLoading({
+        //   title: '奖品准备中...'
+        // })
 				
         // 等待接口返回的数据进一步处理
         let res = await this.requestApiGetPrizeList()

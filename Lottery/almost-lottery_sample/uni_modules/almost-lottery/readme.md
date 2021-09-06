@@ -45,7 +45,7 @@
 
 - `@reset-index="prizeIndex = -1"` 必须默认写入到 `template` 中，不可删除
 
-- 每个奖品区块的奖品图片尺寸不宜过大，图片越大，绘制的过程越慢，尽量将图片尺寸控制在 `300*300` 以内，且图片大小控制在 `100KB` 以内
+- 每个奖品区块的奖品图片尺寸不宜过大，图片越大，绘制的过程越慢，尽量将图片尺寸控制在 `100*100` 以内，且图片大小控制在 `40KB` 以内
 
 - 关于中奖概率的配置，请下载示例项目，参照 `pages/index/index.vue` 中的代码进行配置
 
@@ -78,8 +78,6 @@ export default {
       // 以下是奖品配置数据
       // 奖品数据
       prizeList: [],
-      // 奖品是否设有库存
-      onStock: true,
       // 中奖下标
       prizeIndex: -1
     }
@@ -109,14 +107,11 @@ export default {
 #### Props
 参数 | 说明 | 类型 | 默认值
 :---|:---|:---|:---
-canvasId | Canvas的标识，**多画板情况下需要配置不同的标识** | *`String`* | `'almostLotteryCanvas'`
-canvasWidth | Canvas的宽度 | *`Number`* | `280`
-canvasHeight | Canvas的高度 | *`Number`* | `280`
-outerWidth | 转盘外圈的宽度 | *`Number`* | `320`
-outerHeight | 转盘外圈的高度 | *`Number`* | `320`
-canvasMargin | 内圈与外圈的间距 | *`Number`* | `5`
-actionWidth | 抽奖按钮的宽度 | *`Number`* | `120`
-actionHeight | 抽奖按钮的高度 | *`Number`* | `120`
+pixelRatio | 移动端设计稿的像素比基准值，**涉及到 `rpx` 的适配问题** | *`Number`* | `2`
+canvasId | Canvas的标识，**多画板情况下需要配置不同的标识** | *`String`* | `'almostLottery'`
+lotterySize | 抽奖转盘的整体尺寸，单位 `rpx` | *`Number`* | `600`
+actionSize | 抽奖按钮的尺寸，单位 `rpx` | *`Number`* | `200`
+canvasMarginOutside | Canvas边缘距离转盘边缘的距离，单位`rpx` | *`Number`* | `90`
 prizeIndex | 获奖奖品在奖品列表中的序号，**每次抽奖结束后会自动重置为 `-1`** | *`Number`* | `-1`
 prizeList | 奖品列表，支持奇数（尽量能被 `360` 除尽），**为奇数时需要重设 `colors` 参数** | *`Array`* | -
 lotteryBg | 转盘外环图片 | `String` | `默认内置的本地图片`
@@ -131,15 +126,15 @@ duration | 转盘旋转的动画时长，单位：秒 | *`Number`* | `8`
 ringCount | 旋转的圈数 | *`Number`* | `8`
 pointerPosition | 点击抽奖按钮指针的位置，可选值 `'edge'` => 指向边界 `'middle'` => 指向中间 | *`String`* | `'edge'`
 strFontColor | 奖品名称的颜色 | *`String`* | `'#C30B29'`
-strFontSize | 奖品名称的字号 | *`Number`* | `12`
+strFontSize | 奖品名称的字号，单位 `rpx` | *`Number`* | `24`
 strLineHeight | 奖品名称多行情况下的行高 | *`Number`* | `1.2`
 strKey | 奖品名称所对应的键名 `key` ，比如 `{ name: '88元现金' }`，`strKey` 就是 `'name'` | *`String`* | `'name'`
 strMaxLen | 奖品名称长度限制，**文字竖向时不生效** | *`Number`* | `12`
 strLineLen | 奖品名称在多行情况下第一行文字的长度，**文字竖向时不生效** | *`Number`* | `6`
-strMarginOutside | 奖品文字相对轮盘边缘的距离 | *`Number`* | `strFontSize 的一半`
-imgMarginStr |  奖品图片相对奖品文字的距离 | *`Number`* | `25`
-imgWidth | 奖品图片的宽度 | *`Number`* | `30`
-imgHeight | 奖品图片的高度 | *`Number`* | `30`
+strMarginOutside | 奖品文字相对轮盘边缘的距离，单位 `rpx` | *`Number`* | `strFontSize 的一半`
+imgMarginStr | 奖品图片相对奖品文字的距离，单位 `rpx` | *`Number`* | `60`
+imgWidth | 奖品图片的宽度，单位 `rpx` | *`Number`* | `50`
+imgHeight | 奖品图片的高度，单位 `rpx` | *`Number`* | `50`
 successMsg | 转盘绘制成功的提示 | *`String`* | `'奖品准备就绪，快来参与抽奖吧'`
 failMsg | 转盘绘制失败的提示 | *`String`* | `'奖品仍在准备中，请稍后再来...'`
 canvasCached | 是否开启缓存，避免在数据不变的情况下重复绘制，建议在生产环境中开启 | *`Boolean`* | `false`
