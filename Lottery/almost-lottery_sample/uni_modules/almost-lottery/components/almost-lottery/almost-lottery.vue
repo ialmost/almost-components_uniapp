@@ -1,10 +1,10 @@
 <template>
   <view class="almost-lottery">
-    <view id="almost-lottery__wrap" class="almost-lottery__wrap" :style="{ width: lotterySize + 'rpx', height: lotterySize + 'rpx' }">
-      <view id="almost-lottery__action" :style="{ width: actionSize + 'rpx', height: actionSize + 'rpx', left: canvasMarginOutside + 'rpx' }"></view>
-      <view id="str-margin-outside" :style="{ left: strMarginOutside + 'rpx' }"></view>
-      <view id="img-margin-str" :style="{ left: imgMarginStr + 'rpx' }"></view>
-      <view id="img-size" :style="{ width: imgWidth + 'rpx', height: imgHeight + 'rpx' }"></view>
+    <view class="almost-lottery__wrap" :style="{ width: lotterySize + 'rpx', height: lotterySize + 'rpx' }">
+      <view class="lottery-action" :style="{ width: actionSize + 'rpx', height: actionSize + 'rpx', left: canvasMarginOutside + 'rpx' }"></view>
+      <view class="str-margin-outside" :style="{ left: strMarginOutside + 'rpx' }"></view>
+      <view class="img-margin-str" :style="{ left: imgMarginStr + 'rpx' }"></view>
+      <view class="img-size" :style="{ width: imgWidth + 'rpx', height: imgHeight + 'rpx' }"></view>
       <template v-if="lotteryImg">
         <image
           class="almost-lottery__bg"
@@ -826,33 +826,33 @@
       async beforeInit () {
         // 处理 rpx 自适应尺寸
         let lotterySize = await new Promise((resolve) => {
-          uni.createSelectorQuery().in(this).select('#almost-lottery__wrap').boundingClientRect((rects) => {
+          uni.createSelectorQuery().in(this).select('.almost-lottery__wrap').boundingClientRect((rects) => {
             resolve(rects)
-            console.log('处理 lottery rpx 的自适应', rects)
+            // console.log('处理 lottery rpx 的自适应', rects)
           }).exec()
         })
         let actionSize = await new Promise((resolve) => {
-          uni.createSelectorQuery().in(this).select('#almost-lottery__action').boundingClientRect((rects) => {
+          uni.createSelectorQuery().in(this).select('.lottery-action').boundingClientRect((rects) => {
             resolve(rects)
-            console.log('处理 action rpx 的自适应', rects)
+            // console.log('处理 action rpx 的自适应', rects)
           }).exec()
         })
         let strMarginSize = await new Promise((resolve) => {
-          uni.createSelectorQuery().in(this).select('#str-margin-outside').boundingClientRect((rects) => {
+          uni.createSelectorQuery().in(this).select('.str-margin-outside').boundingClientRect((rects) => {
             resolve(rects)
-            console.log('处理 str-margin-outside rpx 的自适应', rects)
+            // console.log('处理 str-margin-outside rpx 的自适应', rects)
           }).exec()
         })
         let imgMarginStr = await new Promise((resolve) => {
-          uni.createSelectorQuery().in(this).select('#img-margin-str').boundingClientRect((rects) => {
+          uni.createSelectorQuery().in(this).select('.img-margin-str').boundingClientRect((rects) => {
             resolve(rects)
-            console.log('处理 img-margin-str rpx 的自适应', rects)
+            // console.log('处理 img-margin-str rpx 的自适应', rects)
           }).exec()
         })
         let imgSize = await new Promise((resolve) => {
-          uni.createSelectorQuery().in(this).select('#img-size').boundingClientRect((rects) => {
+          uni.createSelectorQuery().in(this).select('.img-size').boundingClientRect((rects) => {
             resolve(rects)
-            console.log('处理 img-size rpx 的自适应', rects)
+            // console.log('处理 img-size rpx 的自适应', rects)
           }).exec()
         })
         this.lotteryPxSize = lotterySize.width
@@ -893,14 +893,14 @@
     align-items: center;
   }
   
-  #almost-lottery__wrap {
+  .almost-lottery__wrap {
     position: relative;
     // background-color: red;
   }
-  #almost-lottery__action,
-  #str-margin-outside,
-  #img-margin-str,
-  #img-size {
+  .lottery-action,
+  .str-margin-outside,
+  .img-margin-str,
+  .img-size {
     position: absolute;
     left: 0;
     top: 0;
