@@ -15,9 +15,7 @@
     <!-- lottery -->
     <view class="almost-lottery__wheel">
       <almost-lottery
-        :canvas-id="canvasConfig.canvasId"
-        :canvas-width="canvasConfig.width"
-        :canvas-height="canvasConfig.height"
+        :lottery-size="lotteryConfig.lotterySize"
         str-key="prizeName"
         :ring-count="2"
         :duration="1"
@@ -89,12 +87,10 @@
         // 开启调试模式
         isDev: true,
         
-        // 以下是画板配置相关数据
-        // canvas id、宽、高
-        canvasConfig: {
-          canvasId: 'almostLotteryCanvas',
-          width: 280,
-          height: 280
+        // 以下是转盘配置相关数据
+        lotteryConfig: {
+          // 抽奖转盘的整体尺寸，单位rpx
+          lotterySize: 630
         },
         
         // 以下是奖品配置数据
@@ -173,6 +169,7 @@
             }
           },
           success (res) {
+            console.log(res)
             let { result } = res
             if (result.prizeList && result.prizeList.length) {
               that.freeNumDay = result.free_num_day
