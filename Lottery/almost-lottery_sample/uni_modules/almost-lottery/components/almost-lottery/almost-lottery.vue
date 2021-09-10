@@ -204,11 +204,6 @@
         type: Number,
         default: 1.2
       },
-      // 奖品名称所对应的 key 值
-      strKey: {
-        type: String,
-        default: 'name'
-      },
       // 奖品文字总长度限制
       strMaxLen: {
         type: Number,
@@ -476,7 +471,7 @@
 
           // 绘制奖品名称
           ctx.setFillStyle(this.strFontColor)
-          let rewardName = this.strLimit(prizeItem[this.strKey])
+          let rewardName = this.strLimit(prizeItem.prizeName)
           
           // rotate方法旋转当前的绘图，因为文字是和当前扇形中心线垂直的
           ctx.rotate(angle + (baseAngle / 2) + (Math.PI / 2))
@@ -855,13 +850,13 @@
             // console.log('处理 img-size rpx 的自适应', rects)
           }).exec()
         })
-        this.lotteryPxSize = lotterySize.width
-        this.actionPxSize = actionSize.width
-        this.canvasPxSize = this.lotteryPxSize - actionSize.left + lotterySize.left
-        this.strMarginPxOutside = strMarginSize.left - lotterySize.left
-        this.imgMarginPxStr = imgMarginStr.left - lotterySize.left
-        this.imgPxWidth = imgSize.width
-        this.imgPxHeight = imgSize.height
+        this.lotteryPxSize = Math.floor(lotterySize.width)
+        this.actionPxSize = Math.floor(actionSize.width)
+        this.canvasPxSize = this.lotteryPxSize - Math.floor(actionSize.left) + Math.floor(lotterySize.left)
+        this.strMarginPxOutside = Math.floor(strMarginSize.left) - Math.floor(lotterySize.left)
+        this.imgMarginPxStr = Math.floor(imgMarginStr.left) - Math.floor(lotterySize.left)
+        this.imgPxWidth = Math.floor(imgSize.width)
+        this.imgPxHeight = Math.floor(imgSize.height)
         
         // 判断画板是否设置缓存
         if (this.canvasCached) {

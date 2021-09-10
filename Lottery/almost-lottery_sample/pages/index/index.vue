@@ -113,9 +113,9 @@
         // 是否由前端控制概率，默认不开启，强烈建议由后端控制
         onFrontend: false,
         // 权重随机数的最大值
-        weightMax: 0,
+        prizeWeightMax: 0,
         // 权重数组
-        weightArr: [],
+        prizeWeightArr: [],
         
         // 以下为业务需求有关示例数据
         // 金币余额
@@ -143,9 +143,9 @@
       },
       // 获取奖品列表
       async getPrizeList () {
-        // uni.showLoading({
-        //   title: '奖品准备中...'
-        // })
+        uni.showLoading({
+          title: '奖品准备中...'
+        })
 				
         // 等待接口返回的数据进一步处理
         let res = await this.requestApiGetPrizeList()
@@ -161,40 +161,43 @@
 						// 得出权重的最大值并生成权重数组
 						if (this.onFrontend) {
               // 生成权重数组并排序取得最大值
-              this.weightArr = this.prizeList.map((item) => item.weight)
-              let weightArrSort = [...this.weightArr]
-              weightArrSort.sort((a, b) => b - a)
-              this.weightMax = weightArrSort[0]
+              this.prizeWeightArr = this.prizeList.map((item) => item.prizeWeight)
+              let prizeWeightArrSort = [...this.prizeWeightArr]
+              prizeWeightArrSort.sort((a, b) => b - a)
+              this.prizeWeightMax = prizeWeightArrSort[0]
 						}
 					}
 				} else {
 					uni.hideLoading()
 					uni.showToast({
-						title: '获取奖品失败'
+						title: '获取奖品失败',
+            mask: true,
+            icon: 'none'
 					})
 				}
       },
 			// 模拟请求 获取奖品列表 接口，
       // 注意这里返回的是一个 Promise
+      // 大哥，这里只是模拟，别告诉我你不会对接自己的接口
 			requestApiGetPrizeList () {
 				return new Promise((resolve, reject) => {
 					let requestTimer = setTimeout(() => {
 						clearTimeout(requestTimer)
 						requestTimer = null
 						
-            // stock 奖品库存
-						// weight 中奖概率，数值越大中奖概率越高，权重一样时随机中奖
+            // prizeStock 奖品库存
+						// prizeWeight 中奖概率，数值越大中奖概率越高，权重一样时随机中奖
 						resolve({
 							ok: true,
 							data: [
-								{ prizeId: 1, name: '0.1元现金', stock: 10, weight: 200, prizeImage: '/static/git.png' },
-								{ prizeId: 2, name: '10元现金', stock: 0, weight: 50, prizeImage: 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/56f085e0-bcfe-11ea-b244-a9f5e5565f30.png' },
-								{ prizeId: 3, name: '5元话费', stock: 1, weight: 80 },
-								{ prizeId: 4, name: '50元现金', stock: 0, weight: 10, prizeImage: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAYAAADE6YVjAAAB2klEQVRIia3Wv09TURjG8U+u2kQZcNENh2ok0cnJ0R+L0RB2g/EvwITEwRgnV0Zx0fAHYBh0khBD4sBAmAgDiwQNg4qwmSBDAYf7Fi+n97al9UlObnvO836f3tO355b2GsAYZrCBPRzGdSPmx8J3YtXwDDsB7TR2wl/rNmAYK13C07ES9W11E9s9BjTHdnBKVf8PAcWgehpwCssF0w/5FzqLgw7AA7zDQ/wqzC8H90jjSeFMYW0Yr8PzALfjOh7z1wve2YTzpLlQw2ay+KZ1N7vS24SziVqGexhKzB07pEJXk/dDwTetdZ9HewwZLWFNw2oyudZjQFNrCW8109pqS32GpPX1TOu586fPkLR+IEMjmbzYZ0ha34Atx/fwW58hXxPeFixo7Yg7PQbcKmEtZFgsMb/C4AkDBuUnQKpFuFZI3cZuvP6C+8g6wDP572O95C4Og49/W/YJl/G5YPqO9yV3dh4f8LMCfhjcI93Afix8xAX5SVx2YBY10yagEdxjmiwY7uISXuIFrlSEPG0TMllWcAbzYViXd0rzeXC6ImSiImA+eKU6h7mCeV/eCBMnCJkLzpHSztnFCJ7L//ZkOFv1iRLtRd1IcLpSHVP4jccVnkexPqXkmd7UX15b7tiz29ReAAAAAElFTkSuQmCC' },
-								{ prizeId: 5, name: '1卷抽纸', stock: 3, weight: 3000, prizeImage: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAABCElEQVRoge3YMa4BURSH8Y8o7UAp0WgkotBZwluAfhqlZSgUGr23ENUUCpppJnTswAIUSCaTiziZJ8d9/193zdzrfMltABF5plb+oLscDoAV0Pn8OC/lwDhL0k35QT3wstcIuM61Cj0IhXiNuAvOFwr5SgrxRiHeKMSbhnHfAVgU1i1gajhnBpwK6wnQtgxkDTlmSTq/L7rLYQ9byG+WpLvCOT8YQ6K5WgrxRiHeKMQbhXijEG8U4o1CvIkmxPrDquwMrI37KlFJSJake2BUxVlW0VytaEKsV6t5+8Ohak3rRmtIH9hav/QvRHO1FOKNQrwJheQfn+I9wflCIeNHLzuQc51PRP6rC1ZeIm1I8cC5AAAAAElFTkSuQmCC' },
-								{ prizeId: 6, name: '0.2元现金', stock: 8, weight: 120 },
-								{ prizeId: 7, name: '谢谢参与', stock: 100, weight: 10000 },
-								{ prizeId: 8, name: '100金币', stock: 100, weight: 3000 }
+								{ prizeId: 1, prizeName: '0.1元现金', prizeStock: 10, prizeWeight: 200, prizeImage: '/static/git.png' },
+								{ prizeId: 2, prizeName: '10元现金', prizeStock: 0, prizeWeight: 50, prizeImage: 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/56f085e0-bcfe-11ea-b244-a9f5e5565f30.png' },
+								{ prizeId: 3, prizeName: '5元话费', prizeStock: 1, prizeWeight: 80 },
+								{ prizeId: 4, prizeName: '50元现金', prizeStock: 0, prizeWeight: 10, prizeImage: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAYAAADE6YVjAAAB2klEQVRIia3Wv09TURjG8U+u2kQZcNENh2ok0cnJ0R+L0RB2g/EvwITEwRgnV0Zx0fAHYBh0khBD4sBAmAgDiwQNg4qwmSBDAYf7Fi+n97al9UlObnvO836f3tO355b2GsAYZrCBPRzGdSPmx8J3YtXwDDsB7TR2wl/rNmAYK13C07ES9W11E9s9BjTHdnBKVf8PAcWgehpwCssF0w/5FzqLgw7AA7zDQ/wqzC8H90jjSeFMYW0Yr8PzALfjOh7z1wve2YTzpLlQw2ay+KZ1N7vS24SziVqGexhKzB07pEJXk/dDwTetdZ9HewwZLWFNw2oyudZjQFNrCW8109pqS32GpPX1TOu586fPkLR+IEMjmbzYZ0ha34Atx/fwW58hXxPeFixo7Yg7PQbcKmEtZFgsMb/C4AkDBuUnQKpFuFZI3cZuvP6C+8g6wDP572O95C4Og49/W/YJl/G5YPqO9yV3dh4f8LMCfhjcI93Afix8xAX5SVx2YBY10yagEdxjmiwY7uISXuIFrlSEPG0TMllWcAbzYViXd0rzeXC6ImSiImA+eKU6h7mCeV/eCBMnCJkLzpHSztnFCJ7L//ZkOFv1iRLtRd1IcLpSHVP4jccVnkexPqXkmd7UX15b7tiz29ReAAAAAElFTkSuQmCC' },
+								{ prizeId: 5, prizeName: '1卷抽纸', prizeStock: 3, prizeWeight: 3000, prizeImage: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAABCElEQVRoge3YMa4BURSH8Y8o7UAp0WgkotBZwluAfhqlZSgUGr23ENUUCpppJnTswAIUSCaTiziZJ8d9/193zdzrfMltABF5plb+oLscDoAV0Pn8OC/lwDhL0k35QT3wstcIuM61Cj0IhXiNuAvOFwr5SgrxRiHeKMSbhnHfAVgU1i1gajhnBpwK6wnQtgxkDTlmSTq/L7rLYQ9byG+WpLvCOT8YQ6K5WgrxRiHeKMQbhXijEG8U4o1CvIkmxPrDquwMrI37KlFJSJake2BUxVlW0VytaEKsV6t5+8Ohak3rRmtIH9hav/QvRHO1FOKNQrwJheQfn+I9wflCIeNHLzuQc51PRP6rC1ZeIm1I8cC5AAAAAElFTkSuQmCC' },
+								{ prizeId: 6, prizeName: '0.2元现金', prizeStock: 8, prizeWeight: 120 },
+								{ prizeId: 7, prizeName: '谢谢参与', prizeStock: 100, prizeWeight: 10000 },
+								{ prizeId: 8, prizeName: '100金币', prizeStock: 100, prizeWeight: 3000 }
 							]
 						})
 					}, 2000)
@@ -244,21 +247,21 @@
         console.warn('###当前处于前端控制中奖概率，安全起见，强烈建议由后端控制###')
         // 前端控制概率的情况下，需要拿到最接近随机权重且大于随机权重的值
         // 后端控制概率的情况下，通常会直接返回 prizeId
-        if (!this.weightMax) {
-        	console.warn('###当前已开启前端控制中奖概率，但是奖品数据列表中的 weight 参数似乎配置不正确###')
+        if (!this.prizeWeightMax) {
+        	console.warn('###当前已开启前端控制中奖概率，但是奖品数据列表中的 prizeWeight 参数似乎配置不正确###')
         	return
         }
-        console.log('当前权重最大值为 =>', this.weightMax)
+        console.log('当前权重最大值为 =>', this.prizeWeightMax)
         
         // 注意这里使用了 Math.ceil，如果某个权重的值为 0，则始终无法中奖
-        let randomWeight = Math.ceil(Math.random() * this.weightMax)
+        let randomWeight = Math.ceil(Math.random() * this.prizeWeightMax)
         console.log('本次权重随机数 =>', randomWeight)
         
         // 生成大于等于随机权重的数组
         let tempMaxArrs = []
         this.prizeList.forEach((item) => {
-          if (item.weight >= randomWeight) {
-            tempMaxArrs.push(item.weight)
+          if (item.prizeWeight >= randomWeight) {
+            tempMaxArrs.push(item.prizeWeight)
           }
         })
         console.log('tempMaxArrs', tempMaxArrs)
@@ -280,16 +283,16 @@
             
             // 值不相等的情况下取最接近的值，也就是第1个值
             if (sameCount === 1) {
-              this.prizeIndex = this.weightArr.indexOf(tempMaxArrs[0])
+              this.prizeIndex = this.prizeWeightArr.indexOf(tempMaxArrs[0])
             } else {
               // 存在值相等时，随机取值，当然这里你可以自己决定是否随机取值
               let sameWeight = tempMaxArrs[0]
               let sameWeightArr = []
               let sameWeightItem = {}
-              this.weightArr.forEach((item, index) => {
+              this.prizeWeightArr.forEach((item, index) => {
                 if (item === sameWeight) {
                   sameWeightArr.push({
-                    weight: item,
+                    prizeWeight: item,
                     index
                   })
                 }
@@ -300,18 +303,19 @@
               this.prizeIndex = sameWeightItem.index
             }
           } else {
-            this.prizeIndex = this.weightArr.indexOf(tempMaxArrs[0])
+            this.prizeIndex = this.prizeWeightArr.indexOf(tempMaxArrs[0])
           }
         }
         
-        console.log('本次抽中奖品 =>', this.prizeList[this.prizeIndex].name)
+        console.log('本次抽中奖品 =>', this.prizeList[this.prizeIndex].prizeName)
         
         // 如果奖品设有库存
         if (this.onStock) {
-          console.log('本次奖品库存 =>', this.prizeList[this.prizeIndex].stock)
+          console.log('本次奖品库存 =>', this.prizeList[this.prizeIndex].prizeStock)
         }
       },
       // 远程请求接口获取中奖下标
+      // 大哥，这里只是模拟，别告诉我你不会对接自己的接口
       remoteGetPrizeIndex () {
         console.warn('###当前处于模拟的请求接口，并返回了中奖信息###')
         // 模拟请求接口获取中奖信息
@@ -334,13 +338,13 @@
             }
           }
           
-          console.log('本次抽中奖品 =>', this.prizeList[this.prizeIndex].name)
+          console.log('本次抽中奖品 =>', this.prizeList[this.prizeIndex].prizeName)
           
           // 如果奖品设有库存
           if (this.onStock) {
-          	console.log('本次奖品库存 =>', this.prizeList[this.prizeIndex].stock)
+          	console.log('本次奖品库存 =>', this.prizeList[this.prizeIndex].prizeStock)
           }
-        }, 500)
+        }, 200)
       },
       // 本次抽奖结束
       handleDrawEnd () {
@@ -348,7 +352,7 @@
         
         // 旋转结束后，开始处理拿到结果后的逻辑
         this.prizeing = false
-        let prizeName = this.prizeList[this.prizeIndex].name
+        let prizeName = this.prizeList[this.prizeIndex].prizeName
         let tipContent = ''
 				
 				if (prizeName === '谢谢参与') {
@@ -356,7 +360,7 @@
 				} else {
           // 如果奖品设有库存
           if (this.onStock) {
-            let prizeStock = this.prizeList[this.prizeIndex].stock
+            let prizeStock = this.prizeList[this.prizeIndex].prizeStock
             tipContent = prizeStock ? `恭喜您，获得 ${prizeName}` : `很抱歉，您来晚了，当前奖品 ${prizeName} 已无库存`
           } else {
             tipContent = `恭喜您，获得 ${prizeName} ！`
@@ -374,7 +378,6 @@
 				
         uni.showToast({
           title: res.msg,
-					duration: 3000,
 					mask: true,
 					icon: 'none'
         })
