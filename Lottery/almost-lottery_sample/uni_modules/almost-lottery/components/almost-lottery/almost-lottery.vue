@@ -177,7 +177,10 @@
       // 文字方向
       strDirection: {
         type: String,
-        default: 'horizontal'
+        default: 'horizontal',
+        validator: (value) => {
+          return value === 'horizontal' || value === 'vertical'
+        }
       },
       // 字体颜色
       strFontColor: {
@@ -224,6 +227,11 @@
         type: Number,
         default: 50
       },
+			// 是否绘制奖品图片
+			imgDrawed: {
+				type: Boolean,
+				default: true
+			},
 			// 转盘绘制成功的提示
 			successMsg: {
 				type: String,
@@ -513,7 +521,7 @@
                     let textWidth = await this.getTextWidth()
                     let tempStrWidth = -(textWidth / 2).toFixed(2)
                     ctx.fillText(rewardNames[j], tempStrWidth, j * this.higtHeightMultiple)
-                    // console.log(rewardNames[j], textWidth, i)
+                    // console.log(rewardNames[j], textWidth, j)
                   }
                 }
               } else {
@@ -558,7 +566,7 @@
           
 
           // 绘制奖品图片，文字竖向展示时，不支持图片展示
-          if (prizeItem.prizeImage && this.strDirection !== 'vertical') {
+          if (this.imgDrawed && prizeItem.prizeImage && this.strDirection !== 'vertical') {
 						// App-Android平台 系统 webview 更新到 Chrome84+ 后 canvas 组件绘制本地图像 uni.canvasToTempFilePath 会报错
 						// 统一将图片处理成 base64
 						// https://ask.dcloud.net.cn/question/103303
@@ -858,13 +866,18 @@
         this.imgPxWidth = Math.floor(imgSize.width)
         this.imgPxHeight = Math.floor(imgSize.height)
         
-        // 判断画板是否设置缓存
-        if (this.canvasCached) {
-        	this.checkCacheImg()
-        } else {
-        	this.initCanvasDraw()
-        }
-        this.transitionDuration = this.duration
+        let stoTimer = setTimeout(() => {
+          clearTimeout(stoTimer)
+          stoTimer = null
+          
+          // 判断画板是否设置缓存
+          if (this.canvasCached) {
+          	this.checkCacheImg()
+          } else {
+          	this.initCanvasDraw()
+          }
+          this.transitionDuration = this.duration
+        }, 50)
       }
     },
     mounted() {
