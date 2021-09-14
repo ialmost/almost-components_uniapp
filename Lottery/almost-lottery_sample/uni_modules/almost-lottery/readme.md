@@ -24,6 +24,7 @@
 ## 功能概要
 - [x] 可配置奖品文字 **支持横向/竖向展示**
 - [x] 可配置每个奖品区块的背景颜色
+- [x] 可配置每个奖品区块的奖品文字颜色
 - [x] 可配置奖品区块是否开启描边以及边框的颜色，默认不开启
 - [x] 可配置转盘外环和抽奖按钮图
 - [x] 可配置每个奖品区块的奖品图片，**当图片是网络地址时，小程序端需要配置白名单，H5端需要允许跨域，奖品文字为竖向时不支持展示奖品图片**
@@ -116,16 +117,16 @@ prizeIndex | 获奖奖品在奖品列表中的序号，**每次抽奖结束后�
 prizeList | 奖品列表，支持奇数（尽量能被 `360` 除尽），**为奇数时需要重设 `colors` 参数** | *`Array`* | -
 lotteryBg | 转盘外环图片 | `String` | `默认内置的本地图片`
 actionBg | 抽奖按钮图片 | `String` | `默认内置的本地图片`
-colors | 奖品区块对应的背景颜色，默认 2 个颜色相互交替，**也可以对每个区块设置不同颜色** | *`Array`* | `['#FFFFFF', '#FFE9AA']`
+colors | 奖品区块对应的背景颜色，默认 2 个颜色相互交替，**也可以对每个区块设置不同颜色** | *`Array`* | `['#FFFFFF', '#FFBF05']`
 prizeNameDrawed | 是否绘制奖品名称 | *`Boolean`* | `true`
 stroked | 是否开启奖品区块描边 | *`Boolean`* | `false`
 strDirection | 奖品名称展示方向，可选值 `'horizontal'` => 横向 `'vertical'` => 竖向 | *`String`* | `'horizontal'`
-strokeColor | 奖品区块边框颜色 | *`String`* | `'#FFE9AA'`
+strokeColor | 奖品区块边框颜色 | *`String`* | `'#FFBF05'`
 rotateType | 旋转的类型，可选值 `'roulette'` => 轮盘旋转 `'pointer'` => 指针旋转 | *`String`* | `'roulette'`
 duration | 转盘旋转的动画时长，单位：秒 | *`Number`* | `8`
 ringCount | 旋转的圈数 | *`Number`* | `8`
 pointerPosition | 点击抽奖按钮指针的位置，可选值 `'edge'` => 指向边界 `'middle'` => 指向中间 | *`String`* | `'edge'`
-strFontColor | 奖品名称的颜色 | *`String`* | `'#C30B29'`
+strFontColors | 奖品文字颜色，默认 2 个颜色相互交替，**也可以对每个区块的文字设置不同颜色，或仅设置一个颜色** | *`Array`* | `['#FFBF05', '#FFFFFF']`
 strFontSize | 奖品名称的字号，单位 `rpx` | *`Number`* | `24`
 strLineHeight | 奖品名称多行情况下的行高 | *`Number`* | `1.2`
 strMaxLen | 奖品名称长度限制，**文字竖向时不生效** | *`Number`* | `12`

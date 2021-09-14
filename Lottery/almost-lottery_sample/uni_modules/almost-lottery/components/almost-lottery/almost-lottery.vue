@@ -123,7 +123,7 @@
         type: Array,
         default: () => [
           '#FFFFFF',
-          '#FFE9AA'
+          '#FFBF05'
         ]
       },
       // 转盘外环背景图
@@ -149,7 +149,7 @@
       // 描边颜色
       strokeColor: {
         type: String,
-        default: '#FFE9AA'
+        default: '#FFBF05'
       },
       // 旋转的类型
       rotateType: {
@@ -183,9 +183,12 @@
         }
       },
       // 字体颜色
-      strFontColor: {
-        type: String,
-        default: '#C30B29'
+      strFontColors: {
+        type: Array,
+        default: () => [
+          '#FFBF05',
+          '#FFFFFF'
+        ]
       },
       // 文字的大小
       strFontSize: {
@@ -463,6 +466,15 @@
           // 填充颜色
           ctx.fill()
           
+          // 设置文字颜色
+          if (this.strFontColors.length === 1) {
+            ctx.setFillStyle(this.strFontColors[0])
+          } else if (this.strFontColors.length === 2) {
+            ctx.setFillStyle(this.strFontColors[i % 2])
+          } else {
+            ctx.setFillStyle(this.strFontColors[i])
+          }
+          
           // 开启描边
           if (this.stroked) {
             // 设置描边颜色
@@ -478,7 +490,6 @@
           ctx.translate(translateX, translateY)
 
           // 绘制奖品名称
-          ctx.setFillStyle(this.strFontColor)
           let rewardName = this.strLimit(prizeItem.prizeName)
           
           // rotate方法旋转当前的绘图，因为文字是和当前扇形中心线垂直的

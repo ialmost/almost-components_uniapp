@@ -2,8 +2,8 @@
     "name" : "Almost-Lottery抽奖转盘",
     "appid" : "",
     "description" : "提供奇数、缓存等众多配置项，更有抽奖概率、抽奖次数、付费抽奖等功能内置于示例项目中，完美支持APP、各平台小程序、H5、PC",
-    "versionName" : "1.8.3",
-    "versionCode" : 10803,
+    "versionName" : "1.8.5",
+    "versionCode" : 10805,
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {
