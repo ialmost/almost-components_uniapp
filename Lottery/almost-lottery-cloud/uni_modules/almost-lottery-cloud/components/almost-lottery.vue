@@ -76,7 +76,7 @@
 
 <script>
   const systemInfo = uni.getSystemInfoSync()
-	import { getStore, setStore, clearStore, clacTextLen, downloadFile, pathToBase64 } from '@/uni_modules/almost-lottery-cloud/utils/almost-utils.js'
+	import { getStore, setStore, clearStore, clacTextLen, downloadFile, pathToBase64, base64ToPath } from '@/uni_modules/almost-lottery-cloud/utils/almost-utils.js'
   export default {
     name: 'AlmostLottery',
     props: {
@@ -123,18 +123,18 @@
         type: Array,
         default: () => [
           '#FFFFFF',
-          '#FFE9AA'
+          '#FFBF05'
         ]
       },
       // 转盘外环背景图
       lotteryBg: {
         type: String,
-        default: '/uni_modules/almost-lottery-cloud/static/almost-lottery/components/almost-lottery__bg2x.png'
+        default: '/uni_modules/almost-lottery/static/almost-lottery/almost-lottery__bg2x.png'
       },
       // 抽奖按钮背景图
       actionBg: {
         type: String,
-        default: '/uni_modules/almost-lottery-cloud/static/almost-lottery/components/almost-lottery__action2x.png'
+        default: '/uni_modules/almost-lottery/static/almost-lottery/almost-lottery__action2x.png'
       },
       // 是否绘制奖品名称
       prizeNameDrawed: {
@@ -149,7 +149,7 @@
       // 描边颜色
       strokeColor: {
         type: String,
-        default: '#FFE9AA'
+        default: '#FFBF05'
       },
       // 旋转的类型
       rotateType: {
@@ -177,12 +177,18 @@
       // 文字方向
       strDirection: {
         type: String,
-        default: 'horizontal'
+        default: 'horizontal',
+        validator: (value) => {
+          return value === 'horizontal' || value === 'vertical'
+        }
       },
       // 字体颜色
-      strFontColor: {
-        type: String,
-        default: '#C30B29'
+      strFontColors: {
+        type: Array,
+        default: () => [
+          '#FFBF05',
+          '#FFFFFF'
+        ]
       },
       // 文字的大小
       strFontSize: {
@@ -204,11 +210,6 @@
         type: Number,
         default: 1.2
       },
-      // 奖品名称所对应的 key 值
-      strKey: {
-        type: String,
-        default: 'name'
-      },
       // 奖品文字总长度限制
       strMaxLen: {
         type: Number,
@@ -229,6 +230,11 @@
         type: Number,
         default: 50
       },
+			// 是否绘制奖品图片
+			imgDrawed: {
+				type: Boolean,
+				default: true
+			},
 			// 转盘绘制成功的提示
 			successMsg: {
 				type: String,
@@ -460,6 +466,15 @@
           // 填充颜色
           ctx.fill()
           
+          // 设置文字颜色
+          if (this.strFontColors.length === 1) {
+            ctx.setFillStyle(this.strFontColors[0])
+          } else if (this.strFontColors.length === 2) {
+            ctx.setFillStyle(this.strFontColors[i % 2])
+          } else {
+            ctx.setFillStyle(this.strFontColors[i])
+          }
+          
           // 开启描边
           if (this.stroked) {
             // 设置描边颜色
@@ -475,8 +490,7 @@
           ctx.translate(translateX, translateY)
 
           // 绘制奖品名称
-          ctx.setFillStyle(this.strFontColor)
-          let rewardName = this.strLimit(prizeItem[this.strKey])
+          let rewardName = this.strLimit(prizeItem.prizeName)
           
           // rotate方法旋转当前的绘图，因为文字是和当前扇形中心线垂直的
           ctx.rotate(angle + (baseAngle / 2) + (Math.PI / 2))
@@ -518,7 +532,7 @@
                     let textWidth = await this.getTextWidth()
                     let tempStrWidth = -(textWidth / 2).toFixed(2)
                     ctx.fillText(rewardNames[j], tempStrWidth, j * this.higtHeightMultiple)
-                    // console.log(rewardNames[j], textWidth, i)
+                    // console.log(rewardNames[j], textWidth, j)
                   }
                 }
               } else {
@@ -563,7 +577,7 @@
           
 
           // 绘制奖品图片，文字竖向展示时，不支持图片展示
-          if (prizeItem.prizeImage && this.strDirection !== 'vertical') {
+          if (this.imgDrawed && prizeItem.prizeImage && this.strDirection !== 'vertical') {
 						// App-Android平台 系统 webview 更新到 Chrome84+ 后 canvas 组件绘制本地图像 uni.canvasToTempFilePath 会报错
 						// 统一将图片处理成 base64
 						// https://ask.dcloud.net.cn/question/103303
@@ -599,12 +613,22 @@
                 })
               }
 						} else {
-              console.log('处理非远程图片', prizeItem.prizeImage)
 							// #ifndef MP
+              // 不是小程序环境，把本地图片处理成 base64
               if (prizeItem.prizeImage.indexOf(';base64,') === -1) {
+                console.log('开始处理本地图片', prizeItem.prizeImage)
                 prizeItem.prizeImage = await pathToBase64(prizeItem.prizeImage)
+                console.log('处理本地图片结束', prizeItem.prizeImage)
               }
 							// #endif
+              // #ifdef MP
+              // 小程序环境，把 base64 处理成小程序的本地临时路径
+              if (prizeItem.prizeImage.indexOf(';base64,') !== -1) {
+                console.log('开始处理BASE64图片', prizeItem.prizeImage)
+                prizeItem.prizeImage = await base64ToPath(prizeItem.prizeImage)
+                console.log('处理BASE64图片完成', prizeItem.prizeImage)
+              }
+              // #endif
 						}
             
             let prizeImageX = -(this.imgPxWidth * systemInfo.pixelRatio / 2)
@@ -855,21 +879,26 @@
             // console.log('处理 img-size rpx 的自适应', rects)
           }).exec()
         })
-        this.lotteryPxSize = lotterySize.width
-        this.actionPxSize = actionSize.width
-        this.canvasPxSize = this.lotteryPxSize - actionSize.left + lotterySize.left
-        this.strMarginPxOutside = strMarginSize.left - lotterySize.left
-        this.imgMarginPxStr = imgMarginStr.left - lotterySize.left
-        this.imgPxWidth = imgSize.width
-        this.imgPxHeight = imgSize.height
+        this.lotteryPxSize = Math.floor(lotterySize.width)
+        this.actionPxSize = Math.floor(actionSize.width)
+        this.canvasPxSize = this.lotteryPxSize - Math.floor(actionSize.left) + Math.floor(lotterySize.left)
+        this.strMarginPxOutside = Math.floor(strMarginSize.left) - Math.floor(lotterySize.left)
+        this.imgMarginPxStr = Math.floor(imgMarginStr.left) - Math.floor(lotterySize.left)
+        this.imgPxWidth = Math.floor(imgSize.width)
+        this.imgPxHeight = Math.floor(imgSize.height)
         
-        // 判断画板是否设置缓存
-        if (this.canvasCached) {
-        	this.checkCacheImg()
-        } else {
-        	this.initCanvasDraw()
-        }
-        this.transitionDuration = this.duration
+        let stoTimer = setTimeout(() => {
+          clearTimeout(stoTimer)
+          stoTimer = null
+          
+          // 判断画板是否设置缓存
+          if (this.canvasCached) {
+          	this.checkCacheImg()
+          } else {
+          	this.initCanvasDraw()
+          }
+          this.transitionDuration = this.duration
+        }, 50)
       }
     },
     mounted() {

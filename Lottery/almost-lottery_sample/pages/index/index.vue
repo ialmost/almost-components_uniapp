@@ -93,10 +93,10 @@
         },
         
         // 以下是转盘 UI 配置
-        // 转盘外环图
-        lotteryBg: 'https://raw.githubusercontent.com/ialmost/almost-components_uniapp/dev/Lottery/almost-lottery_sample/static/lottery-bg.png',
+        // 转盘外环图，如有需要，请参考替换为自己的设计稿
+        lotteryBg: '/static/lottery-bg.png',
         // 抽奖按钮图
-        actionBg: 'https://raw.githubusercontent.com/ialmost/almost-components_uniapp/dev/Lottery/almost-lottery_sample/static/action-bg.png',
+        actionBg: '/static/action-bg.png',
         
         // 以下是奖品配置数据
         // 奖品数据
