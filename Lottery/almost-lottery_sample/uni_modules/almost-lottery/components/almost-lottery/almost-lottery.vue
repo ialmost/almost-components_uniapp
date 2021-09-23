@@ -76,7 +76,7 @@
 
 <script>
   const systemInfo = uni.getSystemInfoSync()
-	import { getStore, setStore, clearStore, clacTextLen, downloadFile, pathToBase64 } from '@/uni_modules/almost-lottery/utils/almost-utils.js'
+	import { getStore, setStore, clearStore, clacTextLen, downloadFile, pathToBase64, base64ToPath } from '@/uni_modules/almost-lottery/utils/almost-utils.js'
   export default {
     name: 'AlmostLottery',
     props: {
@@ -613,12 +613,22 @@
                 })
               }
 						} else {
-              console.log('处理非远程图片', prizeItem.prizeImage)
 							// #ifndef MP
+              // 不是小程序环境，把本地图片处理成 base64
               if (prizeItem.prizeImage.indexOf(';base64,') === -1) {
+                console.log('开始处理本地图片', prizeItem.prizeImage)
                 prizeItem.prizeImage = await pathToBase64(prizeItem.prizeImage)
+                console.log('处理本地图片结束', prizeItem.prizeImage)
               }
 							// #endif
+              // #ifdef MP
+              // 小程序环境，把 base64 处理成小程序的本地临时路径
+              if (prizeItem.prizeImage.indexOf(';base64,') !== -1) {
+                console.log('开始处理BASE64图片', prizeItem.prizeImage)
+                prizeItem.prizeImage = await base64ToPath(prizeItem.prizeImage)
+                console.log('处理BASE64图片完成', prizeItem.prizeImage)
+              }
+              // #endif
 						}
             
             let prizeImageX = -(this.imgPxWidth * systemInfo.pixelRatio / 2)
