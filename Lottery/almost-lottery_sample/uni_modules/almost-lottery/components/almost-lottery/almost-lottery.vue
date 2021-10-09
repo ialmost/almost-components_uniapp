@@ -39,9 +39,6 @@
           @click="handleActionStart"
         ></image>
       </template>
-    
-      <!-- 正在绘制转盘时的提示文本 -->
-      <text class="almost-lottery__tip" v-else>{{ almostLotteryTip }}</text>
     </view>
     
     <!-- 为了兼容 app 端 ctx.measureText 所需的标签 -->
@@ -284,8 +281,6 @@
 				// 是否存在可用的缓存转盘图
 				isCacheImg: false,
 				oldLotteryImg: '',
-        // 转盘绘制时的提示
-        almostLotteryTip: '奖品准备中...',
         // 解决 app 不支持 measureText 的问题
 				// app 已在 2.9.3 的版本中提供了对 measureText 的支持，将在后续版本逐渐稳定后移除相关兼容代码
         measureText: ''
@@ -621,7 +616,8 @@
                 console.log('处理本地图片结束', prizeItem.prizeImage)
               }
 							// #endif
-              // #ifdef MP
+              
+              // #ifdef MP-WEIXIN
               // 小程序环境，把 base64 处理成小程序的本地临时路径
               if (prizeItem.prizeImage.indexOf(';base64,') !== -1) {
                 console.log('开始处理BASE64图片', prizeItem.prizeImage)
@@ -788,7 +784,6 @@
 					data: res.data,
 					msg: res.ok ? this.successMsg : this.failMsg
 				})
-        this.almostLotteryTip = res.ok ? this.successMsg : this.failMsg
 			},
       // 兼容 app 端不支持 ctx.measureText
       // 已知问题：初始绘制时，低端安卓机 平均耗时 2s
@@ -961,12 +956,6 @@
   .almost-lottery__action-bg {
 		display: block;
     transition: transform cubic-bezier(.34, .12, .05, .95);
-  }
-
-  .almost-lottery__tip {
-    color: #FFFFFF;
-    font-size: 24rpx;
-    text-align: center;
   }
   
   .almost-lottery__measureText {
