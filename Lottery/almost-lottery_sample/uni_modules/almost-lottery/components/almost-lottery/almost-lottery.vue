@@ -767,7 +767,11 @@
 					// #endif
 				} else {
 					console.error('处理导出的图片失败', res)
-					uni.hideLoading()
+          uni.showToast({
+            title: res.msg,
+          	mask: true,
+          	icon: 'none'
+          })
 					// #ifdef H5
 					console.error('###当前为 H5 端，下载网络图片需要后端配置允许跨域###')
 					// #endif
@@ -778,7 +782,6 @@
       },
 			// 处理图片完成
 			handlePrizeImgSuc (res) {
-				uni.hideLoading()
 				this.$emit('finish', {
 					ok: res.ok,
 					data: res.data,
@@ -843,37 +846,39 @@
       },
       // 预处理初始化
       async beforeInit () {
+        let query = uni.createSelectorQuery().in(this)
         // 处理 rpx 自适应尺寸
         let lotterySize = await new Promise((resolve) => {
-          uni.createSelectorQuery().in(this).select('.almost-lottery__wrap').boundingClientRect((rects) => {
+          query.select('.almost-lottery__wrap').boundingClientRect((rects) => {
             resolve(rects)
             // console.log('处理 lottery rpx 的自适应', rects)
           }).exec()
         })
         let actionSize = await new Promise((resolve) => {
-          uni.createSelectorQuery().in(this).select('.lottery-action').boundingClientRect((rects) => {
+          query.select('.lottery-action').boundingClientRect((rects) => {
             resolve(rects)
             // console.log('处理 action rpx 的自适应', rects)
           }).exec()
         })
         let strMarginSize = await new Promise((resolve) => {
-          uni.createSelectorQuery().in(this).select('.str-margin-outside').boundingClientRect((rects) => {
+          query.select('.str-margin-outside').boundingClientRect((rects) => {
             resolve(rects)
             // console.log('处理 str-margin-outside rpx 的自适应', rects)
           }).exec()
         })
         let imgMarginStr = await new Promise((resolve) => {
-          uni.createSelectorQuery().in(this).select('.img-margin-str').boundingClientRect((rects) => {
+          query.select('.img-margin-str').boundingClientRect((rects) => {
             resolve(rects)
             // console.log('处理 img-margin-str rpx 的自适应', rects)
           }).exec()
         })
         let imgSize = await new Promise((resolve) => {
-          uni.createSelectorQuery().in(this).select('.img-size').boundingClientRect((rects) => {
+          query.select('.img-size').boundingClientRect((rects) => {
             resolve(rects)
             // console.log('处理 img-size rpx 的自适应', rects)
           }).exec()
         })
+        
         this.lotteryPxSize = Math.floor(lotterySize.width)
         this.actionPxSize = Math.floor(actionSize.width)
         this.canvasPxSize = this.lotteryPxSize - Math.floor(actionSize.left) + Math.floor(lotterySize.left)
@@ -898,12 +903,19 @@
     },
     mounted() {
       this.$nextTick(() => {
+        let delay = 50
+        
+        // 小程序平台需要更多的延时才能获取到准确的元素 Size 信息
+        // #ifdef MP
+        delay = 300
+        // #endif
+        
         let stoTimer = setTimeout(() => {
           clearTimeout(stoTimer)
           stoTimer = null
           
           this.beforeInit()
-        }, 50)
+        }, delay)
       })
     }
   }

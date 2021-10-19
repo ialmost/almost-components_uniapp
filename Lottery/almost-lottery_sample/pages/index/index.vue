@@ -376,11 +376,16 @@
       handleDrawFinish (res) {
         console.log('抽奖转盘绘制完成', res)
 				
-        uni.showToast({
-          title: res.msg,
-					mask: true,
-					icon: 'none'
-        })
+        let stoTimer = setTimeout(() => {
+          clearTimeout(stoTimer)
+          stoTimer = null
+          
+          uni.showToast({
+            title: res.msg,
+          	mask: true,
+          	icon: 'none'
+          })
+        }, 50)
       }
     },
     onLoad () {
