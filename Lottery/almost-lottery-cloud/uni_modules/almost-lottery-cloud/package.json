@@ -1,7 +1,7 @@
 {
   "id": "almost-lottery-cloud",
   "displayName": "Almost-Lottery抽奖转盘的云端一体页面",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "基于Almost-Lottery抽奖转盘的云端一体页面，并结合配套的Almost-Lottery抽奖转盘的配置中心，实现前后端完美衔接",
   "keywords": [
     "转盘",
@@ -71,6 +71,10 @@
         "快应用": {
           "华为": "u",
           "联盟": "u"
+        },
+        "Vue": {
+            "vue2": "y",
+            "vue3": "u"
         }
       }
     }

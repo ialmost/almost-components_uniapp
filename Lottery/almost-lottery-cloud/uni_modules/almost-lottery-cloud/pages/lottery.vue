@@ -208,9 +208,6 @@
               
               uni.navigateBack()
             }, 2000)
-          },
-          complete() {
-            uni.hideLoading()
           }
         })
       },
