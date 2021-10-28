@@ -39,9 +39,6 @@
           @click="handleActionStart"
         ></image>
       </template>
-    
-      <!-- 正在绘制转盘时的提示文本 -->
-      <text class="almost-lottery__tip" v-else>{{ almostLotteryTip }}</text>
     </view>
     
     <!-- 为了兼容 app 端 ctx.measureText 所需的标签 -->
@@ -129,12 +126,12 @@
       // 转盘外环背景图
       lotteryBg: {
         type: String,
-        default: '/uni_modules/almost-lottery/static/almost-lottery/almost-lottery__bg2x.png'
+        default: '/uni_modules/almost-lottery-cloud/static/almost-lottery/components/almost-lottery__bg2x.png'
       },
       // 抽奖按钮背景图
       actionBg: {
         type: String,
-        default: '/uni_modules/almost-lottery/static/almost-lottery/almost-lottery__action2x.png'
+        default: '/uni_modules/almost-lottery-cloud/static/almost-lottery/components/almost-lottery__action2x.png'
       },
       // 是否绘制奖品名称
       prizeNameDrawed: {
@@ -284,8 +281,6 @@
 				// 是否存在可用的缓存转盘图
 				isCacheImg: false,
 				oldLotteryImg: '',
-        // 转盘绘制时的提示
-        almostLotteryTip: '奖品准备中...',
         // 解决 app 不支持 measureText 的问题
 				// app 已在 2.9.3 的版本中提供了对 measureText 的支持，将在后续版本逐渐稳定后移除相关兼容代码
         measureText: ''
@@ -621,7 +616,8 @@
                 console.log('处理本地图片结束', prizeItem.prizeImage)
               }
 							// #endif
-              // #ifdef MP
+              
+              // #ifdef MP-WEIXIN
               // 小程序环境，把 base64 处理成小程序的本地临时路径
               if (prizeItem.prizeImage.indexOf(';base64,') !== -1) {
                 console.log('开始处理BASE64图片', prizeItem.prizeImage)
@@ -771,7 +767,11 @@
 					// #endif
 				} else {
 					console.error('处理导出的图片失败', res)
-					uni.hideLoading()
+          uni.showToast({
+            title: res.msg,
+          	mask: true,
+          	icon: 'none'
+          })
 					// #ifdef H5
 					console.error('###当前为 H5 端，下载网络图片需要后端配置允许跨域###')
 					// #endif
@@ -782,13 +782,11 @@
       },
 			// 处理图片完成
 			handlePrizeImgSuc (res) {
-				uni.hideLoading()
 				this.$emit('finish', {
 					ok: res.ok,
 					data: res.data,
 					msg: res.ok ? this.successMsg : this.failMsg
 				})
-        this.almostLotteryTip = res.ok ? this.successMsg : this.failMsg
 			},
       // 兼容 app 端不支持 ctx.measureText
       // 已知问题：初始绘制时，低端安卓机 平均耗时 2s
@@ -848,37 +846,39 @@
       },
       // 预处理初始化
       async beforeInit () {
+        let query = uni.createSelectorQuery().in(this)
         // 处理 rpx 自适应尺寸
         let lotterySize = await new Promise((resolve) => {
-          uni.createSelectorQuery().in(this).select('.almost-lottery__wrap').boundingClientRect((rects) => {
+          query.select('.almost-lottery__wrap').boundingClientRect((rects) => {
             resolve(rects)
             // console.log('处理 lottery rpx 的自适应', rects)
           }).exec()
         })
         let actionSize = await new Promise((resolve) => {
-          uni.createSelectorQuery().in(this).select('.lottery-action').boundingClientRect((rects) => {
+          query.select('.lottery-action').boundingClientRect((rects) => {
             resolve(rects)
             // console.log('处理 action rpx 的自适应', rects)
           }).exec()
         })
         let strMarginSize = await new Promise((resolve) => {
-          uni.createSelectorQuery().in(this).select('.str-margin-outside').boundingClientRect((rects) => {
+          query.select('.str-margin-outside').boundingClientRect((rects) => {
             resolve(rects)
             // console.log('处理 str-margin-outside rpx 的自适应', rects)
           }).exec()
         })
         let imgMarginStr = await new Promise((resolve) => {
-          uni.createSelectorQuery().in(this).select('.img-margin-str').boundingClientRect((rects) => {
+          query.select('.img-margin-str').boundingClientRect((rects) => {
             resolve(rects)
             // console.log('处理 img-margin-str rpx 的自适应', rects)
           }).exec()
         })
         let imgSize = await new Promise((resolve) => {
-          uni.createSelectorQuery().in(this).select('.img-size').boundingClientRect((rects) => {
+          query.select('.img-size').boundingClientRect((rects) => {
             resolve(rects)
             // console.log('处理 img-size rpx 的自适应', rects)
           }).exec()
         })
+        
         this.lotteryPxSize = Math.floor(lotterySize.width)
         this.actionPxSize = Math.floor(actionSize.width)
         this.canvasPxSize = this.lotteryPxSize - Math.floor(actionSize.left) + Math.floor(lotterySize.left)
@@ -903,12 +903,19 @@
     },
     mounted() {
       this.$nextTick(() => {
+        let delay = 50
+        
+        // 小程序平台需要更多的延时才能获取到准确的元素 Size 信息
+        // #ifdef MP
+        delay = 300
+        // #endif
+        
         let stoTimer = setTimeout(() => {
           clearTimeout(stoTimer)
           stoTimer = null
           
           this.beforeInit()
-        }, 50)
+        }, delay)
       })
     }
   }
@@ -961,12 +968,6 @@
   .almost-lottery__action-bg {
 		display: block;
     transition: transform cubic-bezier(.34, .12, .05, .95);
-  }
-
-  .almost-lottery__tip {
-    color: #FFFFFF;
-    font-size: 24rpx;
-    text-align: center;
   }
   
   .almost-lottery__measureText {

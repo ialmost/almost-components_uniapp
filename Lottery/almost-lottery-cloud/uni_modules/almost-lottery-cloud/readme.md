@@ -1,5 +1,5 @@
 # Almost-Lottery抽奖转盘的云端一体页面
-*基于Almost-Lottery抽奖转盘的云端一体页面，并结合配套的Almost-Lottery抽奖转盘的配置中心，实现前后端完美衔接*
+*基于 [Almost-Lottery抽奖转盘](https://ext.dcloud.net.cn/plugin?id=1030) 的云端一体页面，并结合配套的Almost-Lottery抽奖转盘的配置中心，实现前后端完美衔接*
 
 
 > <br />
@@ -12,8 +12,9 @@
 > <br />
 
 
-## 配套项目
-- [Almost-Lottery抽奖转盘的配置中心](https://ext.dcloud.net.cn/plugin?id=5762)
+## 注意事项
+- 基于 [Almost-Lottery抽奖转盘](https://ext.dcloud.net.cn/plugin?id=1030) 开发
+- 搭配 [Almost-Lottery抽奖转盘的配置中心](https://ext.dcloud.net.cn/plugin?id=5762) 使用
 
 
 ## 安装指引
@@ -51,4 +52,4 @@
 ]
 ```
 
-10. 前往 [Almost-Lottery抽奖转盘的配置中心](https://ext.dcloud.net.cn/plugin?id=5762) 安装配套的 `Admin` 插件
+10. 前往 [Almost-Lottery抽奖转盘的配置中心](https://ext.dcloud.net.cn/plugin?id=5762) 安装配套的 `uniCloud Admin` 插件

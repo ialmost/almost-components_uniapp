@@ -15,7 +15,7 @@
       </view>
       <button type="default" @tap="addScore">添加 1000 金币</button>
       <button type="default" @tap="goToLottery">前往抽奖</button>
-      <button type="default" @tap="logout">登出</button>
+      <button type="default" @tap="logout">退出</button>
     </template>
 	</view>
 </template>
@@ -58,6 +58,11 @@
           return
         }
         
+        uni.showLoading({
+          title: '正在注册...',
+          mask: true
+        })
+        
 				uniCloud.callFunction({
 					name: 'almost-passport',
 					data: {
@@ -72,7 +77,7 @@
             let result = res.result
             if (result.code === 0) {
               uni.showToast({
-                title: result.msg,
+                title: result.msg || '恭喜你，注册成功',
                 duration: 2000,
                 icon: 'none'
               })
@@ -86,7 +91,10 @@
 					},
 					fail(e) {
 						console.error(e)
-					}
+					},
+          complete() {
+            uni.hideLoading()
+          }
 				})
 			},
       // 登录
@@ -108,6 +116,11 @@
           })
           return
         }
+        
+        uni.showLoading({
+          title: '正在登录...',
+          mask: true
+        })
         
         let that = this
 				uniCloud.callFunction({
@@ -140,11 +153,19 @@
 					},
 					fail(e) {
 						console.error(e)
-					}
+					},
+          complete() {
+            uni.hideLoading()
+          }
 				})
 			},
-      // 登出
+      // 退出
       logout () {
+        uni.showLoading({
+          title: '正在退出...',
+          mask: true
+        })
+        
         let that = this
         uniCloud.callFunction({
           name: 'almost-passport',
@@ -155,10 +176,19 @@
             console.log('登出', res)
             uni.clearStorageSync()
             that.logouted()
+            
+            uni.showToast({
+              title: '账号已退出',
+              duration: 2000,
+              icon: 'none'
+            })
 					},
 					fail(e) {
 						console.error(e)
-					}
+					},
+          complete() {
+            uni.hideLoading()
+          }
         })
       },
       // 获取金币信息
@@ -194,6 +224,11 @@
       },
       // 添加金币
       addScore () {
+        uni.showLoading({
+          title: '正在添加...',
+          mask: true
+        })
+        
         let that = this
         uniCloud.callFunction({
           name: 'almost-passport',
@@ -204,8 +239,11 @@
             console.log('添加金币', res.result)
             that.getScoreInfo()
           },
-          fail(e) {
-            console.error(e)
+          fail(err) {
+            console.error(err)
+          },
+          complete() {
+            uni.hideLoading()
           }
         })
       },

@@ -169,7 +169,7 @@
             }
           },
           success (res) {
-            console.log(res)
+            console.log('奖品准备中', res)
             let { result } = res
             if (result.prizeList && result.prizeList.length) {
               that.freeNumDay = result.free_num_day
@@ -183,7 +183,7 @@
               uni.showToast({
                 title: '获取奖品失败，请先在后台添加奖品设置',
               	icon: 'none',
-                duration: 3000
+                duration: 2000
               })
               
               let stoTimer = setTimeout(() => {
@@ -191,8 +191,26 @@
                 stoTimer = null
                 
                 uni.navigateBack()
-              }, 3000)
+              }, 2000)
             }
+          },
+          fail(err) {
+            console.error(err)
+            uni.showToast({
+              title: err.errMsg,
+            	icon: 'none',
+              duration: 2000
+            })
+              
+            let stoTimer = setTimeout(() => {
+              clearTimeout(stoTimer)
+              stoTimer = null
+              
+              uni.navigateBack()
+            }, 2000)
+          },
+          complete() {
+            uni.hideLoading()
           }
         })
       },
@@ -320,7 +338,7 @@
 				
         uni.showToast({
           title: res.msg,
-					duration: 3000,
+					duration: 2000,
 					mask: true,
 					icon: 'none'
         })

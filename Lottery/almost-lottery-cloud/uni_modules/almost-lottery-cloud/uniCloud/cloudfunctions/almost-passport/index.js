@@ -102,6 +102,8 @@ exports.main = async (event, context) => {
         username,
         password
       } = params
+      
+      // https://uniapp.dcloud.io/uniCloud/uni-id?id=encrypt-password
       const encryptPwd = uniID.encryptPwd(password)
 
       res = await uniID.register({
@@ -117,13 +119,15 @@ exports.main = async (event, context) => {
         username,
         password
       } = params
+      
+      // https://uniapp.dcloud.io/uniCloud/uni-id?id=encrypt-password
       const encryptPwd = uniID.encryptPwd(password)
 
       res = await uniID.login({
         username,
         password: encryptPwd.passwordHash
       })
-      console.log(res)
+      
       res.code === 0 && loginSucAction(res)
       break;
     }

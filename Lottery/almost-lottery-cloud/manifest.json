@@ -2,8 +2,8 @@
     "name" : "almost-lottery-cloud",
     "appid" : "__UNI__F7C97DF",
     "description" : "",
-    "versionName" : "1.0.5",
-    "versionCode" : 10005,
+    "versionName" : "1.0.8",
+    "versionCode" : 10008,
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {
