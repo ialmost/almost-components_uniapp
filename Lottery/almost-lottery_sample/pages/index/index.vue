@@ -200,7 +200,7 @@
 								{ prizeId: 8, prizeName: '100金币', prizeStock: 100, prizeWeight: 3000 }
 							]
 						})
-					}, 2000)
+					}, 200)
 				})
 			},
       // 本次抽奖开始
