@@ -20,19 +20,23 @@
           mode="widthFix"
           :src="lotteryImg"
           :style="{
-            width: canvasPxSize + 'px',
-            height: canvasPxSize  + 'px',
+            width: canvasImgPxSize + 'px',
+            height: canvasImgPxSize  + 'px',
+            left: canvasImgToLeftPx + 'px',
+            top: canvasImgToLeftPx + 'px',
             transform: `rotate(${canvasAngle + targetAngle}deg)`,
             transitionDuration: `${transitionDuration}s`
           }"
         ></image>
         <image
-          class="almost-lottery__action almost-lottery__action-bg"
+          class="almost-lottery__action-bg"
           mode="widthFix"
           :src="actionBg"
           :style="{
             width: actionPxSize + 'px',
             height: actionPxSize + 'px',
+            left: actionBgToLeftPx + 'px',
+            top: actionBgToLeftPx + 'px',
             transform: `rotate(${actionAngle + targetActionAngle}deg)`,
             transitionDuration: `${transitionDuration}s`
           }"
@@ -73,7 +77,7 @@
 
 <script>
   const systemInfo = uni.getSystemInfoSync()
-	import { getStore, setStore, clearStore, clacTextLen, downloadFile, pathToBase64, base64ToPath } from '@/uni_modules/almost-lottery-cloud/utils/almost-utils.js'
+	import { getStore, setStore, clearStore, clacTextLen, downloadFile, pathToBase64, base64ToPath } from '@/uni_modules/almost-lottery/utils/almost-utils.js'
   export default {
     name: 'AlmostLottery',
     props: {
@@ -126,12 +130,12 @@
       // 转盘外环背景图
       lotteryBg: {
         type: String,
-        default: '/uni_modules/almost-lottery-cloud/static/almost-lottery/components/almost-lottery__bg2x.png'
+        default: '/uni_modules/almost-lottery/static/almost-lottery/almost-lottery__bg2x.png'
       },
       // 抽奖按钮背景图
       actionBg: {
         type: String,
-        default: '/uni_modules/almost-lottery-cloud/static/almost-lottery/components/almost-lottery__action2x.png'
+        default: '/uni_modules/almost-lottery/static/almost-lottery/almost-lottery__action2x.png'
       },
       // 是否绘制奖品名称
       prizeNameDrawed: {
@@ -255,7 +259,7 @@
         // 抽奖转盘的整体px尺寸
         lotteryPxSize: 0,
         // 画板的px尺寸
-        canvasPxSize: 0,
+        canvasImgPxSize: 0,
         // 抽奖按钮的px尺寸
         actionPxSize: 0,
         // 奖品文字距离转盘边缘的距离
@@ -289,15 +293,21 @@
     computed: {
       // 高清尺寸
       higtCanvasSize() {
-        return this.canvasPxSize * systemInfo.pixelRatio
+        return this.canvasImgPxSize * systemInfo.pixelRatio
       },
       // 高清字体
       higtFontSize() {
-        return (this.strFontSize / this.pixelRatio) * systemInfo.pixelRatio
+        return Math.round(this.strFontSize / this.pixelRatio) * systemInfo.pixelRatio
       },
       // 高清行高
       higtHeightMultiple() {
-        return (this.strFontSize / this.pixelRatio) * this.strLineHeight * systemInfo.pixelRatio
+        return Math.round(this.strFontSize / this.pixelRatio) * this.strLineHeight * systemInfo.pixelRatio
+      },
+      canvasImgToLeftPx () {
+        return (this.lotteryPxSize - this.canvasImgPxSize) / 2
+      },
+      actionBgToLeftPx () {
+        return (this.lotteryPxSize - this.actionPxSize) / 2
       },
       // 根据奖品列表计算 canvas 旋转角度
       canvasAngle() {
@@ -880,12 +890,15 @@
         })
         
         this.lotteryPxSize = Math.floor(lotterySize.width)
+        this.canvasImgPxSize = this.lotteryPxSize - Math.floor(actionSize.left) + Math.floor(lotterySize.left)
         this.actionPxSize = Math.floor(actionSize.width)
-        this.canvasPxSize = this.lotteryPxSize - Math.floor(actionSize.left) + Math.floor(lotterySize.left)
+        
         this.strMarginPxOutside = Math.floor(strMarginSize.left) - Math.floor(lotterySize.left)
         this.imgMarginPxStr = Math.floor(imgMarginStr.left) - Math.floor(lotterySize.left)
         this.imgPxWidth = Math.floor(imgSize.width)
         this.imgPxHeight = Math.floor(imgSize.height)
+        
+        // console.log(this.lotteryPxSize, this.canvasImgPxSize, this.actionPxSize)
         
         let stoTimer = setTimeout(() => {
           clearTimeout(stoTimer)
@@ -929,10 +942,17 @@
     align-items: center;
   }
   
-  .almost-lottery__wrap {
-    position: relative;
-    // background-color: red;
+  // 以下元素不可见，是 canvas 的实例
+  .almost-lottery__canvas {
+    position: absolute;
+    left: -9999px;
+    opacity: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
+  
+  // 以下元素不可见，用于获得自适应的值
   .lottery-action,
   .str-margin-outside,
   .img-margin-str,
@@ -944,32 +964,7 @@
     // background-color: blue;
   }
   
-	.almost-lottery__wrap {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-	}
-
-  .almost-lottery__action,
-  .almost-lottery__bg,
-  .almost-lottery__canvas {
-    position: absolute;
-  }
-
-  .almost-lottery__canvas {
-    left: -9999px;
-    opacity: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .almost-lottery__canvas-img,
-  .almost-lottery__action-bg {
-		display: block;
-    transition: transform cubic-bezier(.34, .12, .05, .95);
-  }
-  
+  // 以下元素不可见，用于计算文本的宽度
   .almost-lottery__measureText {
     position: absolute;
     left: 0;
@@ -977,5 +972,26 @@
     white-space: nowrap;
     font-size: 12px;
     opacity: 0;
+  }
+
+  // 以下为可见内容的样式
+  .almost-lottery__wrap {
+    position: relative;
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
+    // background-color: #FFFFFF;
+  }
+  
+  .almost-lottery__bg,
+  .almost-lottery__canvas-img,
+  .almost-lottery__action-bg {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+
+  .almost-lottery__canvas-img {
+    transition: transform cubic-bezier(.34, .12, .05, .95);
   }
 </style>
