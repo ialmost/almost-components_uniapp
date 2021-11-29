@@ -77,7 +77,7 @@
 
 <script>
   const systemInfo = uni.getSystemInfoSync()
-	import { getStore, setStore, clearStore, clacTextLen, downloadFile, pathToBase64, base64ToPath } from '@/uni_modules/almost-lottery/utils/almost-utils.js'
+	import { getStore, setStore, clearStore, clacTextLen, downloadFile, pathToBase64, base64ToPath } from '@/uni_modules/almost-lottery-cloud/utils/almost-utils.js'
   export default {
     name: 'AlmostLottery',
     props: {

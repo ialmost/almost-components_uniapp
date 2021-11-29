@@ -164,7 +164,9 @@
               this.prizeWeightArr = this.prizeList.map((item) => item.prizeWeight)
               let prizeWeightArrSort = [...this.prizeWeightArr]
               prizeWeightArrSort.sort((a, b) => b - a)
-              this.prizeWeightMax = prizeWeightArrSort[0]
+              
+              // 开放自定义权重最大值，没有自定义则取权重数组中的最大值
+              this.prizeWeightMax = this.prizeWeightMax > 0 ? this.prizeWeightMax : prizeWeightArrSort[0]
 						}
 					}
 				} else {
@@ -247,7 +249,7 @@
         console.warn('###当前处于前端控制中奖概率，安全起见，强烈建议由后端控制###')
         // 前端控制概率的情况下，需要拿到最接近随机权重且大于随机权重的值
         // 后端控制概率的情况下，通常会直接返回 prizeId
-        if (!this.prizeWeightMax) {
+        if (!this.prizeWeightMax || !this.prizeWeightArr.length) {
         	console.warn('###当前已开启前端控制中奖概率，但是奖品数据列表中的 prizeWeight 参数似乎配置不正确###')
         	return
         }
