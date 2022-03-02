@@ -776,12 +776,7 @@
           console.info(`当前为 H5 端，使用${consoleText}中的 base64 图`)
 					// #endif
 				} else {
-					console.error('处理导出的图片失败', res)
-          uni.showToast({
-            title: res.msg,
-          	mask: true,
-          	icon: 'none'
-          })
+          console.error(res.msg, res)
 					// #ifdef H5
 					console.error('###当前为 H5 端，下载网络图片需要后端配置允许跨域###')
 					// #endif
