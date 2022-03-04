@@ -125,7 +125,10 @@
         // 每次消耗的金币数
         goldNum: 20,
         // 每天免费抽奖次数
-        freeNumDay: 3
+        freeNumDay: 3,
+        // 计算绘制用时
+        drawStartTime: 0,
+        drawEndTime: 0
       }
     },
     computed: {
@@ -137,7 +140,7 @@
       // 重新生成
       handleInitCanvas () {
 				clearCacheFile()
-				
+        
         this.prizeList = []
         this.getPrizeList()
       },
@@ -156,6 +159,9 @@
 					if (data.length) {
 						this.prizeList = data
             console.log('已获取到奖品列表数据，开始绘制抽奖转盘')
+            
+            // 记录开始绘制的时间
+            this.drawStartTime = Date.now()
 						
 						// 如果开启了前端控制概率
 						// 得出权重的最大值并生成权重数组
@@ -377,6 +383,13 @@
       // 抽奖转盘绘制完成
       handleDrawFinish (res) {
         console.log('抽奖转盘绘制完成', res)
+        
+        if (res.ok) {
+          // 记录结束绘制的时间
+          this.drawEndTime = Date.now()
+          let drawUseTime = (this.drawEndTime - this.drawStartTime)
+          console.log('绘制转盘用时：', drawUseTime + '毫秒')
+        }
 				
         let stoTimer = setTimeout(() => {
           clearTimeout(stoTimer)
