@@ -77,7 +77,7 @@
 
 <script>
   const systemInfo = uni.getSystemInfoSync()
-	import { getStore, setStore, clearStore, clacTextLen, downloadFile, pathToBase64, base64ToPath } from '@/uni_modules/almost-lottery/utils/almost-utils.js'
+	import { getStore, setStore, clearStore, circleImg, clacTextLen, downloadFile, pathToBase64, base64ToPath } from '@/uni_modules/almost-lottery/utils/almost-utils.js'
   export default {
     name: 'AlmostLottery',
     props: {
@@ -236,6 +236,11 @@
 				type: Boolean,
 				default: true
 			},
+      // 奖品图片是否裁切为圆形
+      imgCircled: {
+      	type: Boolean,
+      	default: false
+      },
 			// 转盘绘制成功的提示
 			successMsg: {
 				type: String,
@@ -471,15 +476,6 @@
           // 填充颜色
           ctx.fill()
           
-          // 设置文字颜色
-          if (this.strFontColors.length === 1) {
-            ctx.setFillStyle(this.strFontColors[0])
-          } else if (this.strFontColors.length === 2) {
-            ctx.setFillStyle(this.strFontColors[i % 2])
-          } else {
-            ctx.setFillStyle(this.strFontColors[i])
-          }
-          
           // 开启描边
           if (this.stroked) {
             // 设置描边颜色
@@ -496,6 +492,15 @@
 
           // 绘制奖品名称
           let rewardName = this.strLimit(prizeItem.prizeName)
+          
+          // 设置文字颜色
+          if (this.strFontColors.length === 1) {
+            ctx.setFillStyle(this.strFontColors[0])
+          } else if (this.strFontColors.length === 2) {
+            ctx.setFillStyle(this.strFontColors[i % 2])
+          } else {
+            ctx.setFillStyle(this.strFontColors[i])
+          }
           
           // rotate方法旋转当前的绘图，因为文字是和当前扇形中心线垂直的
           ctx.rotate(angle + (baseAngle / 2) + (Math.PI / 2))
@@ -641,7 +646,13 @@
             let prizeImageY = this.imgMarginPxStr * systemInfo.pixelRatio
             let prizeImageW = this.imgPxWidth * systemInfo.pixelRatio
             let prizeImageH = this.imgPxHeight * systemInfo.pixelRatio
-            ctx.drawImage(prizeItem.prizeImage, prizeImageX, prizeImageY, prizeImageW, prizeImageH)
+            if (this.imgCircled) {
+              // 重置圆形背景填充色为透明色
+              ctx.setFillStyle('rgba(0, 0, 0, 0)')
+              circleImg(ctx, prizeItem.prizeImage, prizeImageX, prizeImageY, prizeImageW, prizeImageH)
+            } else {
+              ctx.drawImage(prizeItem.prizeImage, prizeImageX, prizeImageY, prizeImageW, prizeImageH)
+            }
           }
 
           ctx.restore()

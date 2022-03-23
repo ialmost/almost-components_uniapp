@@ -136,6 +136,7 @@ imgMarginStr | 奖品图片相对奖品文字的距离，单位 `rpx` | *`Number
 imgWidth | 奖品图片的宽度，单位 `rpx` | *`Number`* | `50`
 imgHeight | 奖品图片的高度，单位 `rpx` | *`Number`* | `50`
 imgDrawed | 是否绘制奖品图片，默认绘制 | *`Boolean`* | `true`
+imgCircled | 奖品图片是否裁切为圆形，默认不裁切 | *`Boolean`* | `false`
 successMsg | 转盘绘制成功的提示 | *`String`* | `'奖品准备就绪，快来参与抽奖吧'`
 failMsg | 转盘绘制失败的提示 | *`String`* | `'奖品仍在准备中，请稍后再来...'`
 canvasCached | 是否开启缓存，避免在数据不变的情况下重复绘制，建议在生产环境中开启 | *`Boolean`* | `false`

@@ -34,6 +34,29 @@ export const clearStore = (name) => {
 }
 
 /**
+ * 绘制圆形
+ * @param {String} ctx - 图片网络地址
+ * @param {String} img - 图片地址
+ * @param {String} x - x 轴偏移量
+ * @param {String} y - y 轴偏移量
+ * @param {String} w - 宽
+ * @param {String} h - 高
+*/
+export const circleImg = (ctx, img, x, y, w, h) => {
+  let r = Math.floor(w/2)
+  let cx = x + r
+  let cy = y + r
+  
+  ctx.save()
+  ctx.beginPath()
+  ctx.arc(cx, cy, r, 0, Math.PI * 2)
+  ctx.fill()
+  ctx.clip()
+  ctx.drawImage(img, x, y, w, h)
+  ctx.restore()
+}
+
+/**
  * 计算文本的长度
  * @param {String} text - 文本内容
  */
