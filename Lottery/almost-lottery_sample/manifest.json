@@ -89,7 +89,8 @@
     "h5" : {
         "title" : "Almost-Lottery抽奖转盘",
         "router" : {
-            "mode" : "history"
+            "mode" : "history",
+            "base" : ""
         }
     }
 }

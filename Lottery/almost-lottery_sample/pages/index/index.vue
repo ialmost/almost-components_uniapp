@@ -94,9 +94,9 @@
         
         // 以下是转盘 UI 配置
         // 转盘外环图，如有需要，请参考替换为自己的设计稿
-        lotteryBg: '/static/lottery-bg.png',
+        lotteryBg: require('@/static/lottery-bg.png'),
         // 抽奖按钮图
-        actionBg: '/static/action-bg.png',
+        actionBg: require('@/static/action-bg.png'),
         
         // 以下是奖品配置数据
         // 奖品数据
@@ -198,7 +198,7 @@
 						resolve({
 							ok: true,
 							data: [
-								{ prizeId: 1, prizeName: '0.1元现金', prizeStock: 10, prizeWeight: 200, prizeImage: '/static/git.png' },
+								{ prizeId: 1, prizeName: '0.1元现金', prizeStock: 10, prizeWeight: 200, prizeImage: require('@/static/git.png') },
 								{ prizeId: 2, prizeName: '10元现金', prizeStock: 0, prizeWeight: 50, prizeImage: 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/56f085e0-bcfe-11ea-b244-a9f5e5565f30.png' },
 								{ prizeId: 3, prizeName: '5元话费', prizeStock: 1, prizeWeight: 80 },
 								{ prizeId: 4, prizeName: '50元现金', prizeStock: 0, prizeWeight: 10, prizeImage: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAYAAADE6YVjAAAB2klEQVRIia3Wv09TURjG8U+u2kQZcNENh2ok0cnJ0R+L0RB2g/EvwITEwRgnV0Zx0fAHYBh0khBD4sBAmAgDiwQNg4qwmSBDAYf7Fi+n97al9UlObnvO836f3tO355b2GsAYZrCBPRzGdSPmx8J3YtXwDDsB7TR2wl/rNmAYK13C07ES9W11E9s9BjTHdnBKVf8PAcWgehpwCssF0w/5FzqLgw7AA7zDQ/wqzC8H90jjSeFMYW0Yr8PzALfjOh7z1wve2YTzpLlQw2ay+KZ1N7vS24SziVqGexhKzB07pEJXk/dDwTetdZ9HewwZLWFNw2oyudZjQFNrCW8109pqS32GpPX1TOu586fPkLR+IEMjmbzYZ0ha34Atx/fwW58hXxPeFixo7Yg7PQbcKmEtZFgsMb/C4AkDBuUnQKpFuFZI3cZuvP6C+8g6wDP572O95C4Og49/W/YJl/G5YPqO9yV3dh4f8LMCfhjcI93Afix8xAX5SVx2YBY10yagEdxjmiwY7uISXuIFrlSEPG0TMllWcAbzYViXd0rzeXC6ImSiImA+eKU6h7mCeV/eCBMnCJkLzpHSztnFCJ7L//ZkOFv1iRLtRd1IcLpSHVP4jccVnkexPqXkmd7UX15b7tiz29ReAAAAAElFTkSuQmCC' },
@@ -229,13 +229,15 @@
           
           this.tryLotteryDraw()
         } else {
-          this.prizeing = false
           uni.showModal({
             title: '金币不足',
             content: '是否前往赚取金币？',
             success: (res) => {
               // 这里需要根据业务需求处理，一般情况下会引导用户前往赚取金币的页面
               console.log('金币不足', res)
+            },
+            complete: () => {
+              this.prizeing = false
             }
           })
         }
@@ -359,7 +361,6 @@
         console.log('旋转结束，执行拿到结果后到逻辑')
         
         // 旋转结束后，开始处理拿到结果后的逻辑
-        this.prizeing = false
         let prizeName = this.prizeList[this.prizeIndex].prizeName
         let tipContent = ''
 				
@@ -377,7 +378,10 @@
         
         uni.showModal({
           content: tipContent,
-          showCancel: false
+          showCancel: false,
+          complete: () => {
+            this.prizeing = false
+          }
         })
       },
       // 抽奖转盘绘制完成

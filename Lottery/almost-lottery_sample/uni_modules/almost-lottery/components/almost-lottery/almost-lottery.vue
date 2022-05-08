@@ -513,19 +513,26 @@
               let isLineBreak = realLen > this.strLineLen
               if (isLineBreak) {
                 // 获得多行文本数组
-                let firstText = ''
-                let lastText = ''
-                let firstCount = 0
+                let textCount = 0
+                let tempTxt = ''
+                let rewardNames = []
                 for (let j = 0; j < rewardName.length; j++) {
-                  firstCount += clacTextLen(rewardName[j]).byteLen
-                  if (firstCount <= (this.strLineLen * 2)) {
-                    firstText += rewardName[j]
+                  textCount += clacTextLen(rewardName[j]).byteLen
+                  tempTxt += rewardName[j]
+                  
+                  if (textCount === (this.strLineLen * 2)) {
+                    rewardNames.push(tempTxt)
+                    textCount = 0
+                    tempTxt = ''
                   } else {
-                    lastText += rewardName[j]
+                    if ((rewardName.length - 1) === j) {
+                      rewardNames.push(tempTxt)
+                      textCount = 0
+                      tempTxt = ''
+                    }
                   }
                 }
-                rewardName = firstText + ',' + lastText
-                let rewardNames = rewardName.split(',')
+                
                 // 循环文本数组，计算每一行的文本宽度
                 for (let j = 0; j < rewardNames.length; j++) {
                   if (ctx.measureText && ctx.measureText(rewardNames[j]).width > 0) {
@@ -925,9 +932,9 @@
         let delay = 50
         
         // 小程序平台需要更多的延时才能获取到准确的元素 Size 信息
-        // #ifdef MP
-        delay = 300
-        // #endif
+        // // #ifdef MP
+        // delay = 300
+        // // #endif
         
         let stoTimer = setTimeout(() => {
           clearTimeout(stoTimer)
