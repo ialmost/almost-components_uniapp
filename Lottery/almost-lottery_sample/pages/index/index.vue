@@ -19,6 +19,7 @@
         :action-size="lotteryConfig.actionSize"
         :ring-count="2"
         :duration="1"
+        imgCircled
         :prize-list="prizeList"
         :prize-index="prizeIndex"
         @reset-index="prizeIndex = -1"
@@ -73,7 +74,7 @@
 
 <script>
   import AlmostLottery from '@/uni_modules/almost-lottery/components/almost-lottery/almost-lottery.vue'
-	import { clearCacheFile } from '@/uni_modules/almost-lottery/utils/almost-utils.js'
+	import { clearCacheFile, clearStore } from '@/uni_modules/almost-lottery/utils/almost-utils.js'
   export default {
     name: 'Home',
     components: {
@@ -125,10 +126,7 @@
         // 每次消耗的金币数
         goldNum: 20,
         // 每天免费抽奖次数
-        freeNumDay: 3,
-        // 计算绘制用时
-        drawStartTime: 0,
-        drawEndTime: 0
+        freeNumDay: 3
       }
     },
     computed: {
@@ -140,6 +138,7 @@
       // 重新生成
       handleInitCanvas () {
 				clearCacheFile()
+        clearStore()
         
         this.prizeList = []
         this.getPrizeList()
@@ -160,8 +159,8 @@
 						this.prizeList = data
             console.log('已获取到奖品列表数据，开始绘制抽奖转盘')
             
-            // 记录开始绘制的时间
-            this.drawStartTime = Date.now()
+            // 计算开始绘制的时间
+            console.time('绘制转盘用时')
 						
 						// 如果开启了前端控制概率
 						// 得出权重的最大值并生成权重数组
@@ -389,10 +388,8 @@
         console.log('抽奖转盘绘制完成', res)
         
         if (res.ok) {
-          // 记录结束绘制的时间
-          this.drawEndTime = Date.now()
-          let drawUseTime = (this.drawEndTime - this.drawStartTime)
-          console.log('绘制转盘用时：', drawUseTime + '毫秒')
+          // 计算结束绘制的时间
+          console.timeEnd('绘制转盘用时')
         }
 				
         let stoTimer = setTimeout(() => {
@@ -408,7 +405,8 @@
       }
     },
     onLoad () {
-      this.handleInitCanvas()
+      this.prizeList = []
+      this.getPrizeList()
     },
     onUnload () {
       uni.hideLoading()

@@ -85,38 +85,28 @@ export const clacTextLen = (text) => {
 */
 export const downloadFile = (fileUrl) => {
   return new Promise((resolve) => {
+    let extName = fileUrl.split('.').pop()
+    let fileName = Date.now() + '.' + extName
+    
     uni.downloadFile({
       url: fileUrl,
+      // #ifdef MP-WEIXIN
+      filePath: wx.env.USER_DATA_PATH + '/' + fileName,
+      // #endif
       success: (res) => {
-        // #ifdef MP-ALIPAY
-        if (res.errMsg === 'downloadFile:ok') {
-          resolve({
-            ok: true,
-            data: res.errMsg,
-            tempFilePath: res.tempFilePath
-          })
-        } else {
-          resolve({
-            ok: false,
-            data: res.errMsg,
-            msg: '图片下载失败'
-          })
-        }
+        // #ifdef MP-WEIXIN
+        resolve({
+          ok: true,
+          data: res.errMsg,
+          tempFilePath: res.filePath
+        })
         // #endif
-				// #ifndef MP-ALIPAY
-				if (res.statusCode === 200) {
-				  resolve({
-				    ok: true,
-            data: res.errMsg,
-				    tempFilePath: res.tempFilePath
-				  })
-				} else {
-				  resolve({
-				    ok: false,
-            data: res.errMsg,
-				    msg: '图片下载失败'
-				  })
-				}
+				// #ifndef MP-WEIXIN
+				resolve({
+				  ok: true,
+				  data: res.errMsg,
+				  tempFilePath: res.tempFilePath
+				})
 				// #endif
       },
       fail: (err) => {
@@ -153,9 +143,6 @@ export const clearCacheFile = () => {
 			console.log('getSavedFileList Fail')
 		}
 	})
-	// #endif
-	// #ifdef H5
-	clearStore()
 	// #endif
 }
 
