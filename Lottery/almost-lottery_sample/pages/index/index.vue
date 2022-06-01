@@ -19,7 +19,7 @@
         :action-size="lotteryConfig.actionSize"
         :ring-count="2"
         :duration="1"
-        imgCircled
+        :img-circled="true"
         :prize-list="prizeList"
         :prize-index="prizeIndex"
         @reset-index="prizeIndex = -1"

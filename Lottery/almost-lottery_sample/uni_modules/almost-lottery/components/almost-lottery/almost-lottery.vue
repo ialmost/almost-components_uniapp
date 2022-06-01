@@ -654,8 +654,12 @@
             let prizeImageW = this.imgPxWidth * systemInfo.pixelRatio
             let prizeImageH = this.imgPxHeight * systemInfo.pixelRatio
             if (this.imgCircled) {
-              // 重置圆形背景填充色为透明色
-              ctx.setFillStyle('rgba(0, 0, 0, 0)')
+              // 重新设置每个圆形的背景色
+              if (this.colors.length === 2) {
+                ctx.setFillStyle(this.colors[i % 2])
+              } else {
+                ctx.setFillStyle(this.colors[i])
+              }
               circleImg(ctx, prizeItem.prizeImage, prizeImageX, prizeImageY, prizeImageW, prizeImageH)
             } else {
               ctx.drawImage(prizeItem.prizeImage, prizeImageX, prizeImageY, prizeImageW, prizeImageH)

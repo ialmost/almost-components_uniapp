@@ -85,8 +85,11 @@ export const clacTextLen = (text) => {
 */
 export const downloadFile = (fileUrl) => {
   return new Promise((resolve) => {
+    
+    // #ifdef MP-WEIXIN
     let extName = fileUrl.split('.').pop()
     let fileName = Date.now() + '.' + extName
+    // #endif
     
     uni.downloadFile({
       url: fileUrl,
