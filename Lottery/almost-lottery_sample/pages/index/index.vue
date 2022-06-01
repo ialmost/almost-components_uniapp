@@ -160,7 +160,9 @@
             console.log('已获取到奖品列表数据，开始绘制抽奖转盘')
             
             // 计算开始绘制的时间
-            console.time('绘制转盘用时')
+            if (console.time) {
+              console.time('绘制转盘用时')
+            }
 						
 						// 如果开启了前端控制概率
 						// 得出权重的最大值并生成权重数组
@@ -389,7 +391,9 @@
         
         if (res.ok) {
           // 计算结束绘制的时间
-          console.timeEnd('绘制转盘用时')
+          if (console.timeEnd) {
+            console.timeEnd('绘制转盘用时')
+          }
         }
 				
         let stoTimer = setTimeout(() => {
