@@ -76,7 +76,6 @@
 </template>
 
 <script>
-  const systemInfo = uni.getSystemInfoSync()
 	import { getStore, setStore, clearStore, circleImg, clacTextLen, downloadFile, pathToBase64, base64ToPath } from '@/uni_modules/almost-lottery/utils/almost-utils.js'
   export default {
     name: 'AlmostLottery',
@@ -261,6 +260,8 @@
       return {
         // 画板className
         className: 'almost-lottery__canvas',
+        // 高清固定 2 倍，不再从 system 中动态获取，因为 h5、app-vue 中单个尺寸过大时存在 iOS/Safari 无法绘制的问题，且 2 倍基本也可以解决模糊的问题
+        systemPixelRatio: 2,
         // 抽奖转盘的整体px尺寸
         lotteryPxSize: 0,
         // 画板的px尺寸
@@ -298,15 +299,15 @@
     computed: {
       // 高清尺寸
       higtCanvasSize() {
-        return this.canvasImgPxSize * systemInfo.pixelRatio
+        return this.canvasImgPxSize * this.systemPixelRatio
       },
       // 高清字体
       higtFontSize() {
-        return Math.round(this.strFontSize / this.pixelRatio) * systemInfo.pixelRatio
+        return Math.round(this.strFontSize / this.pixelRatio) * this.systemPixelRatio
       },
       // 高清行高
       higtHeightMultiple() {
-        return Math.round(this.strFontSize / this.pixelRatio) * this.strLineHeight * systemInfo.pixelRatio
+        return Math.round(this.strFontSize / this.pixelRatio) * this.strLineHeight * this.systemPixelRatio
       },
       canvasImgToLeftPx () {
         return (this.lotteryPxSize - this.canvasImgPxSize) / 2
@@ -337,11 +338,11 @@
       },
       // 内圆的半径
       insideRadius() {
-        return 20 * systemInfo.pixelRatio
+        return 20 * this.systemPixelRatio
       },
       // 文字距离边缘的距离
       textRadius() {
-        return this.strMarginPxOutside * systemInfo.pixelRatio || (this.higtFontSize / 2)
+        return this.strMarginPxOutside * this.systemPixelRatio || (this.higtFontSize / 2)
       },
       // 根据画板的宽度计算奖品文字与中心点的距离
       textDistance() {
@@ -649,10 +650,10 @@
               // #endif
 						}
             
-            let prizeImageX = -(this.imgPxWidth * systemInfo.pixelRatio / 2)
-            let prizeImageY = this.imgMarginPxStr * systemInfo.pixelRatio
-            let prizeImageW = this.imgPxWidth * systemInfo.pixelRatio
-            let prizeImageH = this.imgPxHeight * systemInfo.pixelRatio
+            let prizeImageX = -(this.imgPxWidth * this.systemPixelRatio / 2)
+            let prizeImageY = this.imgMarginPxStr * this.systemPixelRatio
+            let prizeImageW = this.imgPxWidth * this.systemPixelRatio
+            let prizeImageH = this.imgPxHeight * this.systemPixelRatio
             if (this.imgCircled) {
               // 重新设置每个圆形的背景色
               if (this.colors.length === 2) {
@@ -700,6 +701,8 @@
             // #ifndef MP-ALIPAY
             uni.canvasToTempFilePath({
               canvasId: this.canvasId,
+              destWidth: this.higtCanvasSize,
+              destHeight: this.higtCanvasSize,
               success: (res) => {
                 // 在 H5 平台下，tempFilePath 为 base64
                 // console.log(res.tempFilePath)
@@ -819,7 +822,7 @@
       // 已知问题：初始绘制时，低端安卓机 平均耗时 2s
       // hbx 2.8.12+ 已在 app 端支持
       getTextWidth() {
-        console.warn('正在采用兼容方式获取文本的 size 信息，虽然没有任何问题，如果可以，请将此 systemInfo 及 hbx 版本号 反馈给作者', systemInfo)
+        console.warn('正在采用兼容方式获取文本的 size 信息')
         let query = uni.createSelectorQuery().in(this)
         let nodesRef = query.select('.almost-lottery__measureText')
         return new Promise((resolve, reject) => {
