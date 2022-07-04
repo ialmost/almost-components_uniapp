@@ -20,6 +20,7 @@
         :ring-count="2"
         :duration="1"
         :img-circled="true"
+        :canvasCached="true"
         :prize-list="prizeList"
         :prize-index="prizeIndex"
         @reset-index="prizeIndex = -1"
@@ -331,7 +332,6 @@
         console.warn('###当前处于模拟的请求接口，并返回了中奖信息###')
         // 模拟请求接口获取中奖信息
         let stoTimer = setTimeout(() => {
-          clearTimeout(stoTimer)
           stoTimer = null
           
           let list = [...this.prizeList]
@@ -397,9 +397,9 @@
         }
 				
         let stoTimer = setTimeout(() => {
-          clearTimeout(stoTimer)
           stoTimer = null
           
+          uni.hideLoading()
           uni.showToast({
             title: res.msg,
           	mask: true,

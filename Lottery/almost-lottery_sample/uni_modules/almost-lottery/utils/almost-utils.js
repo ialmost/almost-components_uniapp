@@ -85,32 +85,14 @@ export const clacTextLen = (text) => {
 */
 export const downloadFile = (fileUrl) => {
   return new Promise((resolve) => {
-    
-    // #ifdef MP-WEIXIN
-    let extName = fileUrl.split('.').pop()
-    let fileName = Date.now() + '.' + extName
-    // #endif
-    
     uni.downloadFile({
       url: fileUrl,
-      // #ifdef MP-WEIXIN
-      filePath: wx.env.USER_DATA_PATH + '/' + fileName,
-      // #endif
       success: (res) => {
-        // #ifdef MP-WEIXIN
-        resolve({
-          ok: true,
-          data: res.errMsg,
-          tempFilePath: res.filePath
-        })
-        // #endif
-				// #ifndef MP-WEIXIN
 				resolve({
 				  ok: true,
 				  data: res.errMsg,
 				  tempFilePath: res.tempFilePath
 				})
-				// #endif
       },
       fail: (err) => {
         resolve({
