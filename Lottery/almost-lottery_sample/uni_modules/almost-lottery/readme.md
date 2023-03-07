@@ -123,6 +123,7 @@ stroked | 是否开启奖品区块描边 | *`Boolean`* | `false`
 strDirection | 奖品名称展示方向，可选值 `'horizontal'` => 横向 `'vertical'` => 竖向 | *`String`* | `'horizontal'`
 strokeColor | 奖品区块边框颜色 | *`String`* | `'#FFBF05'`
 rotateType | 旋转的类型，可选值 `'roulette'` => 轮盘旋转 `'pointer'` => 指针旋转 | *`String`* | `'roulette'`
+selfRotaty | 是否开启自转，开启后`duration`和`ringCount`参数不生效 | *`Boolean`* | `false`
 duration | 转盘旋转的动画时长，单位：秒 | *`Number`* | `8`
 ringCount | 旋转的圈数 | *`Number`* | `8`
 pointerPosition | 点击抽奖按钮指针的位置，可选值 `'edge'` => 指向边界 `'middle'` => 指向中间 | *`String`* | `'edge'`

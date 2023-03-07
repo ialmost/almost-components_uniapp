@@ -16,7 +16,11 @@
           }"
         ></image>
         <image
-          class="almost-lottery__canvas-img"
+          :class="[
+            'almost-lottery__canvas-img',
+            { 'almost-lottery__canvas-img-other': !selfRotaty },
+            { 'almost-lottery__canvas-img-self': selfRotated }
+          ]"
           mode="widthFix"
           :src="lotteryImg"
           :style="{
@@ -156,6 +160,12 @@
         type: String,
         default: 'roulette'
       },
+      // 是否开启自转
+      selfRotaty: {
+				type: Boolean,
+				default: false
+			},
+      
       // 旋转动画时间 单位s
       duration: {
         type: Number,
@@ -282,6 +292,8 @@
         targetActionAngle: 0,
         // 旋转动画时间 单位 s
         transitionDuration: 0,
+        // 配合自转使用
+        selfRotated: false,
         // 是否正在旋转
         isRotate: false,
         // 当前停留在那个奖品的序号
@@ -354,8 +366,12 @@
       // 监听获奖序号的变动
       prizeIndex(newVal, oldVal) {
         if (newVal > -1) {
-          this.targetIndex = newVal
-          this.onRotateStart()
+          if (this.selfRotated) this.selfRotated = false
+          
+          let stoTimer = setTimeout(() => {
+            this.targetIndex = newVal
+            this.onRotateStart()
+          }, 0)
         } else {
           console.info('旋转结束，prizeIndex 已重置')
         }
@@ -371,6 +387,8 @@
         let baseAngle = 360 / prizeCount
         let angles = 0
         
+        let ringCount = this.selfRotaty ? 3 : this.ringCount
+        
         if (this.rotateType === 'pointer') {
           if (this.targetActionAngle === 0) {
             // 第一次旋转
@@ -384,8 +402,8 @@
           // 更新目前序号
           this.stayIndex = this.targetIndex
           // 转 8 圈，圈数越多，转的越快
-          this.targetActionAngle += angles + 360 * this.ringCount
-          console.log('targetActionAngle', this.targetActionAngle)
+          this.targetActionAngle += angles + 360 * ringCount
+          // console.log('targetActionAngle', this.targetActionAngle)
         } else {
           if (this.targetAngle === 0) {
             // 第一次旋转
@@ -401,7 +419,7 @@
           // 更新目前序号
           this.stayIndex = this.targetIndex
           // 转 8 圈，圈数越多，转的越快
-          this.targetAngle += angles + 360 * this.ringCount
+          this.targetAngle += angles + 360 * ringCount
         }
 
         // 计算转盘结束的时间，预加一些延迟确保转盘停止后触发结束事件
@@ -427,6 +445,10 @@
         if (!this.lotteryImg) return
         if (this.isRotate) return
         this.$emit('draw-start')
+        
+        if (this.selfRotaty) {
+          this.selfRotated = true
+        }
       },
       // 渲染转盘
       async onCreateCanvas() {
@@ -930,7 +952,7 @@
           } else {
           	this.initCanvasDraw()
           }
-          this.transitionDuration = this.duration
+          this.transitionDuration = this.selfRotaty ? 2 : this.duration
         }, 50)
       }
     },
@@ -1010,8 +1032,25 @@
     left: 0;
     top: 0;
   }
-
-  .almost-lottery__canvas-img {
+  
+  .almost-lottery__canvas-img-other {
     transition: transform cubic-bezier(.34, .12, .05, .95);
+  }
+  
+  @keyframes selfRotate {
+    0% {
+      transform: rotate(0deg);
+    }
+    50% {
+      transform: rotate(180deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .almost-lottery__canvas-img-self {
+    transition: transform ease-in;
+    animation: selfRotate .6s linear infinite;
   }
 </style>

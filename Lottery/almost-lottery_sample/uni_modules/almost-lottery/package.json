@@ -1,22 +1,20 @@
 {
   "id": "almost-lottery",
   "displayName": "Almost-Lottery抽奖转盘",
-  "version": "1.8.33",
+  "version": "1.9.1",
   "description": "【荣获2021插件大赛三等奖】提供奇数、缓存等众多配置项，更有抽奖概率、抽奖次数、付费抽奖等功能内置于示例项目中，完美支持APP、各平台小程序、H5、PC，同时提供 uniCloud 云端版本",
   "keywords": [
     "转盘",
     "抽奖",
+    "转盘抽奖",
+    "大转盘",
     "大转盘抽奖"
 ],
   "repository": "https://github.com/ialmost/almost-components_uniapp",
   "engines": {
     "HBuilderX": "^3.1.22"
   },
-  "dcloudext": {
-    "category": [
-        "前端组件",
-        "通用组件"
-    ],
+"dcloudext": {
     "sale": {
       "regular": {
         "price": "0.00"
@@ -33,7 +31,8 @@
       "data": "无",
       "permissions": "无"
     },
-    "npmurl": ""
+    "npmurl": "",
+    "type": "component-vue"
   },
   "uni_modules": {
     "dependencies": [],
