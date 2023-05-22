@@ -110,6 +110,7 @@ export default {
 :---|:---|:---|:---
 pixelRatio | 移动端设计稿的像素比基准值，**涉及到 `rpx` 的适配问题** | *`Number`* | `2`
 canvasId | Canvas的标识，**多画板情况下需要配置不同的标识** | *`String`* | `'almostLottery'`
+renderDelay | 转盘的渲染延时，**转盘被包裹在 uni-popup 组件内且开启了动画，请设置成最少 300** | *`Number`* | `0`
 lotterySize | 抽奖转盘的整体尺寸，单位 `rpx` | *`Number`* | `600`
 actionSize | 抽奖按钮的尺寸，单位 `rpx` | *`Number`* | `200`
 canvasMarginOutside | Canvas边缘距离转盘边缘的距离，单位`rpx` | *`Number`* | `90`

@@ -12,6 +12,9 @@
     <view class="almost-lottery__action-dev" @tap="handleInitCanvas" v-if="isDev">
       <text class="text">重新生成画板-开发模式使用</text>
     </view>
+    <view class="almost-lottery__action-dev" @tap="handleOpenPopup">
+      <text class="text">通过 uni-popup 打开</text>
+    </view>
     <!-- lottery -->
     <view class="almost-lottery__wheel">
       <almost-lottery
@@ -70,6 +73,29 @@
         </template>
       </view>
     </view>
+    
+    <!-- 抽奖 popup -->
+    <uni-popup ref="lotteryPopup">
+      <view class="almost-lottery__popup-wrap">
+        <almost-lottery
+          canvas-id="lotteryPopup"
+          :render-delay="300"
+          :lottery-size="lotteryConfig.lotterySize"
+          :action-size="lotteryConfig.actionSize"
+          :ring-count="2"
+          :duration="1"
+          :img-circled="true"
+          :canvasCached="true"
+          :prize-list="prizeList"
+          :prize-index="prizeIndex"
+          @reset-index="prizeIndex = -1"
+          @draw-start="handleDrawStart"
+          @draw-end="handleDrawEnd"
+          @finish="handleDrawFinish"
+          v-if="prizeList.length"
+        />
+      </view>
+    </uni-popup>
   </view>
 </template>
 
@@ -144,6 +170,24 @@
         this.prizeList = []
         this.getPrizeList()
       },
+      // 通过 popup 打开
+      handleOpenPopup () {
+        this.$refs.lotteryPopup.open()
+        
+        // 因为示例项目中的2个转盘采用同一份转盘数据，会导致popup包裹的转盘有时候拿不到尺寸信息
+        // 所以每次打开popup都会先清空数据再获取，实际应用的时候不需要这样
+        this.$nextTick(() => {
+          this.prizeList = []
+          this.getPrizeList()
+        })
+        
+        // 实际应用时，只需要这样
+        // this.$nextTick(() => {
+        //   if (!this.prizeList.length) {
+        //     this.getPrizeList()
+        //   }
+        // })
+      },
       // 获取奖品列表
       async getPrizeList () {
         uni.showLoading({
@@ -169,7 +213,7 @@
 						// 得出权重的最大值并生成权重数组
 						if (this.onFrontend) {
               // 生成权重数组并排序取得最大值
-              this.prizeWeightArr = this.prizeList.map((item) => item.prizeWeight)
+              this.prizeWeightArr = this.prizeList.map(item => item.prizeWeight)
               let prizeWeightArrSort = [...this.prizeWeightArr]
               prizeWeightArrSort.sort((a, b) => b - a)
               
@@ -559,6 +603,17 @@
     .text {
       color: #FFFFFF;
       font-size: 28rpx;
+    }
+  }
+  
+  .almost-lottery__popup-wrap {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    .almost-lottery {
+      background: transparent;
     }
   }
 </style>

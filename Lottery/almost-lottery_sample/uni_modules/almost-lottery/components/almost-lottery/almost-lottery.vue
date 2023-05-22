@@ -94,6 +94,11 @@
         type: String,
         default: 'almostLottery'
       },
+      // 渲染延迟
+      renderDelay: {
+        type: Number,
+        default: 0
+      },
       // 抽奖转盘的整体尺寸
       lotterySize: {
         type: Number,
@@ -870,11 +875,11 @@
 				let oldPrizeList = getStore(`${this.canvasId}PrizeList`)
 				let newPrizeList = JSON.stringify(this.prizeList)
 				if (this.oldLotteryImg) {
+          console.log(`经查，本地缓存中存在转盘图 => ${this.oldLotteryImg}，继续判断这张缓存图是否可用`)
 					if (oldPrizeList === newPrizeList) {
-						console.log(`经查，本地缓存中存在转盘图 => ${this.oldLotteryImg}`)
 						this.isCacheImg = true
 						
-						console.log('需要继续判断这张缓存图是否可用')
+						console.log('缓存图可用')
 						this.handlePrizeImg({
 							ok: true,
 							data: this.oldLotteryImg,
@@ -884,7 +889,6 @@
 					}
 				}
 				
-				console.log('经查，本地缓存中不存在转盘图')
 				this.initCanvasDraw()
 			},
       // 初始化绘制
@@ -958,12 +962,7 @@
     },
     mounted() {
       this.$nextTick(() => {
-        let delay = 50
-        
-        // 小程序平台需要更多的延时才能获取到准确的元素 Size 信息
-        // // #ifdef MP
-        // delay = 300
-        // // #endif
+        let delay = 50 + this.renderDelay
         
         let stoTimer = setTimeout(() => {
           clearTimeout(stoTimer)
