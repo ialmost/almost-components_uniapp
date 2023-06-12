@@ -9,33 +9,8 @@
       <view class="tip"><text class="tip-content">每次抽奖消耗 {{ goldNum }} 金币，不限次数</text></view>
     </view>
     <!-- action -->
-    <view class="almost-lottery__action-dev" @tap="handleInitCanvas" v-if="isDev">
-      <text class="text">重新生成画板-开发模式使用</text>
-    </view>
-    <view class="almost-lottery__action-dev" @tap="handleCheckPopup">
-      <text class="text">查看 uni-popup 用例</text>
-    </view>
-    <!-- lottery -->
-    <view class="almost-lottery__wheel">
-      <almost-lottery
-        :lottery-size="lotteryConfig.lotterySize"
-        :action-size="lotteryConfig.actionSize"
-        :ring-count="2"
-        :duration="1"
-        :self-rotaty="false"
-        :img-circled="true"
-        :canvasCached="true"
-        :prize-list="prizeList"
-        :prize-index="prizeIndex"
-        @reset-index="prizeIndex = -1"
-        @draw-start="handleDrawStart"
-        @draw-end="handleDrawEnd"
-        @finish="handleDrawFinish"
-        v-if="prizeList.length"
-      />
-      <view class="almost-lottery__count">
-        <text class="text">剩余免费抽奖 {{ freeNum }} 次</text>
-      </view>
+    <view class="almost-lottery__action-dev" @tap="handleOpenPopup">
+      <text class="text">通过 uni-popup 打开</text>
     </view>
     <!-- rule -->
     <view class="almost-lottery__rule">
@@ -74,6 +49,30 @@
         </template>
       </view>
     </view>
+    
+    <!-- 抽奖 popup -->
+    <uni-popup ref="lotteryPopup">
+      <view class="almost-lottery__popup-wrap">
+        <almost-lottery
+          canvas-id="lotteryPopup"
+          :render-delay="300"
+          :lottery-size="lotteryConfig.lotterySize"
+          :action-size="lotteryConfig.actionSize"
+          :ring-count="2"
+          :duration="1"
+          :self-rotaty="false"
+          :img-circled="true"
+          :canvasCached="true"
+          :prize-list="prizeList"
+          :prize-index="prizeIndex"
+          @reset-index="prizeIndex = -1"
+          @draw-start="handleDrawStart"
+          @draw-end="handleDrawEnd"
+          @finish="handleDrawFinish"
+          v-if="prizeList.length"
+        />
+      </view>
+    </uni-popup>
   </view>
 </template>
 
@@ -140,18 +139,13 @@
       }
     },
     methods: {
-      // 重新生成
-      handleInitCanvas () {
-				clearCacheFile()
-        clearStore()
-        
-        this.prizeList = []
-        this.getPrizeList()
-      },
       // 通过 popup 打开
-      handleCheckPopup () {
-        uni.navigateTo({
-          url: '/pages/popup/popup'
+      handleOpenPopup () {
+        this.$refs.lotteryPopup.open()
+        this.$nextTick(() => {
+          if (!this.prizeList.length) {
+            this.getPrizeList()
+          }
         })
       },
       // 获取奖品列表
@@ -417,10 +411,6 @@
           })
         }, 50)
       }
-    },
-    onLoad () {
-      this.prizeList = []
-      this.getPrizeList()
     },
     onUnload () {
       uni.hideLoading()

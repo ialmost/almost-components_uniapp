@@ -8,6 +8,15 @@
 		      "scrollIndicator": "none"
 		    }
 			}
+		},
+    {
+			"path": "pages/popup/popup",
+			"style": {
+				"navigationBarTitleText": "Almost-Lottery抽奖转盘",
+		    "app-plus": {
+		      "scrollIndicator": "none"
+		    }
+			}
 		}
 	],
 	"globalStyle": {

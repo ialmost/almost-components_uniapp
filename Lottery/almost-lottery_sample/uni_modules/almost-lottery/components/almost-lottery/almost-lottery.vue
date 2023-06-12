@@ -170,7 +170,11 @@
 				type: Boolean,
 				default: false
 			},
-      
+      // 自转时，最少转多少毫秒
+      selfTime: {
+				type: Number,
+				default: 1000
+      },
       // 旋转动画时间 单位s
       duration: {
         type: Number,
@@ -299,6 +303,7 @@
         transitionDuration: 0,
         // 配合自转使用
         selfRotated: false,
+        selfRotatyStartTime: null,
         // 是否正在旋转
         isRotate: false,
         // 当前停留在那个奖品的序号
@@ -371,12 +376,20 @@
       // 监听获奖序号的变动
       prizeIndex(newVal, oldVal) {
         if (newVal > -1) {
-          if (this.selfRotated) this.selfRotated = false
-          
-          let stoTimer = setTimeout(() => {
-            this.targetIndex = newVal
-            this.onRotateStart()
-          }, 0)
+          if (this.selfRotaty) {
+            const diffTime = Date.now() - this.selfRotatyStartTime
+            const timeDelay = diffTime < this.selfTime ? this.selfTime : 0
+            setTimeout(() => {
+              this.selfRotated = false
+              this.targetIndex = newVal
+              this.onRotateStart()
+            }, timeDelay)
+          } else {
+            setTimeout(() => {
+              this.targetIndex = newVal
+              this.onRotateStart()
+            }, 0)
+          }
         } else {
           console.info('旋转结束，prizeIndex 已重置')
         }
@@ -385,14 +398,17 @@
     methods: {
       // 开始旋转
       onRotateStart() {
-        if (this.isRotate) return
-        this.isRotate = true
         // 奖品总数
+        if (!this.selfRotaty) {
+          if (this.isRotate) return
+          this.isRotate = true
+        }
+        
         let prizeCount = this.prizeList.length
         let baseAngle = 360 / prizeCount
         let angles = 0
         
-        let ringCount = this.selfRotaty ? 3 : this.ringCount
+        let ringCount = this.selfRotaty ? 1 : this.ringCount
         
         if (this.rotateType === 'pointer') {
           if (this.targetActionAngle === 0) {
@@ -428,7 +444,7 @@
         }
 
         // 计算转盘结束的时间，预加一些延迟确保转盘停止后触发结束事件
-        let endTime = this.transitionDuration * 1000 + 100
+        let endTime = this.selfRotaty ? 0 : (this.transitionDuration * 1000 + 100)
         let endTimer = setTimeout(() => {
           clearTimeout(endTimer)
           endTimer = null
@@ -449,11 +465,14 @@
       handleActionStart() {
         if (!this.lotteryImg) return
         if (this.isRotate) return
-        this.$emit('draw-start')
         
         if (this.selfRotaty) {
+          this.isRotate = true
           this.selfRotated = true
+          this.selfRotatyStartTime = Date.now()
         }
+        
+        this.$emit('draw-start')
       },
       // 渲染转盘
       async onCreateCanvas() {
