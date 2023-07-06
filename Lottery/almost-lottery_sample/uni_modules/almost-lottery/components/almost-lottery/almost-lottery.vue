@@ -567,7 +567,7 @@
                   textCount += clacTextLen(rewardName[j]).byteLen
                   tempTxt += rewardName[j]
                   
-                  if (textCount === (this.strLineLen * 2)) {
+                  if (textCount >= (this.strLineLen * 2)) {
                     rewardNames.push(tempTxt)
                     textCount = 0
                     tempTxt = ''

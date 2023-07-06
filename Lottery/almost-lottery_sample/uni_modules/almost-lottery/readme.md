@@ -132,7 +132,7 @@ pointerPosition | 点击抽奖按钮指针的位置，可选值 `'edge'` => 指�
 strFontColors | 奖品文字颜色，默认 2 个颜色相互交替，**也可以对每个区块的文字设置不同颜色，或仅设置一个颜色** | *`Array`* | `['#FFBF05', '#FFFFFF']`
 strFontSize | 奖品名称的字号，单位 `rpx` | *`Number`* | `24`
 strLineHeight | 奖品名称多行情况下的行高 | *`Number`* | `1.2`
-strMaxLen | 奖品名称长度限制，**文字竖向时不生效** | *`Number`* | `12`
+strMaxLen | 奖品名称长度限制，为`0`时不限制，**文字竖向时不生效** | *`Number`* | `12`
 strLineLen | 奖品名称在多行情况下第一行文字的长度，**文字竖向时不生效** | *`Number`* | `6`
 strMarginOutside | 奖品文字相对轮盘边缘的距离，单位 `rpx` | *`Number`* | `strFontSize 的一半`
 imgMarginStr | 奖品图片相对奖品文字的距离，单位 `rpx` | *`Number`* | `60`
