@@ -55,6 +55,7 @@
       <view class="almost-lottery__popup-wrap">
         <almost-lottery
           canvas-id="lotteryPopup"
+          :dev-mode="isDev"
           :render-delay="300"
           :lottery-size="lotteryConfig.lotterySize"
           :action-size="lotteryConfig.actionSize"

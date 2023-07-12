@@ -299,8 +299,6 @@
         // 旋转到奖品目标需要的角度
         targetAngle: 0,
         targetActionAngle: 0,
-        // 旋转动画时间 单位 s
-        transitionDuration: 0,
         // 配合自转使用
         selfRotated: false,
         selfRotatyStartTime: null,
@@ -370,6 +368,10 @@
       textDistance() {
         const textZeroY = Math.round(this.outsideRadius - (this.insideRadius / 2))
         return textZeroY - this.textRadius
+      },
+      // 旋转动画时间 单位 s
+      transitionDuration () {
+        return this.selfRotaty ? 2 : this.duration
       }
     },
     watch: {
@@ -465,6 +467,13 @@
       handleActionStart() {
         if (!this.lotteryImg) return
         if (this.isRotate) return
+        
+        const ringDuration = (this.duration / this.ringCount).toFixed(1)
+        if (ringDuration >= 2.5) {
+          console.warn('当前每一圈的旋转可能过慢，请检查 duration 和 ringCount 这 2 个参数是否设置合理')
+        } else if (ringDuration < 1) {
+          console.warn('当前每一圈的旋转可能过快，请检查 duration 和 ringCount 这 2 个参数是否设置合理')
+        }
         
         if (this.selfRotaty) {
           this.isRotate = true
@@ -975,7 +984,6 @@
           } else {
           	this.initCanvasDraw()
           }
-          this.transitionDuration = this.selfRotaty ? 2 : this.duration
         }, 50)
       }
     },
