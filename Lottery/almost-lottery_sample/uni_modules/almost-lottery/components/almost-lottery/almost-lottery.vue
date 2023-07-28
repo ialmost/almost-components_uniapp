@@ -273,7 +273,14 @@
 			canvasCached: {
 				type: Boolean,
 				default: false
-			}
+			},
+      // 转动之前
+      drawStartBefore: {
+        type: Function,
+        default: () => {
+          return true
+        }
+      }
     },
     data() {
       return {
@@ -467,6 +474,7 @@
       handleActionStart() {
         if (!this.lotteryImg) return
         if (this.isRotate) return
+        if (!this.drawStartBefore()) return
         
         const ringDuration = (this.duration / this.ringCount).toFixed(1)
         if (ringDuration >= 2.5) {

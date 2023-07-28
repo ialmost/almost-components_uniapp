@@ -27,6 +27,7 @@
         :canvasCached="true"
         :prize-list="prizeList"
         :prize-index="prizeIndex"
+        :drawStartBefore="handleDrawStartBefore"
         @reset-index="prizeIndex = -1"
         @draw-start="handleDrawStart"
         @draw-end="handleDrawEnd"
@@ -125,13 +126,13 @@
         
         // 以下为业务需求有关示例数据
         // 金币余额
-        goldCoin: 600,
+        goldCoin: 20,
         // 当日免费抽奖次数余额
-        freeNum: 3,
+        freeNum: 1,
         // 每次消耗的金币数
         goldNum: 20,
         // 每天免费抽奖次数
-        freeNumDay: 3
+        freeNumDay: 1
       }
     },
     computed: {
@@ -223,11 +224,10 @@
 					}, 200)
 				})
 			},
-      // 本次抽奖开始
-      handleDrawStart () {
-        console.log('触发抽奖按钮')
-        if (this.prizeing) return
-        this.prizeing = true
+      // 抽奖开始之前
+      handleDrawStartBefore () {
+        console.log('抽奖开始之前')
+        let flag = false
         
         // 还有免费数次或者剩余金币足够抽一次
         if (this.freeNum > 0 || this.goldCoin >= this.goldNum) {
@@ -239,20 +239,28 @@
             this.goldCoin -= this.goldNum
           }
           
-          this.tryLotteryDraw()
+          flag = true
         } else {
+          flag = false
           uni.showModal({
             title: '金币不足',
             content: '是否前往赚取金币？',
             success: (res) => {
               // 这里需要根据业务需求处理，一般情况下会引导用户前往赚取金币的页面
               console.log('金币不足', res)
-            },
-            complete: () => {
-              this.prizeing = false
             }
           })
         }
+        
+        return flag
+      },
+      // 本次抽奖开始
+      handleDrawStart () {
+        console.log('触发抽奖按钮')
+        if (this.prizeing) return
+        this.prizeing = true
+        
+        this.tryLotteryDraw()
       },
       // 尝试发起抽奖
       tryLotteryDraw () {
