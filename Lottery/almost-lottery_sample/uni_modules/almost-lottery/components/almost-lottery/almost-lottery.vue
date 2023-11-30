@@ -273,14 +273,7 @@
 			canvasCached: {
 				type: Boolean,
 				default: false
-			},
-      // 转动之前
-      drawStartBefore: {
-        type: Function,
-        default: () => {
-          return true
-        }
-      }
+			}
     },
     data() {
       return {
@@ -474,22 +467,26 @@
       handleActionStart() {
         if (!this.lotteryImg) return
         if (this.isRotate) return
-        if (!this.drawStartBefore()) return
         
-        const ringDuration = (this.duration / this.ringCount).toFixed(1)
-        if (ringDuration >= 2.5) {
-          console.warn('当前每一圈的旋转可能过慢，请检查 duration 和 ringCount 这 2 个参数是否设置合理')
-        } else if (ringDuration < 1) {
-          console.warn('当前每一圈的旋转可能过快，请检查 duration 和 ringCount 这 2 个参数是否设置合理')
-        }
-        
-        if (this.selfRotaty) {
-          this.isRotate = true
-          this.selfRotated = true
-          this.selfRotatyStartTime = Date.now()
-        }
-        
-        this.$emit('draw-start')
+        this.$emit('draw-before', (shouldContinue) => {
+          console.log('shouldContinue', shouldContinue)
+          if (!shouldContinue) return
+          
+          const ringDuration = (this.duration / this.ringCount).toFixed(1)
+          if (ringDuration >= 2.5) {
+            console.warn('当前每一圈的旋转可能过慢，请检查 duration 和 ringCount 这 2 个参数是否设置合理')
+          } else if (ringDuration < 1) {
+            console.warn('当前每一圈的旋转可能过快，请检查 duration 和 ringCount 这 2 个参数是否设置合理')
+          }
+          
+          if (this.selfRotaty) {
+            this.isRotate = true
+            this.selfRotated = true
+            this.selfRotatyStartTime = Date.now()
+          }
+          
+          this.$emit('draw-start')
+        })
       },
       // 渲染转盘
       async onCreateCanvas() {

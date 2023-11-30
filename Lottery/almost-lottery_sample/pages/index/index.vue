@@ -27,8 +27,8 @@
         :canvasCached="true"
         :prize-list="prizeList"
         :prize-index="prizeIndex"
-        :drawStartBefore="handleDrawStartBefore"
         @reset-index="prizeIndex = -1"
+        @draw-before="handleDrawBefore"
         @draw-start="handleDrawStart"
         @draw-end="handleDrawEnd"
         @finish="handleDrawFinish"
@@ -225,7 +225,7 @@
 				})
 			},
       // 抽奖开始之前
-      handleDrawStartBefore () {
+      handleDrawBefore (callback) {
         console.log('抽奖开始之前')
         let flag = false
         
@@ -252,7 +252,7 @@
           })
         }
         
-        return flag
+        callback(flag)
       },
       // 本次抽奖开始
       handleDrawStart () {
